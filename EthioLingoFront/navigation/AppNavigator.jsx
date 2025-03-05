@@ -1,11 +1,11 @@
-
+// /EthioLingoFront/navigation/AppNavigator.js
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { colors } from '../styles/globalStyles';
 
-// Placeholder screens (we'll replace these with real screens later)
+// Placeholder screens (replace with real imports as you build them)
 
 const WelcomeScreen = () => <></>;
 const HomeScreen = () => <></>;
@@ -16,15 +16,15 @@ const SettingsScreen = () => <></>;
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Tab Navigator for main app navigation
+// here is tab Navigator for main app
 function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: colors.primaryBackground,
+          backgroundColor: colors.primaryBackground, // #313574
         },
-        tabBarActiveTintColor: colors.primaryText,
+        tabBarActiveTintColor: colors.primaryText, // #f0f2f5
         tabBarInactiveTintColor: '#a0a0a0',
       }}
     >
@@ -44,9 +44,9 @@ function AppNavigator() {
         initialRouteName="Welcome"
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.primaryBackground,
+            backgroundColor: colors.primaryBackground, // #313574
           },
-          headerTintColor: colors.primaryText,
+          headerTintColor: colors.primaryText, // #f0f2f5
           headerTitleStyle: {
             fontWeight: 'bold',
           },
