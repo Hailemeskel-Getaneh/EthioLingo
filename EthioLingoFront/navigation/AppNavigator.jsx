@@ -3,13 +3,17 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import WelcomeScreen from '../screens/Onboarding/WelcomeScreen'
+import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
+import LessonScreen from '../screens/LessonScreen/LessonScreen';
+import LoginScreen from '../screens/Auth/LoginScreen';
 import { colors } from '../styles/globalStyles';
 
 // Placeholder screens (replace with real imports as you build them)
 
-const WelcomeScreen = () => <></>;
+
 const HomeScreen = () => <></>;
-const LessonScreen = () => <></>;
+
 const ProgressScreen = () => <></>;
 const SettingsScreen = () => <></>;
 
@@ -62,6 +66,9 @@ function AppNavigator() {
           component={MainTabs}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="LessonScreen" component={LessonScreen} options={{ headerShown: false }}/>     
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
