@@ -31,6 +31,20 @@ export const VerifyButton = ({onPress}) => {
     </TouchableOpacity>
   );
 };
+export const ResetButton2 = ({onPress}) => {
+  return (
+    <TouchableOpacity style={styles.button1} onPress={onPress} >
+      <Text style={styles.text1}>Submit</Text>
+    </TouchableOpacity>
+  );
+};
+export const Done = ({onPress}) => {
+  return (
+    <TouchableOpacity style={styles.button1} onPress={onPress} >
+      <Text style={styles.text1}>Done</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   button1: {
