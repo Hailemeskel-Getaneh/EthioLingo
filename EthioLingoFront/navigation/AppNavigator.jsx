@@ -65,4 +65,5 @@ function AppNavigator() {
   );
 }
 
+
 export default AppNavigator;
