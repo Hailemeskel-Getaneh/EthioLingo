@@ -9,9 +9,8 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen.
 import SetGoalScreen from '../screens/Profile/SetGoalScreen.jsx';
 import LessonScreen from '../screens/LessonScreen/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-// import HomeScreen from '../screens/Home/HomeScreen'; // Placeholder for your team’s HomeScreen
 
-// Placeholder screens (replace with real imports as you build them)
+const HomeScreen = () => <></>;
 const ProgressScreen = () => <></>;
 const SettingsScreen = () => <></>;
 
@@ -54,44 +53,17 @@ function AppNavigator() {
           },
         }}
       >
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="GetStartedScreen"
-          component={GetStartedScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LanguageSelectionScreen"
-          component={LanguageSelectionScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SetGoalScreen"
-          component={SetGoalScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={MainTabs}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LessonScreen"
-          component={LessonScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="LessonScreen" component={LessonScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 
 export default AppNavigator;
