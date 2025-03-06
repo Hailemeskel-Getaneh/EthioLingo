@@ -16,24 +16,37 @@ export const GetButton2 = ({onPress}) => {
     </TouchableOpacity>
   );
 };
+export const ResetButton = ({onPress}) => {
+  return (
+    <TouchableOpacity style={styles.button1} onPress={onPress} >
+      <Text style={styles.text1}>Send</Text>
+    </TouchableOpacity>
+  );
+};
+
+export const VerifyButton = ({onPress}) => {
+  return (
+    <TouchableOpacity style={styles.button1} onPress={onPress} >
+      <Text style={styles.text1}>Verify</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   button1: {
     padding: 15,
     backgroundColor: '#313574',
     marginBottom: 20,
-    borderRadius: 20,
-    width: 330,
-    alignItems: 'center',
+    borderRadius: 8,
+    
   },
   button2: {
     padding: 15,
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 8,
     borderWidth: 2,
     borderColor: '#313574',
-    width: 330,
-    alignItems: 'center',
+   
   },
   text1: {
     color: 'white',
