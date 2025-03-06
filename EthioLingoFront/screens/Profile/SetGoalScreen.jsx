@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Animated } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { colors, globalStyles } from '../../styles/globalStyles';
-import Buttons from '../../components/Common/Buttons'; // Updated to Buttons.jsx
-import { Ionicons } from '@expo/vector-icons'; // For back arrow
+import Buttons from '../../components/Common/Buttons';
+import { Ionicons } from '@expo/vector-icons';
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -16,21 +16,10 @@ const timeOptions = [
 
 export default function SetGoalScreen({ navigation, route }) {
   const [selectedTime, setSelectedTime] = useState(null);
-  const [otherTime, setOtherTime] = useState(''); // For custom time input
+  const [otherTime, setOtherTime] = useState('');
   const selectedLanguage = route.params?.selectedLanguage;
-  const fadeAnim = new Animated.Value(0); // For animation
 
-  // Filter time options to exclude 'Other' if custom time is entered
   const displayedTimeOptions = timeOptions.filter(item => item.minutes !== 'other' || !otherTime);
-
-  // Animate fade-in for list
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   const renderTimeOption = ({ item }) => {
     if (item.minutes === 'other') {
@@ -41,22 +30,27 @@ export default function SetGoalScreen({ navigation, route }) {
             placeholder="Enter custom time (min)"
             placeholderTextColor="#666"
             value={otherTime}
-            onChangeText={setOtherTime}
+            onChangeText={(text) => {
+              setOtherTime(text);
+              setSelectedTime(null); // Clear selectedTime when typing custom time
+            }}
             keyboardType="numeric"
             accessibilityLabel="Enter custom learning time in minutes"
+            accessibilityHint="Type the number of minutes for your custom learning goal"
           />
         </View>
       );
     }
     return (
       <TouchableOpacity
-        accessibilityLabel={`Select ${item.label} learning time`}
-        accessibilityRole="button"
         style={[
           styles.timeOption,
           selectedTime?.id === item.id && styles.selectedTime,
         ]}
-        onPress={() => setSelectedTime(item)}
+        onPress={() => {
+          setSelectedTime(item);
+          setOtherTime(''); // Clear custom time when selecting predefined option
+        }}
       >
         <Text style={styles.timeText}>{item.label}</Text>
       </TouchableOpacity>
@@ -64,47 +58,42 @@ export default function SetGoalScreen({ navigation, route }) {
   };
 
   const handleGetStartedPress = () => {
-    if (selectedTime || otherTime) {
-      const finalTime = selectedTime?.minutes || (otherTime ? parseInt(otherTime, 10) : null);
-      if (finalTime) {
-        navigation.navigate('Home', { selectedTime: finalTime, selectedLanguage });
-      }
+    const finalTime = selectedTime?.minutes !== 'other' 
+      ? selectedTime?.minutes 
+      : (otherTime ? parseInt(otherTime, 10) : null);
+    if (finalTime) {
+      navigation.navigate('LanguageSelectionScreen', { selectedTime: finalTime, selectedLanguage });
     }
   };
 
   return (
-    <View style={[styles.gradientBackground, { backgroundColor: colors.screenBackground }]}>
-      <View style={globalStyles.screenContainer}>
-        {/* Header with Back Arrow and Progress Bars */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('LanguageSelectionScreen')}
-            style={styles.backButton}
-            accessibilityLabel="Go back to Language Selection"
-          >
-            <View style={styles.backButtonBackground}>
-              <Ionicons name="arrow-back" size={24} color={colors.primaryText} />
-            </View>
-          </TouchableOpacity>
-          <View style={styles.progressBars}>
-            <View style={styles.progressBar}>
-              <Text style={styles.progressBarText}>1</Text>
-            </View>
-            <View style={[styles.progressBar, styles.activeBar]}>
-              <Text style={styles.progressBarText}>2</Text>
+    <KeyboardAvoidingView
+      style={styles.gradientBackground}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <View style={[styles.gradientBackground, { backgroundColor: colors.screenBackground }]}>
+        <View style={globalStyles.screenContainer}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('LanguageSelectionScreen')}
+              style={styles.backButton}
+            >
+              <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
+            </TouchableOpacity>
+            <View style={styles.progressBars}>
+              <View style={styles.progressBar} />
+              <View style={[styles.progressBar, styles.activeBar]} />
             </View>
           </View>
-        </View>
 
-        <Text style={[globalStyles.screenText, styles.headerText]}>
-          Set your Daily Learning Goal
-        </Text>
-        <Text style={[globalStyles.screenText, styles.subText]}>
-          Choose how much time you can dedicate to learning {selectedLanguage} each day.
-        </Text>
+          <Text style={[globalStyles.screenText, styles.headerText]}>
+            Set your Daily Learning Goal
+          </Text>
+          <Text style={[globalStyles.screenText, styles.subText]}>
+            Choose how much time you can dedicate to learning {selectedLanguage || 'your selected language'} each day.
+          </Text>
 
-        {/* Animated Time Options List */}
-        <Animated.View style={{ opacity: fadeAnim }}>
           <FlatList
             data={displayedTimeOptions}
             renderItem={renderTimeOption}
@@ -112,15 +101,15 @@ export default function SetGoalScreen({ navigation, route }) {
             style={styles.list}
             ListEmptyComponent={<Text style={styles.emptyText}>No time options available</Text>}
           />
-        </Animated.View>
 
-        <Buttons
-          title="Get Started"
-          onPress={handleGetStartedPress}
-          style={{ marginBottom: 20 }}
-        />
+          <Buttons
+            title="Get Started"
+            onPress={handleGetStartedPress}
+            style={{ marginBottom: 20 }}
+          />
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -131,46 +120,34 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: 'transparent', // No gradient, so transparent works with solid background
+    padding: 30,
+    backgroundColor: 'transparent',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   backButton: {
     padding: 5,
-  },
-  backButtonBackground: {
-    backgroundColor: colors.listBarBackground, // #ffffff
-    borderRadius: 20,
-    padding: 8,
-    elevation: 2, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   progressBars: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 10,
+    gap: 15,
   },
   progressBar: {
-    width: 40, // Increased width
-    height: 10, // Increased height
+    width: 80,
+    height: 10,
     backgroundColor: '#ccc',
-    borderRadius: 5, // Adjusted for larger size
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 7.5,
   },
   activeBar: {
-    backgroundColor: colors.primaryBackground, // #313574
-  },
-  progressBarText: {
-    fontSize: 12, // Adjusted for larger bars
-    color: colors.primaryText, // #f0f2f5 for active, #666 for inactive
-    fontWeight: 'bold',
+    backgroundColor: colors.primaryBackground,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 10,
@@ -178,7 +155,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subText: {
-    fontSize: 14,
+    fontSize: 18,
     marginHorizontal: 20,
     marginBottom: 20,
     textAlign: 'center',
@@ -190,32 +167,39 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   timeOption: {
-    backgroundColor: colors.listBarBackground, // #ffffff
+    backgroundColor: colors.listBarBackground,
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
     marginBottom: 10,
-    elevation: 2, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
+    elevation: 2,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   selectedTime: {
-    backgroundColor: colors.primaryBackground, // #313574
+    backgroundColor: colors.primaryBackground,
+    borderWidth: 2,
+    borderColor: colors.primaryText,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   timeText: {
     fontSize: 16,
-    color: colors.listBarText, // #131313
+    color: colors.listBarText,
   },
   otherContainer: {
-    backgroundColor: colors.listBarBackground, // #ffffff
+    backgroundColor: colors.listBarBackground,
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
     marginBottom: 10,
-    elevation: 2, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
+    elevation: 2,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -226,8 +210,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 10,
-    backgroundColor: colors.listBarBackground, // #ffffff
-    color: colors.listBarText, // #131313
+    backgroundColor: colors.listBarBackground,
+    color: colors.listBarText,
     fontSize: 16,
   },
   emptyText: {

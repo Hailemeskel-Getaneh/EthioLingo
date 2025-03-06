@@ -2,9 +2,16 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { colors } from '../styles/globalStyles';
-import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen';
-import SetGoalScreen from '../screens/Profile/SetGoalScreen';
+
+// Placeholder screens (replace with real imports as you build them)
+
+const WelcomeScreen = () => <></>;
+const HomeScreen = () => <></>;
+const LessonScreen = () => <></>;
+const ProgressScreen = () => <></>;
+const SettingsScreen = () => <></>;
 
 const Stack = createStackNavigator();
 
@@ -18,8 +25,16 @@ function AppNavigator() {
           headerShown: false, 
         }}
       >
-        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} />
-        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} />
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={MainTabs}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
