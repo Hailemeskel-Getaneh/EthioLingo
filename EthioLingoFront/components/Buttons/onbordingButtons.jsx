@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#313574',
     marginBottom: 20,
     borderRadius: 20,
-    width: 350,
+    width: 330,
     alignItems: 'center',
   },
   button2: {
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#313574',
-    width: 350,
+    width: 330,
     alignItems: 'center',
   },
   text1: {

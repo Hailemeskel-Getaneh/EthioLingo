@@ -12,7 +12,7 @@ const GetStartedScreen = () => {
         <Text style={styles.description}>Learn a new language, Dive into the world of possibilities in Ethiopia</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <GetButton  onPress={()=> navigation.navigate('LessonScreen')}/>
+        <GetButton  onPress={()=> navigation.navigate('LanguageSelectionScreen')}/>
         <GetButton2  onPress={()=> navigation.navigate('LoginScreen')}/>
       </View>
     </View>
