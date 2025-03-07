@@ -1,5 +1,6 @@
 // /EthioLingoFront/AppNavigator.jsx
 import React from 'react';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -13,6 +14,7 @@ import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignUpScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
+import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
 
 // Placeholder screens
@@ -38,7 +40,7 @@ function LessonDrawerNavigator() {
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerStyle: { width: '70%', backgroundColor: colors.primaryBackground },
+        drawerStyle: { width: '60%', backgroundColor: colors.screenBackground },
       }}
     >
       <Drawer.Screen name="LessonScreen" component={LessonScreen} />
@@ -71,6 +73,8 @@ function AppNavigator() {
         <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} /> 
+
       </Stack.Navigator>
     </NavigationContainer>
   );
