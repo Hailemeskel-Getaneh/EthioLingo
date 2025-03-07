@@ -10,6 +10,11 @@ const ResetPassword = () => {
   const [ConfirmPassword, setConfirmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [error,setError]= useState("false");
+
+ const handleResetPassword = () =>{
+      navigation.navigate('Complate')  
+ }
 
   return (
     <View className="flex-1 bg-white p-6">
@@ -25,7 +30,6 @@ const ResetPassword = () => {
         <Text className="text-gray-600 mt-2 text-center">Please enter the new password</Text>
       </View>
 
-    
       <View>
         <Text className="text-1xl font-bold text-[#313574] mt-5">New Password</Text>
         <View className="relative">
@@ -80,7 +84,7 @@ const ResetPassword = () => {
         </View>
       </View>
        <View className="mt-5 w-full" >
-         <ResetButton2 onPress={()=>navigation.navigate('Complate')}/>
+         <ResetButton2 onPress={handleResetPassword}/>
        </View>
       
     </View>

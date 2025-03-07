@@ -6,13 +6,25 @@ import { VerifyButton } from "../../components/Buttons/onbordingButtons";
 
 const Verfication = () => {
   const navigation = useNavigation();
-  const [code, setCode] = useState(['', '', '', '', '']); // State for the 5 input boxes
+  const [code, setCode] = useState(["", "", "", "", ""]); // State for 5 input boxes
+  const [error, setError] = useState(false); 
 
-  // Function to handle the change in each input box
   const handleChange = (text, index) => {
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
+    setError(false); // Reset error when user types
+  };
+
+  const handleVerfication = () => {
+    if (code.some((digit) => digit.trim() === "")) {
+      setError(true);
+      return;
+    }
+
+    setError(false);
+    // Implement verification logic here
+    navigation.navigate("ResetPassword");
   };
 
   return (
@@ -26,14 +38,13 @@ const Verfication = () => {
 
       <View className="w-full max-w-sm mt-40">
         <Text className="text-2xl font-bold text-[#313574] text-center">
-          Verfication code
+          Verification Code
         </Text>
         <Text className="text-gray-600 mt-2 text-center">
-          Enter the verification code sent on your email 
+          Enter the verification code sent to your email
         </Text>
       </View>
 
-    
       <View className="mt-10 flex flex-row justify-center space-x-2">
         {code.map((value, index) => (
           <TextInput
@@ -44,25 +55,31 @@ const Verfication = () => {
             style={{
               width: 50,
               height: 50,
-              marginLeft:3,
               textAlign: "center",
               fontSize: 24,
               borderWidth: 2,
-              borderColor: "#313574",
+              borderColor: error ? "red" : "#313574", 
               borderRadius: 8,
+              marginLeft:3,
             }}
-            keyboardType="numeric" 
+            keyboardType="numeric"
           />
         ))}
       </View>
 
+      {error && (
+        <Text className="text-red-500 mt-2 text-center">
+          Please check your code.
+        </Text>
+      )}
+
       <View className="mt-20 w-full">
-        <VerifyButton onPress={() => navigation.navigate('ResetPassword')} />
+        <VerifyButton onPress={handleVerfication} />
       </View>
 
       <View className="mt-0 flex flex-row justify-center items-center">
         <Text className="text-gray-600">Didn't receive your code?</Text>
-        <TouchableOpacity >
+        <TouchableOpacity>
           <Text className="text-[#313574] font-semibold ml-1">Resend</Text>
         </TouchableOpacity>
       </View>
