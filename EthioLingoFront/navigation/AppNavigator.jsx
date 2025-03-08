@@ -16,6 +16,7 @@ import SignupScreen from '../screens/Auth/SignUpScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
+import ListeningScreen from '../screens/Lesson/ListeningScreen';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -74,6 +75,7 @@ function AppNavigator() {
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} /> 
+        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} /> 
 
       </Stack.Navigator>
     </NavigationContainer>
