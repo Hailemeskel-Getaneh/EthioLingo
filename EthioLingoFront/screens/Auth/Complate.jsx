@@ -13,10 +13,10 @@ const Complate = () => {
         />
       </View>
 
-      <Text className="text-2xl font-bold text-[#313574] mt-6 text-center">
+      <Text className="text-2xl font-bold text-primaryBackground mt-6 text-center">
         Password Reset Complete
       </Text>
-      <Text className="text-gray-600 text-center mt-2 px-4">
+      <Text className="text-screenText1 text-center mt-2 px-4">
         Good job! Your password has been reset successfully. You are all set to log in with your new password.
       </Text>
       <View  className="mt-48 w-full">

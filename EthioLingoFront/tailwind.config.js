@@ -24,6 +24,7 @@ module.exports = {
         accent3: '#959163',
         accent4: '#d4ac9a',
         accent5: '#e0c4aa',
+        screenText1:"#4B5563",
       },
     },
   },

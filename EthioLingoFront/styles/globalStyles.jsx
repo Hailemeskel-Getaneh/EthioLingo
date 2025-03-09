@@ -8,7 +8,6 @@ export const colors = {
   screenText: '#222469', 
   listBarBackground: '#ffffff', 
   listBarText: '#131313', 
-
   accent1: '#fbfaff',
   accent2: '#70a595',
   accent3: '#959163',

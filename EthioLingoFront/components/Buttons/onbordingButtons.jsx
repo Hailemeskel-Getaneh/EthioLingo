@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { colors, globalStyles } from '../../styles/globalStyles';
 
 export const GetButton = ({onPress}) => {
   return (
@@ -49,14 +50,14 @@ export const Done = ({onPress}) => {
 const styles = StyleSheet.create({
   button1: {
     padding: 15,
-    backgroundColor: '#313574',
+    backgroundColor: colors.primaryBackground,
     marginBottom: 20,
     borderRadius: 8,
     
   },
   button2: {
     padding: 15,
-    backgroundColor: 'white',
+    bbackgroundColor: 'white',
     borderRadius: 8,
     borderWidth: 2,
     borderColor: '#313574',
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   text: {
-    color: '#313574',
+    color: colors.primaryBackground,
     textAlign: 'center',
     fontSize: 16,
     fontWeight: 'bold',

@@ -48,7 +48,7 @@ export default function Login({ navigation }) {
             {rememberMe && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.rememberText}>Remember me</Text>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
