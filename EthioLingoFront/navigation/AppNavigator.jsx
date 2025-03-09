@@ -56,6 +56,7 @@ function LessonDrawerNavigator() {
       <Drawer.Screen name="SendFeedbackScreen" component={SendFeedbackScreen} />
       <Drawer.Screen name="LoginScreen" component={LoginScreen} />
       <Drawer.Screen name="SignupScreen" component={SignupScreen} />
+      
     </Drawer.Navigator>
   );
 }
