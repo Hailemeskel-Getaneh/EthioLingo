@@ -9,6 +9,7 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen.
 import SetGoalScreen from '../screens/Profile/SetGoalScreen.jsx';
 import LessonScreen from '../screens/LessonScreen/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
+import Home from '../screens/Home/HomeScreen.jsx';
 
 const HomeScreen = () => <></>;
 const ProgressScreen = () => <></>;
@@ -29,7 +30,7 @@ function MainTabs() {
         tabBarInactiveTintColor: '#a0a0a0',
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Lessons" component={LessonScreen} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
