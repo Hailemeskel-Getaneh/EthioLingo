@@ -1,36 +1,37 @@
-// /EthioLingoFront/styles/globalStyles.js
 
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-  // Main theme colors
   primaryBackground: '#313574',
   primaryText: '#f0f2f5', 
+  secondaryText:'#212121',
   screenBackground: '#fafafb', 
-  screenText: '#222469', 
+  screenText: '#222469',
+  screenText2: '#060614', 
   listBarBackground: '#ffffff', 
   listBarText: '#131313', 
+  blueColor: '#211C84',
 
-  // Additional colors for icons and accents
+
   accent1: '#fbfaff',
   accent2: '#70a595',
   accent3: '#959163',
   accent4: '#d4ac9a',
   accent5: '#e0c4aa',
+  accent6:'#e1e2f0',
+  accent7:'#f1f2c2',
 };
 
 export const globalStyles = StyleSheet.create({
-  // Base styles for screens
   screenContainer: {
     flex: 1,
     backgroundColor: colors.screenBackground,
   },
   screenText: {
     color: colors.screenText,
-    fontSize: 16,
+    fontSize: 19,
   },
 
-  // Styles for buttons
   primaryButton: {
     backgroundColor: colors.primaryBackground,
     paddingVertical: 12,
@@ -41,11 +42,10 @@ export const globalStyles = StyleSheet.create({
   },
   primaryButtonText: {
     color: colors.primaryText,
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
   },
 
-  // Styles for small horizontal bars (e.g., languages list)
   
   listBar: {
     backgroundColor: colors.listBarBackground,
@@ -56,16 +56,36 @@ export const globalStyles = StyleSheet.create({
   },
   listBarText: {
     color: colors.listBarText,
-    fontSize: 14,
+    fontSize: 23,
     fontWeight: '500',
   },
 
-  // Styles for icons containers (you can use these as background for icons)
   iconContainer: {
     backgroundColor: colors.accent2, 
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.primaryText,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.secondaryText,
+  },
+  button: {
+    borderRadius: 8,
+    padding: 12,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: colors.primaryText,
   },
 });
