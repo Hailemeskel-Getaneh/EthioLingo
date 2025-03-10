@@ -4,6 +4,7 @@ import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
@@ -12,15 +13,15 @@ import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
-import HomeScreen from '../screens/Home/HomeScreen'; // Merged Home/HomeScreen.jsx
+import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
-import ListeningScreen from '../screens/Lesson/ListeningScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
+import ListeningScreen from '../screens/Lesson/ListeningScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
 const SettingsScreen = () => <View><Text>Settings Screen</Text></View>;
-const ProfileScreen = () => <View><Text>Profile Screen</Text></View>;
 const TranslationScreen = () => <View><Text>Translation Screen</Text></View>;
 const WordsHistoryScreen = () => <View><Text>Words History Screen</Text></View>;
 const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
@@ -31,19 +32,16 @@ const PrivacyPolicyScreen = () => <View><Text>Privacy Policy Screen</Text></View
 const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
 
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator;
+const Drawer = createDrawerNavigator();
 
-// Drawer Navigator for Lesson-related screens
+// here is the drawer navigator for LessonScreen
 function LessonDrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerStyle: { 
-          width: '60%', 
-          backgroundColor: colors.screenBackground 
-        },
+        drawerStyle: { width: '60%', backgroundColor: colors.screenBackground },
       }}
     >
       <Drawer.Screen name="LessonScreen" component={LessonScreen} />
@@ -62,76 +60,23 @@ function LessonDrawerNavigator() {
   );
 }
 
-// Main Stack Navigator
+// here is the main Stack Navigator
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen 
-          name="Welcome" 
-          component={WelcomeScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="GetStartedScreen" 
-          component={GetStartedScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LanguageSelectionScreen" 
-          component={LanguageSelectionScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SetGoalScreen" 
-          component={SetGoalScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LoginScreen" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SignupScreen" 
-          component={SignupScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="HomeScreen" 
-          component={HomeScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LessonScreen" 
-          component={LessonDrawerNavigator} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="TopicScreen" 
-          component={TopicScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ListeningScreen" 
-          component={ListeningScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ProfileScreen" 
-          component={ProfileScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ProgressScreen" 
-          component={ProgressScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SettingsScreen" 
-          component={SettingsScreen} 
-          options={{ headerShown: false }} 
-        />
+      <Stack.Navigator initialRouteName="LessonScreen">
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} /> 
+        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} /> 
+
       </Stack.Navigator>
     </NavigationContainer>
   );
