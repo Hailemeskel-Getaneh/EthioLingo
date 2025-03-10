@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
+import GreetingScreen from '../screens/Onboarding/GreetingScreen.jsx'
 import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen';
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
@@ -14,6 +15,13 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignUpScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
+import ForgotPassword from '../screens/Auth/ForgotPassword.jsx'
+import Verfication from '../screens/Auth/Verfication.jsx'
+import ResetPassword from '../screens/Auth/ResetPassword.jsx';
+import Complate from '../screens/Auth/Complate.jsx'
+import UserProfileScreen from '../screens/Profile/UserProfileScreen.jsx';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
+
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -61,9 +69,10 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LessonScreen">
+      <Stack.Navigator initialRouteName="GetStartedScreen">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
@@ -71,6 +80,12 @@ function AppNavigator() {
         <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+        <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
+        <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
+        <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
