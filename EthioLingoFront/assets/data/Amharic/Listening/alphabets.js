@@ -11,5 +11,4 @@ export default [
         { char: 'ሆ', sound: require('../../../audio/Record034.mp3') },
       ],
     },
-    // Add remaining 32 main letters
   ];

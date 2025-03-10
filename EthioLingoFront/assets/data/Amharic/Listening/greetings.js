@@ -1,15 +1,17 @@
-export default [
+export default {
+  title: '1-Greetings',
+  audioFiles: [
     {
-      source: require('../../../audio/Record033.mp3'),
-      correctText: 'how are you?',
-      correctOption: 'ሁሉም',
-      options: ['እንዴት ነህ?', 'እንዴት ነዎት?', 'ሰላም ነው?', 'ሁሉም'],
+      source: require('../../assets/audio/Record033.mp3'),
+      correctText: 'Hello',
+      correctOption: 'ሰላም',
+      options: ['ሰላም', 'እንዴት ነህ?', 'ደህና ነህ?', 'አደርክ'],
     },
     {
-      source: require('../../../audio/Record034.mp3'),
-      correctText: 'Good morning!',
-      correctOption: 'እንደምን አደርክ!',
-      options: ['እንደምሽህ!', 'እንደምን አደርክ!', 'ደህና እደር!'],
+      source: require('../../assets/audio/Record034.mp3'),
+      correctText: 'How are you? (informal)',
+      correctOption: 'እንዴት ነህ?',
+      options: ['እንዴት ነህ?', 'ሰላም', 'እንደምን ነህ?', 'ደህና'],
     },
-    // Add more greetings-related tracks
-  ];
+  ],
+};
