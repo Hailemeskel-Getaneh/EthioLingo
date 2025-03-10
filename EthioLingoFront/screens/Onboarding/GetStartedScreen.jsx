@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { GetButton, GetButton2 } from '../../components/Buttons/onbordingButtons';
+import Button2 from '../../components/Common/onbordingButtons';
+import Button from '../../components/Common/Buttons';
+
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 
@@ -12,8 +14,12 @@ const GetStartedScreen = () => {
         <Text style={styles.description}>Learn a new language, Dive into the world of possibilities in Ethiopia</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <GetButton  onPress={()=> navigation.navigate('LanguageSelectionScreen')}/>
-        <GetButton2  onPress={()=> navigation.navigate('LoginScreen')}/>
+        <Button
+        title="GetStarted"
+          onPress={()=> navigation.navigate('LanguageSelectionScreen')}/>
+        <Button2 
+         title="I already have an account"
+         onPress={()=> navigation.navigate('LoginScreen')}/>
       </View>
     </View>
   );
