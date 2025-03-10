@@ -35,10 +35,24 @@ export const globalStyles = StyleSheet.create({
   },
   primaryButtonText: {
     color: colors.primaryText,
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-
+secondaryButton:{
+  backgroundColor: "white",
+  paddingVertical: 12,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderWidth: 2,
+  borderColor:colors.primaryBackground,
+},
+secondaryButtonText:{
+  color: colors.primaryBackground,
+  fontSize: 16,
+  fontWeight: 'bold',
+},
   
   listBar: {
     backgroundColor: colors.listBarBackground,
