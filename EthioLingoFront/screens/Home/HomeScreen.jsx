@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
 import { ProgressBar } from '../../components/Progress/ProgressBar';
 
@@ -19,6 +20,7 @@ const ProgressCard = ({ title, percentage, icon }) => (
 );
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('Amharic');
 
@@ -98,7 +100,7 @@ const HomeScreen = () => {
               
             </View>
             <Text className="text-white/50 text-xs mt-1">Last practiced 3 days ago</Text>
-            <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start">
+            <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start" onPress={() => navigation.navigate('Lessons')}>
               <Text className="text-white">Continue</Text>
             </TouchableOpacity>
           </View>
@@ -114,32 +116,34 @@ const HomeScreen = () => {
       <View className="p-4">
         <Text className="text-lg font-bold mb-4">My Progress</Text>
         <View style={styles.gridContainer}>
-          <View style={styles.gridItem}>
-            <ProgressCard 
-              title="Speaking" 
-              percentage={90} 
-              icon={require('../../assets/icons/reading-book.png')} 
-            />
-          </View>
-          <View style={styles.gridItem}>
+        <View style={styles.gridItem}>
             <ProgressCard 
               title="Reading" 
-              percentage={30} 
+              percentage={60} 
               icon={require('../../assets/icons/reading-book.png')} 
             />
           </View>
           <View style={styles.gridItem}>
             <ProgressCard 
               title="Listening" 
-              percentage={40} 
-              icon={require('../../assets/icons/reading-book.png')} 
+              percentage={90} 
+              icon={require('../../assets/icons/listening.png')} 
             />
           </View>
           <View style={styles.gridItem}>
             <ProgressCard 
+              title="Speaking" 
+              percentage={20} 
+              icon={require('../../assets/icons/speaking.png')} 
+            />
+          </View>
+          
+         
+          <View style={styles.gridItem}>
+            <ProgressCard 
               title="Writing" 
-              percentage={50} 
-              icon={require('../../assets/icons/reading-book.png')} 
+              percentage={40} 
+              icon={require('../../assets/icons/writing.png')} 
             />
           </View>
         </View>
