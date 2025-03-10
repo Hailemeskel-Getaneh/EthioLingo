@@ -1,6 +1,6 @@
 // /EthioLingoFront/screens/Lesson/LessonScreen.jsx
 import React from 'react';
-import { View } from 'react-native';
+import { View , StatusBar} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import LessonHeader from '../../components/Lesson/LessonHeader';
@@ -24,7 +24,7 @@ export default function LessonScreen() {
 
   return (
     <View className="flex-1 bg-screenBackground">
-
+<StatusBar backgroundColor="#313574" />
       <View className="flex-1">
         <LessonHeader navigation={navigation} />
         <LessonLearningTopics topics={learningTopics} />
