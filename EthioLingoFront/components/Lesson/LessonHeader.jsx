@@ -11,7 +11,7 @@ export default function LessonHeader({ navigation }) {
   return (
     <View className="bg-primaryBackground mt-4 rounded-b-3xl">
       <View className="flex-row items-center px-4 pt-8 pb-2">
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
           <Image
             source={SampleProfileImage}
             className="w-10 h-10 rounded-full mr-3"

@@ -7,6 +7,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
+import GreetingScreen from '../screens/Onboarding/GreetingScreen.jsx'
 import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen';
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
@@ -16,6 +17,13 @@ import HomeScreen from '../screens/Home/HomeScreen'; // Merged Home/HomeScreen.j
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import ListeningScreen from '../screens/Lesson/ListeningScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
+import ForgotPassword from '../screens/Auth/ForgotPassword.jsx'
+import Verfication from '../screens/Auth/Verfication.jsx'
+import ResetPassword from '../screens/Auth/ResetPassword.jsx';
+import Complate from '../screens/Auth/Complate.jsx'
+import UserProfileScreen from '../screens/Profile/UserProfileScreen.jsx';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
+
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -66,75 +74,25 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen 
-          name="Welcome" 
-          component={WelcomeScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="GetStartedScreen" 
-          component={GetStartedScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LanguageSelectionScreen" 
-          component={LanguageSelectionScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SetGoalScreen" 
-          component={SetGoalScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LoginScreen" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SignupScreen" 
-          component={SignupScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="HomeScreen" 
-          component={HomeScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="LessonScreen" 
-          component={LessonDrawerNavigator} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="TopicScreen" 
-          component={TopicScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ListeningScreen" 
-          component={ListeningScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ProfileScreen" 
-          component={ProfileScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="ProgressScreen" 
-          component={ProgressScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="SettingsScreen" 
-          component={SettingsScreen} 
-          options={{ headerShown: false }} 
-        />
+      <Stack.Navigator initialRouteName="GetStartedScreen">
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+        <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
+        <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
+        <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
 export default AppNavigator;
