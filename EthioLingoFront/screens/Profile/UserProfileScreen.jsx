@@ -1,6 +1,6 @@
 import React from 'react';
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { Text, View, Image,StatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar'; 
@@ -13,8 +13,10 @@ const UserProfileScreen  = () => {
 
     return (
         <View className="flex-1 bg-white">
+            <StatusBar backgroundColor="white" />
+            
             <View className="p-6">
-                <View className="mt-10 flex-row justify-between items-center">
+                <View className=" flex-row justify-between items-center">
                     <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
                     <View className="flex-row space-x-10">
                         <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
@@ -73,7 +75,7 @@ const UserProfileScreen  = () => {
                 </View>
             </View>
             <View className=" pt-8 mt-40">
-                <LessonNavigationBar />
+               <LessonNavigationBar navigation={navigation} />
             </View>
         </View>
     );

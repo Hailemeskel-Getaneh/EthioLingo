@@ -28,7 +28,6 @@ import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
 const SettingsScreen = () => <View><Text>Settings Screen</Text></View>;
-const ProfileScreen = () => <View><Text>Profile Screen</Text></View>;
 const TranslationScreen = () => <View><Text>Translation Screen</Text></View>;
 const WordsHistoryScreen = () => <View><Text>Words History Screen</Text></View>;
 const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
@@ -39,7 +38,7 @@ const PrivacyPolicyScreen = () => <View><Text>Privacy Policy Screen</Text></View
 const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
 
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator;
+const Drawer = createDrawerNavigator();
 
 // Drawer Navigator for Lesson-related screens
 function LessonDrawerNavigator() {
@@ -55,7 +54,6 @@ function LessonDrawerNavigator() {
       }}
     >
       <Drawer.Screen name="LessonScreen" component={LessonScreen} />
-      <Drawer.Screen name="ProfileScreen" component={ProfileScreen} />
       <Drawer.Screen name="TranslationScreen" component={TranslationScreen} />
       <Drawer.Screen name="WordsHistoryScreen" component={WordsHistoryScreen} />
       <Drawer.Screen name="FAQScreen" component={FAQScreen} />
@@ -83,7 +81,6 @@ function AppNavigator() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
         <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
@@ -91,6 +88,9 @@ function AppNavigator() {
         <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
         <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

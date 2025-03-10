@@ -26,7 +26,7 @@ module.exports = {
         accent6:'#e1e2f0',
         accent7:'#f1f2c2',
         lightBlue: '#ADD8E6',
-        lightRed: '#FF6666'
+        lightRed: '#FF6666',
         screenText1:"#4B5563",
       },
     },
