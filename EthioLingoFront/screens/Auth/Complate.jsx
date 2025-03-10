@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, View, Text } from 'react-native';
-import {Done} from '../../components/Buttons/onbordingButtons'
+import Button from "../../components/Common/Buttons";
 
 const Complate = () => {
   return (
@@ -20,7 +20,9 @@ const Complate = () => {
         Good job! Your password has been reset successfully. You are all set to log in with your new password.
       </Text>
       <View  className="mt-48 w-full">
-        <Done/>
+      <Button
+         title="Done"
+        />
       </View>
     </View>
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { ResetButton } from "../../components/Buttons/onbordingButtons";
+import Button from "../../components/Common/Buttons";
 import {colors} from '../../styles/globalStyles'
 
 const ForgotPassword = () => {
@@ -62,7 +62,9 @@ const ForgotPassword = () => {
       </View>
 
       <View className="mt-20 w-full">
-        <ResetButton onPress={handlePasswordReset} />
+        <Button
+         title="send"
+         onPress={handlePasswordReset} />
       </View>
 
       <View className="mt-0 flex flex-row justify-center items-center">

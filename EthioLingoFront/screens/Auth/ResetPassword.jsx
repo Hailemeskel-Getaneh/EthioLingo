@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
-import { ResetButton2 } from '../../components/Buttons/onbordingButtons';
 import {colors} from '../../styles/globalStyles'
+import Button from "../../components/Common/Buttons";
 const ResetPassword = () => {
   const navigation = useNavigation();
   const [Password, setPassword] = useState('');
@@ -84,7 +84,9 @@ const ResetPassword = () => {
         </View>
       </View>
        <View className="mt-5 w-full" >
-         <ResetButton2 onPress={handleResetPassword}/>
+         <Button
+          title="Sumbit"
+          onPress={handleResetPassword}/>
        </View>
       
     </View>

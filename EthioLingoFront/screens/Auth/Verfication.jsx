@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { VerifyButton } from "../../components/Buttons/onbordingButtons";
 import {colors} from '../../styles/globalStyles'
+import Button from "../../components/Common/Buttons";
 const Verfication = () => {
   const navigation = useNavigation();
   const [code, setCode] = useState(["", "", "", "", ""]); // State for 5 input boxes
@@ -74,7 +74,10 @@ const Verfication = () => {
       )}
 
       <View className="mt-20 w-full">
-        <VerifyButton onPress={handleVerfication} />
+        <Button
+         title="verify"
+         onPress={handleVerfication}
+          />
       </View>
 
       <View className="mt-0 flex flex-row justify-center items-center">
