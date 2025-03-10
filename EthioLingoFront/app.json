@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "EthioLingoFront",
+    "slug": "EthioLingoFront",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/e.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/e.jpg",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    
+    "permissions": ["RECORD_AUDIO"]
+ ,
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}

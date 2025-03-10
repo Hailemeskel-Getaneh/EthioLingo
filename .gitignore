@@ -1,0 +1,63 @@
+# Environment Variables
+.env                    # Ignores .env in the root (frontend API keys)
+backend/config/.env     # Ignores .env in backend/config (backend API keys)
+
+# Node.js
+node_modules/           # Dependency folders
+*.log                   # Log files
+npm-debug.log*          # npm debug logs
+yarn-debug.log*         # Yarn debug logs
+yarn-error.log*
+
+# Expo
+.expo/                  # Expo temporary files
+dist/                   # Expo build output
+web-build/              # Expo web build output
+
+# Build Outputs
+*.apk                   # Android APK files
+*.ipa                   # iOS IPA files
+
+# OS Files
+.DS_Store               # macOS thumbnail files
+Thumbs.db               # Windows thumbnail files
+
+# Editor Files
+.vscode/                # VS Code settings
+*.swp                   # Vim swap files
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
