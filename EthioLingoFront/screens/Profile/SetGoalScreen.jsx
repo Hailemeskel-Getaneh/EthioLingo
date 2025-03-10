@@ -101,12 +101,13 @@ export default function SetGoalScreen({ navigation, route }) {
             style={styles.list}
             ListEmptyComponent={<Text style={styles.emptyText}>No time options available</Text>}
           />
-
-          <Buttons
+         <View style={styles.buttonContainer}>
+           <Buttons
             title="Get Started"
             onPress={handleGetStartedPress}
             style={{ marginBottom: 20 }}
           />
+           </View>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -218,5 +219,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#666',
     marginTop: 20,
+  },
+  buttonContainer: {
+    padding: 20,
   },
 });

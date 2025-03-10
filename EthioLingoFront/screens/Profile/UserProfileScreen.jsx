@@ -3,9 +3,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
-import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
+import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar'; 
+import {colors} from '../../styles/globalStyles'
 
-const UserProfile = () => {
+const UserProfileScreen  = () => {
     const navigation= useNavigation();
     const progress = 30; // 30% progress
   
@@ -14,10 +15,10 @@ const UserProfile = () => {
         <View className="flex-1 bg-white">
             <View className="p-6">
                 <View className="mt-10 flex-row justify-between items-center">
-                    <Text className="text-lg font-bold text-[#313574] text-center">Profile</Text>
+                    <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
                     <View className="flex-row space-x-10">
-                        <Ionicons name="notifications" size={24} color="#313574" />
-                        <Ionicons name="settings" size={24} color="#313574" />
+                        <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+                        <Ionicons name="settings" size={24} color={colors.primaryBackground} />
                     </View>
                 </View>
 
@@ -25,23 +26,23 @@ const UserProfile = () => {
                     <View className="relative">
                         <Image
                             source={require('../../assets/images/SampleProfileImage.png')}
-                            className="w-24 h-24 rounded-full border-2 border-[#313574]"
+                            className="w-24 h-24 rounded-full border-2 border-primaryBackground"
                         />
                         <TouchableOpacity 
-                        onPress={()=> navigation.navigate('EditProfile')}
-                        className="absolute bottom-0 right-0 bg-[#313574] p-1 rounded-full border border-gray-300">
+                        onPress={()=> navigation.navigate('EditProfileScreen')}
+                        className="absolute bottom-0 right-0 bg-primaryBackground p-1 rounded-full border border-gray-300">
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-gray-600 mt-2 text-center">username</Text>
-                    <Text className="text-gray-600 mt-2 text-center">Language</Text>
+                    <Text className="text-screenText1 mt-2 text-center">username</Text>
+                    <Text className="text-screenText1 mt-2 text-center">Language</Text>
                 </View>
 
-                <View className="mt-6 w-full p-4 border-2 border-[#313574] rounded-lg">
-                    <Text className="text-lg font-bold text-[#313574]">Learning Progress</Text>
+                <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
+                    <Text className="text-lg font-bold text-primaryBackground ">Learning Progress</Text>
                     <View className="flex flex-row items-center space-x-8 mt-2">
                         <View className="w-80 h-2 bg-gray-300 rounded-md overflow-hidden">
-                            <View className="h-full bg-[#313574]" style={{ width: `${progress}%` }} />
+                            <View className="h-full bg-primaryBackground" style={{ width: `${progress}%` }} />
                         </View>
                         <Progress.Circle
                             size={45}
@@ -55,18 +56,18 @@ const UserProfile = () => {
                             formatText={() => `${progress}%`} 
                         />
                     </View>
-                    <Text className="text-gray-600 mt-2">You completed 3 Chapters.</Text>
+                    <Text className="text-screenText1 mt-2">You completed 3 Chapters.</Text>
                 </View>
 
-                <Text className="text-lg font-bold mt-5 text-[#313574]">Achievements</Text>
+                <Text className="text-lg font-bold mt-5 text-primaryBackground">Achievements</Text>
                 <View className="mt-6 bg-gray-200 rounded-lg p-6">
                     <View className="mt-2 flex flex-row justify-between">
-                        <Text className="text-gray-600 font-bold">Records</Text>
+                        <Text className="text-screenText1 font-bold">Records</Text>
                         <Ionicons name="heart" size={16} color="red" />
                     </View>
-                    <View className="w-full h-[1px] bg-[#313574] my-2" />
+                    <View className="w-full h-[1px] bg-primaryBackground my-2" />
                     <View className="mt-2 flex flex-row justify-between">
-                        <Text className="text-gray-600 font-bold">Points</Text>
+                        <Text className="text-screenText1 font-bold">Points</Text>
                         <Ionicons name="heart" size={16} color="red" />
                     </View>
                 </View>
@@ -78,4 +79,4 @@ const UserProfile = () => {
     );
 };
 
-export default UserProfile;
+export default UserProfileScreen ;

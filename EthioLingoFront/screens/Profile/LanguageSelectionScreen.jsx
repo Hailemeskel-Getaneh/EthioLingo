@@ -116,12 +116,14 @@ export default function LanguageSelectionScreen({ navigation, route }) {
             ListEmptyComponent={<Text style={styles.emptyText}>No languages found</Text>}
           />
         )}
-
-        <Buttons
+        <View  style={styles.buttonContainer}>
+          <Buttons
           title="Next"
           onPress={handleNextPress}
-          style={{ marginBottom: 20 }}
+          style={{ marginBottom: 20  }}
         />
+        </View>
+        
       </View>
     </View>
   );
@@ -232,5 +234,9 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: '#666',
+
+  },
+  buttonContainer: {
+    padding: 20,
   },
 });
