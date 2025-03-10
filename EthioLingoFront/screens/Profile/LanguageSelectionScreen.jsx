@@ -35,7 +35,7 @@ export default function LanguageSelectionScreen({ navigation, route }) {
   );
 
   const renderLanguageItem = ({ item }) => {
-    console.log('Rendering item:', item);
+    // console.log('Rendering item:', item);
     return (
       <TouchableOpacity
         accessibilityLabel={`Select ${item.name} language`}

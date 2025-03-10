@@ -1,9 +1,9 @@
 // /EthioLingoFront/AppNavigator.jsx
 import React from 'react';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
@@ -12,8 +12,10 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen'
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import SignupScreen from '../screens/Auth/SignUpScreen';
-import HomeScreen from '../screens/Home/HomeScreen';
+import SignupScreen from '../screens/Auth/SignupScreen';
+import HomeScreen from '../screens/Home/HomeScreen'; // Merged Home/HomeScreen.jsx
+import TopicScreen from '../screens/Lesson/TopicScreen';
+import ListeningScreen from '../screens/Lesson/ListeningScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
 import ForgotPassword from '../screens/Auth/ForgotPassword.jsx'
 import Verfication from '../screens/Auth/Verfication.jsx'
@@ -26,7 +28,6 @@ import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
 const SettingsScreen = () => <View><Text>Settings Screen</Text></View>;
-const ProfileScreen = () => <View><Text>Profile Screen</Text></View>;
 const TranslationScreen = () => <View><Text>Translation Screen</Text></View>;
 const WordsHistoryScreen = () => <View><Text>Words History Screen</Text></View>;
 const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
@@ -39,18 +40,20 @@ const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-// here is the drawer navigator for LessonScreen
+// Drawer Navigator for Lesson-related screens
 function LessonDrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerStyle: { width: '70%', backgroundColor: colors.primaryBackground },
+        drawerStyle: { 
+          width: '60%', 
+          backgroundColor: colors.screenBackground 
+        },
       }}
     >
       <Drawer.Screen name="LessonScreen" component={LessonScreen} />
-      <Drawer.Screen name="ProfileScreen" component={ProfileScreen} />
       <Drawer.Screen name="TranslationScreen" component={TranslationScreen} />
       <Drawer.Screen name="WordsHistoryScreen" component={WordsHistoryScreen} />
       <Drawer.Screen name="FAQScreen" component={FAQScreen} />
@@ -65,7 +68,7 @@ function LessonDrawerNavigator() {
   );
 }
 
-// here is the main Stack Navigator
+// Main Stack Navigator
 function AppNavigator() {
   return (
     <NavigationContainer>
@@ -78,7 +81,6 @@ function AppNavigator() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
         <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
@@ -86,6 +88,9 @@ function AppNavigator() {
         <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
         <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

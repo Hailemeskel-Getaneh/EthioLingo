@@ -8,8 +8,8 @@ export default function LessonSearchBar() {
   return (
     <View className="px-4 py-2">
       <TextInput
-        className="bg-listBarBackground text-listBarText text-base p-3 rounded-lg border border-gray-300"
-        placeholder="Search here for their learning topic easily"
+        className="bg-listBarBackground text-listBarText w-full text-base p-3 rounded-lg border border-gray-300"
+        placeholder="Search here for learning topic easily ..."
         placeholderTextColor="#666"
       />
     </View>

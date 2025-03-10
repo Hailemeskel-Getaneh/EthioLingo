@@ -4,15 +4,21 @@ import { StyleSheet } from 'react-native';
 export const colors = {
   primaryBackground: '#313574',
   primaryText: '#f0f2f5', 
+  secondaryText:'#212121',
   screenBackground: '#fafafb', 
-  screenText: '#222469', 
+  screenText: '#222469',
+  screenText2: '#060614', 
   listBarBackground: '#ffffff', 
   listBarText: '#131313', 
+  blueColor: '#211C84',
+
   accent1: '#fbfaff',
   accent2: '#70a595',
   accent3: '#959163',
   accent4: '#d4ac9a',
   accent5: '#e0c4aa',
+  accent6:'#e1e2f0',
+  accent7:'#f1f2c2',
 };
 
 export const globalStyles = StyleSheet.create({
@@ -73,5 +79,26 @@ secondaryButtonText:{
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.primaryText,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.secondaryText,
+  },
+  button: {
+    borderRadius: 8,
+    padding: 12,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: colors.primaryText,
   },
 });

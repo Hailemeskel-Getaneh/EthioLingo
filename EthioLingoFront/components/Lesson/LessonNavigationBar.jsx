@@ -16,7 +16,7 @@ export default function LessonNavigationBar({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('ProgressScreen')}>
         <Ionicons name="trending-up" size={24} color={colors.primaryText} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
+      <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
         <Ionicons name="settings" size={24} color={colors.primaryText} />
       </TouchableOpacity>
     </View>

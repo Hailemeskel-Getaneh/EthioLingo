@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    // Include all files in all directories
     "./**/*.{js,jsx,ts,tsx}",
-    // Explicitly exclude node_modules
     "!**/node_modules/**"
   ],
   presets: [require("nativewind/preset")],
@@ -15,6 +13,7 @@ module.exports = {
       colors: {
         primaryBackground: '#313574',
         primaryText: '#f0f2f5',
+        secondaryText:'#212121',
         screenBackground: '#fafafb',
         screenText: '#222469',
         listBarBackground: '#ffffff',
@@ -24,6 +23,10 @@ module.exports = {
         accent3: '#959163',
         accent4: '#d4ac9a',
         accent5: '#e0c4aa',
+        accent6:'#e1e2f0',
+        accent7:'#f1f2c2',
+        lightBlue: '#ADD8E6',
+        lightRed: '#FF6666',
         screenText1:"#4B5563",
       },
     },
