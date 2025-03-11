@@ -28,6 +28,7 @@ module.exports = {
         lightBlue: '#ADD8E6',
         lightRed: '#FF6666',
         screenText1:"#4B5563",
+        homeBackground:"#8257fe"
       },
     },
   },
