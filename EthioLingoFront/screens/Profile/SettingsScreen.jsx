@@ -12,7 +12,7 @@ const SettingScreen = () => {
 
     return (
         <View className="flex-1 bg-white p-6">
-          <View className="flex-row items-center  justify-between mt-6 ">
+          <View className="flex-row items-center  justify-between mt-4 ">
             <TouchableOpacity onPress={() => navigation.navigate("UserProfileScreen")}>
            <View className="flex-row items-center ">
           <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
@@ -20,7 +20,7 @@ const SettingScreen = () => {
           <Text className="text-xl font-bold text-primaryBackground ml-2">Back</Text>
           </View>
         </TouchableOpacity>
-            <Text className="text-xl font-bold  mb-4 text-primaryBackground">Settings</Text>
+            <Text className="text-xl font-bold   text-primaryBackground">Settings</Text>
             </View>
             <View className="flex-row justify-between items-center py-3 border-b ">
                 <Text className="text-xl text-primaryBackground font-bold">Dark Mode</Text>
