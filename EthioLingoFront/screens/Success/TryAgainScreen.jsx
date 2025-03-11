@@ -23,9 +23,7 @@ const ExcellentScreen = ({ route }) => {
                 source={require('../../assets/images/sadEmoji.png')}
                 className="w-32 h-32 mt-6"
                 resizeMode="contain"
-            />
-
-            
+            /> 
             <Text className="text-xl font-bold text-primaryBackground mt-4">{lessonTopic}</Text>
             <Text className="text-screenText1 mt-4">Speaking</Text>
             <Text className="text-screenText1 mt-4">Level faild!</Text>
@@ -41,8 +39,7 @@ const ExcellentScreen = ({ route }) => {
             <PlayButton
             title="🔄 Retry"
             onPress={() => navigation.navigate('ExcellentScreen')} />
-            </View>
-            
+            </View>    
             </View>
         </View>
     );

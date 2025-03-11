@@ -39,7 +39,7 @@ const ExcellentScreen = ({ route }) => {
             <View  className="mt-8" >
             <PlayButton
             title="▶ Play"
-            onPress={() => navigation.navigate('TryAgainScreen')} />
+            onPress={() => navigation.navigate('LevelCompletScreen')} />
             </View>
             
             </View>
