@@ -1,11 +1,9 @@
-// /EthioLingoFront/screens/Lesson/ListeningScreen.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 
-const ListeningScreen = React.memo(({ route }) => {
-  const topic = route?.params?.topic || { title: 'Default Topic' };
+const ListeningScreen = React.memo(({ topic, data }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,76 +14,15 @@ const ListeningScreen = React.memo(({ route }) => {
   const [error, setError] = useState(null);
   const [answerStatuses, setAnswerStatuses] = useState({});
 
-  const audioTracks = [
-    {
-      source: require('../../assets/audio/Record033.mp3'),
-      correctText: 'how are you?',
-      correctOption: "ሁሉም",
-      options: ["እንዴት ነህ?", "እንዴት ነዎት?", "ሰላም ነው?", "ሁሉም"],
-    },
-    {
-      source: require('../../assets/audio/Record034.mp3'),
-      correctText: 'Good morning!',
-      correctOption: "እንደምን አደርክ!",
-      options: ["እንደምሽህ!", "እንደምን አደርክ!", "ደህና እደር!"],
-    },
-    {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'Good evening!',
-        correctOption: "እንደምሽህ!",
-        options: ["እንደምሽህ!", "እንደምን አደርክ!", "ደህና እደር!"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'Good night!',
-        correctOption: "ደህና እደር!",
-        options: ["እንደምሽህ!", "እንደምን አደርክ!", "ደህና እደር!"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'How are you? (formal)',
-        correctOption: "እንዴት ነዎት?",
-        options: ["እንዴት ነዎት?", "እንዴት ነህ?", "ሰላም ነው?"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'How are you? (informal)',
-        correctOption: "እንዴት ነህ?",
-        options: ["እንዴት ነዎት?", "እንዴት ነህ?", "ሰላም ነው?"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'Are you at peace?',
-        correctOption: "ሰላም ነው?",
-        options: ["እንዴት ነዎት?", "እንዴት ነህ?", "ሰላም ነው?"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'I like to write books.',
-        correctOption: "መጽሐፍትን መጻፍ እወዳለሁ።",
-        options: ["መጽሐፍትን መጻፍ እወዳለሁ።", "መጽሐፍትን ማንበብ አልወድም።", "መጽሐፍትን ማንበብ እወዳለሁ።"],
-      },
-      {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'I dislike reading books.',
-        correctOption: "መጽሐፍትን ማንበብ አልወድም።",
-        options: ["መጽሐፍትን መጻፍ እወዳለሁ።", "መጽሐፍትን ማንበብ አልወድም።", "መጽሐፍትን ማንበብ እወዳለሁ።"],
-      },
-        {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'I like to read books.',
-        correctOption: "መጽሐፍትን ማንበብ እወዳለሁ።",
-        options: ["መጽሐፍትን መጻፍ እወዳለሁ።", "መጽሐፍትን ማንበብ አልወድም።", "መጽሐፍትን ማንበብ እወዳለሁ።"],
-      },
-        {
-        source: require('../../assets/audio/Record034.mp3'),
-        correctText: 'Books read me.',
-        correctOption: "መጽሐፍት ያነቡኛል።",
-        options: ["መጽሐፍት ያነቡኛል።", "መጽሐፍትን ማንበብ አልወድም።", "መጽሐፍትን ማንበብ እወዳለሁ።"],
-      },
-  ];
+  // Use the dynamic data passed via props, falling back to an empty array if undefined
+  const audioTracks = data?.audioFiles || [];
 
-  const currentAudio = audioTracks[currentAudioIndex];
+  const currentAudio = audioTracks[currentAudioIndex] || {
+    source: require('../../assets/audio/Record033.mp3'),
+    correctText: 'No audio available',
+    correctOption: 'N/A',
+    options: ['N/A'],
+  };
 
   useEffect(() => {
     Animated.loop(
@@ -111,7 +48,7 @@ const ListeningScreen = React.memo(({ route }) => {
       if (sound) await sound.unloadAsync();
 
       const { sound: newSound } = await Audio.Sound.createAsync(
-        audioTracks[index].source,
+        audioTracks[index]?.source || require('../../assets/audio/Record033.mp3'),
         { shouldPlay: true, rate: playbackSpeed, shouldCorrectPitch: true }
       );
 
@@ -132,7 +69,7 @@ const ListeningScreen = React.memo(({ route }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [sound, currentAudioIndex, playbackSpeed]);
+  }, [sound, currentAudioIndex, playbackSpeed, audioTracks]);
 
   const handlePlayPause = useCallback(async () => {
     if (!sound) {
@@ -158,7 +95,7 @@ const ListeningScreen = React.memo(({ route }) => {
       }
       await loadAndPlayAudio(currentAudioIndex + 1);
     }
-  }, [currentAudioIndex, loadAndPlayAudio, answerStatuses]);
+  }, [currentAudioIndex, loadAndPlayAudio, answerStatuses, audioTracks.length]);
 
   const handlePrevious = useCallback(async () => {
     if (currentAudioIndex > 0) {

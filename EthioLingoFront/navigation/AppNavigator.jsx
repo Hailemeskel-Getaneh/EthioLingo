@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
-import GreetingScreen from '../screens/Onboarding/GreetingScreen.jsx'
+import GreetingScreen from '../screens/Onboarding/GreetingScreen';
 import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen';
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
@@ -18,14 +18,12 @@ import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
 import ListeningScreen from '../screens/Lesson/ListeningScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
-import ForgotPassword from '../screens/Auth/ForgotPassword.jsx'
-import Verfication from '../screens/Auth/Verfication.jsx'
-import ResetPassword from '../screens/Auth/ResetPassword.jsx';
-import Complate from '../screens/Auth/Complate.jsx'
-import UserProfileScreen from '../screens/Profile/UserProfileScreen.jsx';
-import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
-
+import ForgotPassword from '../screens/Auth/ForgotPassword';
+import Verfication from '../screens/Auth/Verfication';
+import ResetPassword from '../screens/Auth/ResetPassword';
+import Complate from '../screens/Auth/Complate';
+import UserProfileScreen from '../screens/Profile/UserProfileScreen';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -36,13 +34,12 @@ const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
 const FavoriteWordsScreen = () => <View><Text>Favorite Words Screen</Text></View>;
 const ShareScreen = () => <View><Text>Share Screen</Text></View>;
 const RateAppScreen = () => <View><Text>Rate App Screen</Text></View>;
-const PrivacyPolicyScreen = () => <View><Text>Privacy Policy Screen</Text></View>;
+const PrivacyPolicyScreen = () => <View><Text>PrivacyPolicy Screen</Text></View>;
 const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-// here is the drawer navigator for LessonScreen
 function LessonDrawerNavigator() {
   return (
     <Drawer.Navigator
@@ -67,7 +64,6 @@ function LessonDrawerNavigator() {
   );
 }
 
-// here is the main Stack Navigator
 function AppNavigator() {
   return (
     <NavigationContainer>
@@ -90,21 +86,9 @@ function AppNavigator() {
         <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
-      <Stack.Navigator initialRouteName="LessonScreen">
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} /> 
-        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} /> 
-
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 export default AppNavigator;
