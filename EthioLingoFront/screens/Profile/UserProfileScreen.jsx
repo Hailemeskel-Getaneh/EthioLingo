@@ -20,11 +20,14 @@ const UserProfileScreen  = () => {
                     <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
                     <View className="flex-row space-x-10">
                         <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+                        <TouchableOpacity
+                            onPress={()=>navigation.navigate('SettingsScreen')}>
                         <Ionicons name="settings" size={24} color={colors.primaryBackground} />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
-                <View className="justify-center items-center w-full p-4 bg-gray-200 rounded-lg mt-5 relative">
+                <View className="justify-center items-center w-full p-4 bg-homeBackground rounded-lg mt-5 relative">
                     <View className="relative">
                         <Image
                             source={require('../../assets/images/SampleProfileImage.png')}
@@ -36,8 +39,8 @@ const UserProfileScreen  = () => {
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-screenText1 mt-2 text-center">username</Text>
-                    <Text className="text-screenText1 mt-2 text-center">Language</Text>
+                    <Text className="text-primaryText mt-2 text-center">username</Text>
+                    <Text className="text-primaryText mt-2 text-center">Language</Text>
                 </View>
 
                 <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
@@ -62,14 +65,14 @@ const UserProfileScreen  = () => {
                 </View>
 
                 <Text className="text-lg font-bold mt-5 text-primaryBackground">Achievements</Text>
-                <View className="mt-6 bg-gray-200 rounded-lg p-6">
+                <View className="mt-6 bg-homeBackground rounded-lg p-6">
                     <View className="mt-2 flex flex-row justify-between">
-                        <Text className="text-screenText1 font-bold">Records</Text>
+                        <Text className="text-primaryText font-bold">Records</Text>
                         <Ionicons name="heart" size={16} color="red" />
                     </View>
-                    <View className="w-full h-[1px] bg-primaryBackground my-2" />
+                    <View className="w-full h-[1px] bg-primaryText my-2" />
                     <View className="mt-2 flex flex-row justify-between">
-                        <Text className="text-screenText1 font-bold">Points</Text>
+                        <Text className="text-primaryText font-bold">Points</Text>
                         <Ionicons name="heart" size={16} color="red" />
                     </View>
                 </View>
