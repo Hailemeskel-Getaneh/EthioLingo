@@ -18,15 +18,15 @@ const ExcellentScreen = ({ route }) => {
                 <Text className="text-white">❤️ 5</Text>
             </View>
           <View className="items-center justify-center p-8">
-            <Text className="text-green-600 text-2xl font-bold mt-4">Excellent!</Text>
+            <Text className="text-homeBackground text-2xl font-bold mt-4">Excellent!</Text>
             <Image
                 source={require('../../assets/images/happyEmoji.png')}
                 className="w-32 h-32 mt-6"
                 resizeMode="contain"
             />
             <Text className="text-xl font-bold text-primaryBackground mt-4">{lessonTopic}</Text>
-            <Text className="text-gray-600 mt-4">Speaking</Text>
-            <Text className="text-gray-600 mt-4">Level Completed!</Text>
+            <Text className="text-screenText1 mt-4">Speaking</Text>
+            <Text className="text-screenText1 mt-4">Level Completed!</Text>
 
             <StarsRating rating={stars} />
 
@@ -38,7 +38,8 @@ const ExcellentScreen = ({ route }) => {
 
             <View  className="mt-8" >
             <PlayButton
-            onPress={() => navigation.navigate('NextLesson')} />
+            title="▶ Play"
+            onPress={() => navigation.navigate('TryAgainScreen')} />
             </View>
             
             </View>
