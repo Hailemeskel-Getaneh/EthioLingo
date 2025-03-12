@@ -1,4 +1,3 @@
-// /EthioLingoFront/screens/Lesson/SpeakingScreen.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,28 +5,7 @@ import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, globalStyles } from '../../styles/globalStyles';
 
-const speakingExercises = [
-  {
-    id: 1,
-    motherTongueText: 'የት ነህ? (Where are you?)',
-    learningText: 'Where are you?',
-    audioSource: require('../../assets/audio/Record034.mp3'),
-  },
-  {
-    id: 2,
-    motherTongueText: 'ሰላም አደርኩት (I greeted you)',
-    learningText: 'I greeted you',
-    audioSource: require('../../assets/audio/Record033.mp3'),
-  },
-  {
-    id: 3,
-    motherTongueText: 'መጽሐፍ አንብብ (Let’s read a book)',
-    learningText: 'Let’s read a book',
-    audioSource: require('../../assets/audio/Record034.mp3'),
-  },
-];
-
-const SpeakingScreen = React.memo(({ topic }) => {
+const SpeakingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [sound, setSound] = useState(null);
   const [recording, setRecording] = useState(null);
@@ -36,7 +14,14 @@ const SpeakingScreen = React.memo(({ topic }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [answerStatuses, setAnswerStatuses] = useState({});
 
-  const currentExercise = speakingExercises[currentExerciseIndex];
+  // Use the dynamic data passed via props, falling back to an empty array if undefined
+  const speakingExercises = data?.speakingExercises || [];
+
+  const currentExercise = speakingExercises[currentExerciseIndex] || {
+    motherTongueText: 'No exercise available',
+    learningText: 'N/A',
+    audioSource: require('../../assets/audio/Record033.mp3'),
+  };
 
   useEffect(() => {
     return sound
@@ -95,7 +80,7 @@ const SpeakingScreen = React.memo(({ topic }) => {
       if (recording) {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
-        await AsyncStorage.setItem(`speaking_recording_${currentExercise.id}`, uri);
+        await AsyncStorage.setItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`, uri);
         setRecordingUri(uri);
         setIsRecording(false);
         setRecording(null);
@@ -104,7 +89,7 @@ const SpeakingScreen = React.memo(({ topic }) => {
       console.error('Error stopping recording:', error);
       Alert.alert('Error', 'Failed to stop recording.');
     }
-  }, [recording, currentExercise.id]);
+  }, [recording, currentExercise.id, currentExerciseIndex]);
 
   const checkRecording = useCallback(async () => {
     try {
@@ -112,7 +97,7 @@ const SpeakingScreen = React.memo(({ topic }) => {
         Alert.alert('Error', 'Please record your speech first!');
         return;
       }
-      const originalStatus = await sound.getStatusAsync();
+      const originalStatus = await sound?.getStatusAsync() || { durationMillis: 0 };
       const recordedSound = new Audio.Sound();
       await recordedSound.loadAsync({ uri: recordingUri });
       const recordedStatus = await recordedSound.getStatusAsync();
@@ -126,14 +111,14 @@ const SpeakingScreen = React.memo(({ topic }) => {
       }));
       Alert.alert(
         isMatch ? 'Correct!' : 'Wrong!',
-        isMatch ? 'Great job!' : 'The pronunciation did not match.',
+        isMatch ? 'Great job!' : 'The duration doesn’t match the original.',
         [
           { text: 'OK', onPress: () => {} },
         ]
       );
       await recordedSound.unloadAsync();
       // Delete the recording from AsyncStorage after comparison
-      await AsyncStorage.removeItem(`speaking_recording_${currentExercise.id}`);
+      await AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
       setRecordingUri(null);
     } catch (error) {
       console.error('Error checking recording:', error);
@@ -143,12 +128,12 @@ const SpeakingScreen = React.memo(({ topic }) => {
 
   const retryRecording = useCallback(async () => {
     if (recordingUri) {
-      await AsyncStorage.removeItem(`speaking_recording_${currentExercise.id}`);
+      await AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
       setRecordingUri(null);
     }
     setIsRecording(false);
     setRecording(null);
-  }, [recordingUri, currentExercise.id]);
+  }, [recordingUri, currentExercise.id, currentExerciseIndex]);
 
   const handleNext = useCallback(() => {
     if (currentExerciseIndex < speakingExercises.length - 1) {
@@ -162,9 +147,9 @@ const SpeakingScreen = React.memo(({ topic }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setRecordingUri(null);
-      AsyncStorage.removeItem(`speaking_recording_${currentExercise.id}`);
+      AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
     }
-  }, [currentExerciseIndex, answerStatuses, currentExercise.id]);
+  }, [currentExerciseIndex, answerStatuses, currentExercise.id, speakingExercises.length]);
 
   const handleBack = useCallback(() => {
     if (currentExerciseIndex > 0) {
@@ -178,7 +163,7 @@ const SpeakingScreen = React.memo(({ topic }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setRecordingUri(null);
-      AsyncStorage.removeItem(`speaking_recording_${currentExercise.id}`);
+      AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
     }
   }, [currentExerciseIndex, answerStatuses, currentExercise.id]);
 

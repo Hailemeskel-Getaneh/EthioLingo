@@ -1,4 +1,3 @@
-// /EthioLingoFront/screens/Lesson/ReadingScreen.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,46 +5,7 @@ import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, globalStyles } from '../../styles/globalStyles';
 
-const readingExercises = [
-  {
-    id: 1,
-    motherTongueText: `የሰማይ ቀንድ በምሽት ይቀጣል። 
-የአየር ሁኔታ በዚያ ጊዜ መልካም ነው። 
-የአበባዎች ቀጠሮ በዚያ ጊዜ ይጀመራል። 
-የንጹህ ነፋስ የሚመጣው ከምሽቱ ጀምሮ ነው።`,
-    learningText: `The sun sets in the evening. 
-The weather becomes pleasant at that hour. 
-The blooming of flowers begins around then. 
-Fresh breezes start to arrive from the evening onwards.`,
-    audioSource: require('../../assets/audio/Record034.mp3'),
-  },
-  {
-    id: 2,
-    motherTongueText: `ፈረስ በጎርፍ ይኖራል። 
-የእሱ ግድግዳ በተለመደ ነው። 
-የእሱ መንገድ በጎርፍ ዙሪያ ነው።`,
-    learningText: `A horse lives in the stable. 
-Its mane is well-groomed. 
-Its path circles around the stable.`,
-    audioSource: require('../../assets/audio/Record033.mp3'),
-  },
-  {
-    id: 3,
-    motherTongueText: `መጽሐፍትን ማንበብ እወዳለሁ። 
-በቤት ውስጥ መጽሐፍት መጠበቅ አለብኝ። 
-የመጽሐፍ ገፅታዎች መመልከት መዝናኛ ነው። 
-ከመጽሐፍ መንገድ እቅድ መውሰድ አለብኝ። 
-የመጽሐፍ ጥቅም በህይወት ተገቢ ነው።`,
-    learningText: `I like to read books. 
-I need to keep books inside the house. 
-Reading the pages of a book is enjoyable. 
-I should plan my reading schedule. 
-The value of books is significant in life.`,
-    audioSource: require('../../assets/audio/Record034.mp3'),
-  },
-];
-
-const ReadingScreen = React.memo(({ topic }) => {
+const ReadingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [sound, setSound] = useState(null);
   const [recording, setRecording] = useState(null);
@@ -55,7 +15,14 @@ const ReadingScreen = React.memo(({ topic }) => {
   const [feedback, setFeedback] = useState('');
   const [answerStatuses, setAnswerStatuses] = useState({});
 
-  const currentExercise = readingExercises[currentExerciseIndex];
+  // Use the dynamic data passed via props, falling back to an empty array if undefined
+  const readingExercises = data?.readingExercises || [];
+
+  const currentExercise = readingExercises[currentExerciseIndex] || {
+    motherTongueText: 'No exercise available',
+    learningText: 'N/A',
+    audioSource: require('../../assets/audio/Record033.mp3'),
+  };
 
   useEffect(() => {
     return sound
@@ -114,7 +81,7 @@ const ReadingScreen = React.memo(({ topic }) => {
       if (recording) {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
-        await AsyncStorage.setItem(`recording_${currentExercise.id}`, uri);
+        await AsyncStorage.setItem(`recording_${currentExercise.id || currentExerciseIndex}`, uri);
         setRecordingUri(uri);
         setIsRecording(false);
         setRecording(null);
@@ -123,7 +90,7 @@ const ReadingScreen = React.memo(({ topic }) => {
       console.error('Error stopping recording:', error);
       Alert.alert('Error', 'Failed to stop recording.');
     }
-  }, [recording, currentExercise.id]);
+  }, [recording, currentExercise.id, currentExerciseIndex]);
 
   const checkRecording = useCallback(async () => {
     try {
@@ -131,19 +98,19 @@ const ReadingScreen = React.memo(({ topic }) => {
         setFeedback('Please record your reading first!');
         return;
       }
-      const originalStatus = await sound.getStatusAsync();
+      const originalStatus = await sound?.getStatusAsync() || { durationMillis: 0 };
       const recordedSound = new Audio.Sound();
       await recordedSound.loadAsync({ uri: recordingUri });
       const recordedStatus = await recordedSound.getStatusAsync();
       const durationDiff = Math.abs(
         (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0)
       );
-      const isMatch = durationDiff < 1000; // Match if within 1 second
+      const isMatch = durationDiff < 1000; // Match if within 1 second (crude check)
       setAnswerStatuses((prev) => ({
         ...prev,
         [currentExerciseIndex]: isMatch ? 'correct' : 'incorrect',
       }));
-      setFeedback(isMatch ? 'Correct!' : 'Wrong! The duration doesn’t match.');
+      setFeedback(isMatch ? 'Correct!' : 'Wrong! The duration doesn’t match the original.');
       await recordedSound.unloadAsync();
     } catch (error) {
       console.error('Error checking recording:', error);
@@ -163,8 +130,9 @@ const ReadingScreen = React.memo(({ topic }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setFeedback('');
+      setRecordingUri(null); // Clear recording for the next exercise
     }
-  }, [currentExerciseIndex, answerStatuses]);
+  }, [currentExerciseIndex, answerStatuses, readingExercises.length]);
 
   const handleBack = useCallback(() => {
     if (currentExerciseIndex > 0) {
@@ -178,6 +146,7 @@ const ReadingScreen = React.memo(({ topic }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setFeedback('');
+      setRecordingUri(null); // Clear recording for the previous exercise
     }
   }, [currentExerciseIndex, answerStatuses]);
 
@@ -240,18 +209,19 @@ const ReadingScreen = React.memo(({ topic }) => {
         </View>
       </View>
 
-          <TouchableOpacity
-              className={`items-center justify-center w-24 h-16 rounded-full ${isRecording ? 'bg-red-300' : 'bg-white'
-                  } border-2 border-accent1 self-center mb-6`}
-              onPress={isRecording ? stopRecording : startRecording}
-          >
-              <Ionicons
-                  name={isRecording ? 'stop' : 'mic'}
-                  size={30}
-                  color="#313574"
-              />
-              <Text className="text-screenText text-center text-xs mt-1">Hold to record before reading</Text>
-</TouchableOpacity>
+      <TouchableOpacity
+        className={`items-center justify-center w-24 h-16 rounded-full ${
+          isRecording ? 'bg-red-300' : 'bg-white'
+        } border-2 border-accent1 self-center mb-6`}
+        onPress={isRecording ? stopRecording : startRecording}
+      >
+        <Ionicons
+          name={isRecording ? 'stop' : 'mic'}
+          size={30}
+          color="#313574"
+        />
+        <Text className="text-screenText text-center text-xs mt-1">Hold to record before reading</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         className="bg-primaryBackground py-3 px-10 rounded-lg self-center mb-6"

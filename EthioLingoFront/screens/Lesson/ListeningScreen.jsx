@@ -14,7 +14,6 @@ const ListeningScreen = React.memo(({ topic, data }) => {
   const [error, setError] = useState(null);
   const [answerStatuses, setAnswerStatuses] = useState({});
 
-  // Use the dynamic data passed via props, falling back to an empty array if undefined
   const audioTracks = data?.audioFiles || [];
 
   const currentAudio = audioTracks[currentAudioIndex] || {
