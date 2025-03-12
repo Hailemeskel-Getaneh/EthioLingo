@@ -10,8 +10,8 @@ const listeningData = {
   };
   
   const speakingData = {
-    '1-Greetings': require('./Listening/greetings').default,
-    '2-Emergency': require('./Listening/emergency').default,
+    '1-Greetings': require('./Speaking/greetings').default,
+    '2-Emergency': require('./Speaking/emergency').default,
     '3-Number': require('./Listening/number').default,
     '4-Family': require('./Listening/family').default,
     '5-Definite Article': require('./Listening/definiteArticle').default,
@@ -20,8 +20,8 @@ const listeningData = {
   };
   
   const readingData = {
-    '1-Greetings': require('./Listening/greetings').default,
-    '2-Emergency': require('./Listening/emergency').default,
+    '1-Greetings': require('./Reading/greetings').default,
+    '2-Emergency': require('./Reading/emergency').default,
     '3-Number': require('./Listening/number').default,
     '4-Family': require('./Listening/family').default,
     '5-Definite Article': require('./Listening/definiteArticle').default,
@@ -30,8 +30,8 @@ const listeningData = {
   };
   
   const writingData = {
-    '1-Greetings': require('./Listening/greetings').default,
-    '2-Emergency': require('./Listening/emergency').default,
+    '1-Greetings': require('./Writing/greetings').default,
+    '2-Emergency': require('./Writing/emergency').default,
     '3-Number': require('./Listening/number').default,
     '4-Family': require('./Listening/family').default,
     '5-Definite Article': require('./Listening/definiteArticle').default,
