@@ -34,6 +34,16 @@ const SettingScreen = () => {
 
          
             <DeleteAccount className="text-xl" />
+             
+            <View>
+                <TouchableOpacity className="flex-row items-center  justify-between mt-4" 
+                  onPress={()=>navigation.navigate('LoginScreen')}>
+                     <Text className=" font-bold text-error text-xl" >Logout</Text>
+                      <Ionicons name="log-out" size={24} color={colors.error} />        
+             </TouchableOpacity>
+            </View>
+                   
+
         </View>
     );
 };
