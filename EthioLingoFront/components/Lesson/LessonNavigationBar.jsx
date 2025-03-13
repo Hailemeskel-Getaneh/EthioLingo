@@ -17,7 +17,7 @@ export default function LessonNavigationBar({ navigation }) {
         <Ionicons name="trending-up" size={24} color={colors.primaryText} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
-        <Ionicons name="settings" size={24} color={colors.primaryText} />
+        <Ionicons name="person" size={24} color={colors.primaryText} />
       </TouchableOpacity>
     </View>
   );

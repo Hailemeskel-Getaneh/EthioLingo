@@ -12,19 +12,24 @@ const GreetingScreen =()=>{
    }
     return(
     <View className="flex-1 bg-white items-center justify-center p-6">
-        <View className="w-48 h-48">
+        <View className="W-50 h-50 bg-primaryBackground ">
+        <View className="w-96 h-96">
             <Image source={require('../../assets/images/greetingImage.png')}
          className="w-full h-full object-contain"
           resizeMode="contain"
         />
         </View>
-        
-        <Text className="text-2xl font-bold text-primaryBackground mt-6 text-center">welcome to EthioLingo</Text>
+        </View >
+        <View className="absolute bottom-12 w-full items-center">
+        <Text className="text-2xl font-bold text-primaryBackground mt-6 text-center">Welcome To EthioLingo</Text>
         <Text>lets set up your ethiopian language lerning journey</Text>
-        <Button
-         title="continue"
+        <View className="w-full">
+         <Button
+         title="Continue"
          onPress={handleContinue}
         />
+        </View>
+        </View>
     </View>
     )
     
