@@ -7,7 +7,7 @@ export default function Login({ navigation }) {
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = () => {
-   
+    navigation .navigate('HomeScreen')
   };
 
   return (

@@ -8,7 +8,7 @@ export default function SignUp({ navigation }) {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleSignUp = () => {
-    // Handle sign up logic
+    navigation.navigate('GreetingScreen')
   };
 
   return (

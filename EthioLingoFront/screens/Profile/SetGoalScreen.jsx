@@ -62,7 +62,7 @@ export default function SetGoalScreen({ navigation, route }) {
       ? selectedTime?.minutes 
       : (otherTime ? parseInt(otherTime, 10) : null);
     if (finalTime) {
-      navigation.navigate('LessonScreen', { selectedTime: finalTime, selectedLanguage });
+      navigation.navigate('HomeScreen', { selectedTime: finalTime, selectedLanguage });
     }
   };
 

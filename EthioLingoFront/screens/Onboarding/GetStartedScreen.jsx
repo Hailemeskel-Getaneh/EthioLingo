@@ -16,7 +16,7 @@ const GetStartedScreen = () => {
       <View style={styles.buttonContainer}>
         <Button
         title="GetStarted"
-          onPress={()=> navigation.navigate('LanguageSelectionScreen')}/>
+          onPress={()=> navigation.navigate('SignupScreen')}/>
         <Button2 
          title="I already have an account"
          onPress={()=> navigation.navigate('LoginScreen')}/>
