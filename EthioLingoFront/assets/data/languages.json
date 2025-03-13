@@ -1,9 +1,0 @@
-{
-    "languages": [
-      { "code": "am", "name": "Amharic", "script": "Ge’ez" },
-      { "code": "or", "name": "Oromo", "script": "Latin" },
-      { "code": "ti", "name": "Tigrinya", "script": "Ge’ez" },
-      { "code": "so", "name": "Somali", "script": "Latin" },
-      { "code": "wa", "name": "Wolaytta", "script": "Latin" }
-    ]
-  }

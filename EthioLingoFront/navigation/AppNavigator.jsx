@@ -4,26 +4,26 @@ import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
-import GreetingScreen from '../screens/Onboarding/GreetingScreen.jsx'
+import GreetingScreen from '../screens/Onboarding/GreetingScreen';
 import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen';
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
-import HomeScreen from '../screens/Home/HomeScreen'; // Merged Home/HomeScreen.jsx
+import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
-import ListeningScreen from '../screens/Lesson/ListeningScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
-import ForgotPassword from '../screens/Auth/ForgotPassword.jsx'
-import Verfication from '../screens/Auth/Verfication.jsx'
-import ResetPassword from '../screens/Auth/ResetPassword.jsx';
-import Complate from '../screens/Auth/Complate.jsx'
-import UserProfileScreen from '../screens/Profile/UserProfileScreen.jsx';
-import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
-
+import ListeningScreen from '../screens/Lesson/ListeningScreen';
+import ForgotPassword from '../screens/Auth/ForgotPassword';
+import Verfication from '../screens/Auth/Verfication';
+import ResetPassword from '../screens/Auth/ResetPassword';
+import Complate from '../screens/Auth/Complate';
+import UserProfileScreen from '../screens/Profile/UserProfileScreen';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -34,23 +34,19 @@ const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
 const FavoriteWordsScreen = () => <View><Text>Favorite Words Screen</Text></View>;
 const ShareScreen = () => <View><Text>Share Screen</Text></View>;
 const RateAppScreen = () => <View><Text>Rate App Screen</Text></View>;
-const PrivacyPolicyScreen = () => <View><Text>Privacy Policy Screen</Text></View>;
+const PrivacyPolicyScreen = () => <View><Text>PrivacyPolicy Screen</Text></View>;
 const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-// Drawer Navigator for Lesson-related screens
 function LessonDrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerStyle: { 
-          width: '60%', 
-          backgroundColor: colors.screenBackground 
-        },
+        drawerStyle: { width: '60%', backgroundColor: colors.screenBackground },
       }}
     >
       <Drawer.Screen name="LessonScreen" component={LessonScreen} />
@@ -68,7 +64,6 @@ function LessonDrawerNavigator() {
   );
 }
 
-// Main Stack Navigator
 function AppNavigator() {
   return (
     <NavigationContainer>
@@ -95,4 +90,5 @@ function AppNavigator() {
     </NavigationContainer>
   );
 }
+
 export default AppNavigator;

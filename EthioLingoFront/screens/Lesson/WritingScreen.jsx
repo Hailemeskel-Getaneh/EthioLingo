@@ -1,35 +1,27 @@
-// /EthioLingoFront/screens/Lesson/WritingScreen.jsx
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles/globalStyles';
 
-const writingExercises = [
-  {
-    id: 1,
-    motherTongueText: 'የት ነህ? ',
-    equivalentText: 'Where are you?',
-  },
-  {
-    id: 2,
-    motherTongueText: 'ሰላም አደርኩት ',
-    equivalentText: 'I greeted you',
-  },
-  {
-    id: 3,
-    motherTongueText: 'መጽሐፍ አንብብ ',
-    equivalentText: 'read a book',
-  },
-];
-
-const WritingScreen = React.memo(({ topic }) => {
+const WritingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [answerStatuses, setAnswerStatuses] = useState({});
 
-  const currentExercise = writingExercises[currentExerciseIndex];
+  const writingExercises = data?.writingExercises || [];
+
+  const currentExercise = writingExercises[currentExerciseIndex] || {
+    motherTongueText: 'No exercise available',
+    equivalentText: 'N/A',
+  };
 
   const handleCheck = useCallback(() => {
+    if (!userInput.trim()) {
+      Alert.alert('Input Required', 'Please type your answer before checking.', [
+        { text: 'OK' },
+      ]);
+      return;
+    }
     const isCorrect = userInput.trim().toLowerCase() === currentExercise.equivalentText.toLowerCase();
     setAnswerStatuses((prev) => ({
       ...prev,
@@ -39,7 +31,7 @@ const WritingScreen = React.memo(({ topic }) => {
       isCorrect ? 'Correct!' : 'Wrong!',
       isCorrect ? 'Great job!' : `The correct answer is "${currentExercise.equivalentText}".`,
       [
-        { text: 'OK', onPress: () => setUserInput('') }, 
+        { text: 'OK', onPress: () => setUserInput('') },
       ]
     );
   }, [userInput, currentExercise, currentExerciseIndex]);
@@ -55,7 +47,7 @@ const WritingScreen = React.memo(({ topic }) => {
       setCurrentExerciseIndex(currentExerciseIndex + 1);
       setUserInput('');
     }
-  }, [currentExerciseIndex, answerStatuses]);
+  }, [currentExerciseIndex, answerStatuses, writingExercises.length]);
 
   const handleBack = useCallback(() => {
     if (currentExerciseIndex > 0) {
@@ -170,7 +162,6 @@ const WritingScreen = React.memo(({ topic }) => {
           />
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 });
