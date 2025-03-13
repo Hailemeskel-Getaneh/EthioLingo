@@ -13,7 +13,7 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen'
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import SignupScreen from '../screens/Auth/SignupScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
@@ -62,7 +62,7 @@ function LessonDrawerNavigator() {
       <Drawer.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
       <Drawer.Screen name="SendFeedbackScreen" component={SendFeedbackScreen} />
       <Drawer.Screen name="LoginScreen" component={LoginScreen} />
-      <Drawer.Screen name="SignupScreen" component={SignupScreen} />
+      <Drawer.Screen name="SignUpScreen" component={SignUpScreen} />
     </Drawer.Navigator>
   );
 }
@@ -77,7 +77,7 @@ function AppNavigator() {
         <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />

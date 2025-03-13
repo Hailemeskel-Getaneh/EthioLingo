@@ -42,8 +42,6 @@ const SettingScreen = () => {
                       <Ionicons name="log-out" size={24} color={colors.error} />        
              </TouchableOpacity>
             </View>
-                   
-
         </View>
     );
 };
