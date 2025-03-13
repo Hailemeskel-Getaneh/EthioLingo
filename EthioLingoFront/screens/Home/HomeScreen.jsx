@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
 import { ProgressBar } from '../../components/Progress/ProgressBar';
+import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
 
 
 const ProgressCard = ({ title, percentage, icon }) => (
@@ -100,7 +101,7 @@ const HomeScreen = () => {
               
             </View>
             <Text className="text-white/50 text-xs mt-1">Last practiced 3 days ago</Text>
-            <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start" onPress={() => navigation.navigate('Lessons')}>
+            <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start" onPress={() => navigation.navigate('LessonScreen')}>
               <Text className="text-white">Continue</Text>
             </TouchableOpacity>
           </View>
@@ -113,8 +114,9 @@ const HomeScreen = () => {
       </View>
 
       {/* Progress Section */}
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className="p-4">
-        <Text className="text-lg font-bold mb-4">My Progress</Text>
+        <Text className="text-lg font-bold ">My Progress</Text>
         <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
             <ProgressCard 
@@ -137,8 +139,6 @@ const HomeScreen = () => {
               icon={require('../../assets/icons/speaking.png')} 
             />
           </View>
-          
-         
           <View style={styles.gridItem}>
             <ProgressCard 
               title="Writing" 
@@ -146,8 +146,14 @@ const HomeScreen = () => {
               icon={require('../../assets/icons/writing.png')} 
             />
           </View>
+          
         </View>
+       
       </View>
+      </ScrollView>
+        <View className=" ">
+            <LessonNavigationBar navigation={navigation} />
+        </View>
     </View>
   );
 };
