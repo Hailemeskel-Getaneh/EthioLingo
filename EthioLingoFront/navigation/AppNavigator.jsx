@@ -70,7 +70,7 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SettingsScreen">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />

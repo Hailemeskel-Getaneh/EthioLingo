@@ -11,7 +11,7 @@ export const colors = {
   listBarBackground: '#ffffff', 
   listBarText: '#131313', 
   blueColor: '#211C84',
-
+  error:'red',
   accent1: '#fbfaff',
   accent2: '#70a595',
   accent3: '#959163',

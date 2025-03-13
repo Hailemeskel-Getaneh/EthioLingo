@@ -12,9 +12,7 @@ const UserProfileScreen  = () => {
   
 
     return (
-        <View className="flex-1 bg-white">
-            <StatusBar backgroundColor="white" />
-            
+        <View className="flex-1 bg-white">       
             <View className="p-6">
                 <View className=" flex-row justify-between items-center">
                     <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
@@ -26,7 +24,6 @@ const UserProfileScreen  = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-
                 <View className="justify-center items-center w-full p-4 bg-homeBackground rounded-lg mt-5 relative">
                     <View className="relative">
                         <Image
@@ -42,7 +39,6 @@ const UserProfileScreen  = () => {
                     <Text className="text-primaryText mt-2 text-center">username</Text>
                     <Text className="text-primaryText mt-2 text-center">Language</Text>
                 </View>
-
                 <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
                     <Text className="text-lg font-bold text-primaryBackground ">Learning Progress</Text>
                     <View className="flex flex-row items-center space-x-8 mt-2">
@@ -63,7 +59,6 @@ const UserProfileScreen  = () => {
                     </View>
                     <Text className="text-screenText1 mt-2">You completed 3 Chapters.</Text>
                 </View>
-
                 <Text className="text-lg font-bold mt-5 text-primaryBackground">Achievements</Text>
                 <View className="mt-6 bg-homeBackground rounded-lg p-6">
                     <View className="mt-2 flex flex-row justify-between">
