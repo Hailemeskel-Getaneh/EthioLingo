@@ -23,11 +23,14 @@ import ResetPassword from '../screens/Auth/ResetPassword.jsx';
 import Complate from '../screens/Auth/Complate.jsx'
 import UserProfileScreen from '../screens/Profile/UserProfileScreen.jsx';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen.jsx';
+import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
+import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx'
+import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
+import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
 
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
-const SettingsScreen = () => <View><Text>Settings Screen</Text></View>;
 const TranslationScreen = () => <View><Text>Translation Screen</Text></View>;
 const WordsHistoryScreen = () => <View><Text>Words History Screen</Text></View>;
 const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
@@ -72,7 +75,7 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="GetStartedScreen">
+      <Stack.Navigator initialRouteName="SettingsScreen">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -91,6 +94,10 @@ function AppNavigator() {
         <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ExcellentScreen" component={ExcellentScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TryAgainScreen" component={TryAgainScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />      
+        <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
