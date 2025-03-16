@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 16,
-        color: '#3498db',
+        color: '#8257fe',
         marginBottom: 20,
     },
     progressBar: {
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     },
     progress: {
         height: '100%',
-        backgroundColor: '#3498db',
+        backgroundColor: '#8257fe',
     },
 });
 
