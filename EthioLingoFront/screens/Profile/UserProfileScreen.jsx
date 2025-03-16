@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View, Image,StatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Progress from 'react-native-progress';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar'; 
 import {colors} from '../../styles/globalStyles'
+import axios from 'axios';
+import { API_URL } from '@env';
 
 const UserProfileScreen  = () => {
     const navigation= useNavigation();
+    const [profile,setProfile]=useState('');
+
+    const fetchProfileData= async( )=>{
+        try{
+          const response= await axios.get('http:${API_URL}/api/profile',);
+           setProfile(response.data);
+        }
+        catch(err){
+            console.log('Error fetching profile data:', err);
+        }
+    }
+    useEffect(() => {
+        fetchProfileData();
+      }, []);
     const progress = 30; // 30% progress
-  
+
+    if (!profile) {
+        return (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-homeBackground">No profile data available!</Text>
+          </View>
+        );
+      }
 
     return (
         <View className="flex-1 bg-white">       
@@ -36,8 +59,8 @@ const UserProfileScreen  = () => {
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-primaryText mt-2 text-center">username</Text>
-                    <Text className="text-primaryText mt-2 text-center">Language</Text>
+                    <Text className="text-primaryText mt-2 text-center">{username}</Text>
+                    <Text className="text-primaryText mt-2 text-center">{Language}</Text>
                 </View>
                 <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
                     <Text className="text-lg font-bold text-primaryBackground ">Learning Progress</Text>
