@@ -11,13 +11,12 @@ import { v4 as uuidv4 } from 'uuid';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// creating a require function for CommonJS modules
 const require = createRequire(import.meta.url);
 
 const AUDIO_DIR = path.join(__dirname, '../../EthioLingoFront/assets/audio');
 const DATA_DIR = path.join(__dirname, '../../EthioLingoFront/assets/data');
 
-const languages = ['Amharic']; // possible to add others
+const languages = ['Amharic']; 
 const contentTypes = ['Listening'];
 // const contentTypes = ['Listening', 'Reading', 'Speaking', 'Writing'];
 
@@ -75,7 +74,6 @@ const processDataFiles = async () => {
 
         console.log(`Processing file: ${filePath} for lesson: ${lessonName}`);
 
-        // Dynamically require the data file (CommonJS)
         let data;
         try {
           data = require(filePath).default;
@@ -84,10 +82,8 @@ const processDataFiles = async () => {
           continue;
         }
 
-        // Use the user-defined lesson name
         const lessonKey = `${language}-${lessonName}`;
 
-        // Initialize lesson in map if not exists
         if (!lessonsMap.has(lessonKey)) {
           lessonsMap.set(lessonKey, {
             lesson_id: uuidv4(),
@@ -108,9 +104,8 @@ const processDataFiles = async () => {
         // Process audio files based on content type
         if (contentTypeLower === 'listening') {
           for (const audioFile of data.audioFiles || []) {
-            // Extract the file name from the source path (e.g., '../../../audio/Record033.mp3')
-            const sourceStr = audioFile.source?.toString() || ''; // Handle potential undefined or object
-            const fileNameMatch = sourceStr.match(/[^/\\]+\.mp3$/); // Extract file name (e.g., Record033.mp3)
+            const sourceStr = audioFile.source?.toString() || ''; 
+            const fileNameMatch = sourceStr.match(/[^/\\]+\.mp3$/); // extract file name (e.g., Record033.mp3)
             const fileName = fileNameMatch ? fileNameMatch[0] : null;
 
             if (!fileName) {
@@ -187,7 +182,7 @@ const processDataFiles = async () => {
   return Array.from(lessonsMap.values());
 };
 
-// Main function to upload audio and update database
+// main function to upload audio and update database
 const uploadAndUpdateDatabase = async () => {
   try {
     await connectDB();
@@ -198,12 +193,11 @@ const uploadAndUpdateDatabase = async () => {
       return;
     }
 
-    // Comment out deleteMany to preserve existing data
+    //  deleteMany remove the exsting data to prevent duplicating
     await Lesson.deleteMany();
     const result = await Lesson.insertMany(lessons);
     console.log('Audio uploaded and database updated successfully! Inserted documents:', result);
 
-    // Verify data in database
     const savedLessons = await Lesson.find({});
     console.log('Verified lessons in database:', savedLessons);
 
@@ -214,7 +208,6 @@ const uploadAndUpdateDatabase = async () => {
   }
 };
 
-// Export for potential API use (optional)
 export default uploadAndUpdateDatabase;
 
 uploadAndUpdateDatabase();
