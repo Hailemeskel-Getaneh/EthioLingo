@@ -7,7 +7,7 @@
 ### Base URL: `/api/v1`  
 
 ## 1. Authentication Endpoints (`/auth`)  
-
+ 
 ### Sign Up  
 - **Route:** `POST /auth/signup`  
 - **Description:** Register a new user.  
