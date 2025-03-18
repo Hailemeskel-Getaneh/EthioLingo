@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import connectmongo from './config/db.js'
 import UserProfileRoute from './routes/userProfileRoute.js'
+import AuthRoute from './routes/authRoute.js'
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors())
 connectmongo();
 const PORT = process.env.PORT
 
+app.use('/api/auth',AuthRoute,)
 app.use('/profile',UserProfileRoute,)
 
 app.listen(PORT,() =>{
