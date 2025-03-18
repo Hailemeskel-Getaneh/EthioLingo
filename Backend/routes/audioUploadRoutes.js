@@ -22,11 +22,11 @@ const contentTypes = ['Listening'];
 
 const lessonNameToFolderMap = {
   '1-Greetings': 'greetings',
-  // '2-Emergency': 'emergency',
-  // '3-Number': 'number',
-  // '4-Family': 'family',
-  // '5-Definite Article': 'definiteArticle',
-  // '6-Sentence & Months': 'sentenceMonths',
+  '2-Emergency': 'emergency',
+  '3-Number': 'number',
+  '4-Family': 'family',
+  '5-Definite Article': 'definiteArticle',
+  '6-Sentence & Months': 'sentenceMonths',
   '7-Adjective': 'adjective'
 };
 const folderToLessonNameMap = Object.fromEntries(
