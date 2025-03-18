@@ -21,7 +21,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('WordsHistoryScreen');
           }}
         >
-          <Ionicons name="time" size={24} color={colors.lightBlue} />
+          <Ionicons name="time" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Words History</Text>
         </TouchableOpacity>
 
@@ -31,7 +31,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('FAQScreen');
           }}
         >
-          <Ionicons name="help-circle" size={24} color={colors.lightBlue} />
+          <Ionicons name="help-circle" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>FAQ</Text>
         </TouchableOpacity>
 
@@ -41,7 +41,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('FavoriteWordsScreen');
           }}
         >
-          <Ionicons name="heart" size={24} color={colors.lightBlue} />
+          <Ionicons name="heart" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Favorite Words</Text>
         </TouchableOpacity>
 
@@ -51,7 +51,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('ShareScreen');
           }}
         >
-          <Ionicons name="share-social" size={24} color={colors.lightBlue} />
+          <Ionicons name="share-social" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Share App</Text>
         </TouchableOpacity>
 
@@ -61,7 +61,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('RateAppScreen');
           }}
         >
-          <Ionicons name="star" size={24} color={colors.lightBlue} />
+          <Ionicons name="star" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Rate App</Text>
         </TouchableOpacity>
 
@@ -71,7 +71,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('PrivacyPolicyScreen');
           }}
         >
-          <Ionicons name="lock-closed" size={24} color={colors.lightBlue} />
+          <Ionicons name="lock-closed" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Privacy Policy</Text>
         </TouchableOpacity>
 
@@ -81,7 +81,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('SendFeedbackScreen');
           }}
         >
-          <Ionicons name="chatbox" size={24} color={colors.lightBlue} />
+          <Ionicons name="chatbox" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Send Feedback</Text>
         </TouchableOpacity>
 
@@ -91,7 +91,7 @@ export default function DrawerContent(props) {
             props.navigation.navigate('LoginScreen');
           }}
         >
-          <Ionicons name="log-out" size={24} color={colors.lightBlue} />
+          <Ionicons name="log-out" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Logout</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>
