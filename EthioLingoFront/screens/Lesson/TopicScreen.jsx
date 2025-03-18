@@ -7,7 +7,7 @@ import ListeningScreen from './ListeningScreen';
 import SpeakingScreen from './SpeakingScreen';
 import ReadingScreen from './ReadingScreen';
 import WritingScreen from './WritingScreen';
-import { getTopicData } from '../../assets/data/Amharic/topicData'; // import the data 
+import { getTopicData } from '../../assets/data/Amharic/topicData'; 
 
 const TopicScreen = () => {
   const navigation = useNavigation();
@@ -15,7 +15,6 @@ const TopicScreen = () => {
   const { topic } = route.params || { topic: { title: 'Unknown Topic' } };
   const [activeTab, setActiveTab] = useState('listening');
 
-  // Fetch data for the current topic and active tab
   const topicData = getTopicData(topic.title, activeTab);
 
   const renderContent = () => {
