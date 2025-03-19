@@ -28,6 +28,8 @@ import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
 import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx'
 import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
+import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx'
+import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -37,8 +39,7 @@ const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
 const FavoriteWordsScreen = () => <View><Text>Favorite Words Screen</Text></View>;
 const ShareScreen = () => <View><Text>Share Screen</Text></View>;
 const RateAppScreen = () => <View><Text>Rate App Screen</Text></View>;
-const PrivacyPolicyScreen = () => <View><Text>PrivacyPolicy Screen</Text></View>;
-const SendFeedbackScreen = () => <View><Text>Send Feedback Screen</Text></View>;
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -59,8 +60,8 @@ function LessonDrawerNavigator() {
       <Drawer.Screen name="FavoriteWordsScreen" component={FavoriteWordsScreen} />
       <Drawer.Screen name="ShareScreen" component={ShareScreen} />
       <Drawer.Screen name="RateAppScreen" component={RateAppScreen} />
-      <Drawer.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
-      <Drawer.Screen name="SendFeedbackScreen" component={SendFeedbackScreen} />
+      <Drawer.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} />
+      <Drawer.Screen name="feedbackScreen" component={feedbackScreen} />
       <Drawer.Screen name="LoginScreen" component={LoginScreen} />
       <Drawer.Screen name="SignUpScreen" component={SignUpScreen} />
     </Drawer.Navigator>
@@ -70,7 +71,7 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
+      <Stack.Navigator initialRouteName="UserProfileScreen">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -93,6 +94,9 @@ function AppNavigator() {
         <Stack.Screen name="TryAgainScreen" component={TryAgainScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />      
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

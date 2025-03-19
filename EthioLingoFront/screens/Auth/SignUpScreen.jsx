@@ -57,7 +57,8 @@ export default function SignUp({ navigation }) {
             {agreeToTerms && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.termsText}>Agree with </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>navigation.navigate('privacyPolicyScreen')}>
             <Text style={styles.termsLink}>Terms and Policy</Text>
           </TouchableOpacity>
         </View>
