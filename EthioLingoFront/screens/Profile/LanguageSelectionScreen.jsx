@@ -59,11 +59,20 @@ export default function LanguageSelectionScreen({ navigation, route }) {
     
   );
 
-  const handleNextPress = () => {
-    if (selectedLanguage) {
+  const handleNextPress = async () => {
+    if (selectedLanguage) {     
       navigation.navigate('SetGoalScreen', { selectedLanguage: selectedLanguage.name });
     } else {
       Alert.alert('Selection Required', 'Please select a language to proceed.');
+    }
+  
+    try{
+       const response= await axios.post(`${API_URL}/api/profile/saveLanguage`,{
+       userId: "USER_ID_HERE",  
+       selectedLanguage: selectedLanguage.name
+    })
+    }catch(err){
+       console.log("An error occurred while saving the language.",err)
     }
   };
 
