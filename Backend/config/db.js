@@ -6,7 +6,6 @@ dotenv.config()
 const MONGO_DB=process.env.MONGO_URL ;
 
 const connectMongo= async ()=>{
-  console.log('MONGO_URL:', MONGO_DB); // Add this line
   if (!MONGO_DB) {
     throw new Error('MONGO_URL is not defined in environment variables');
   }

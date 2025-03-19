@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         require:true
       },
+      userGoal:{
+        type:String,
+        required:true
+      },
 
     Progres:{
         type:Number,
