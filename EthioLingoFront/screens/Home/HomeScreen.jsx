@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
 import { ProgressBar } from '../../components/Progress/ProgressBar';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
+import { colors } from '../../styles/globalStyles';
 
 
 const ProgressCard = ({ title, percentage, icon }) => (
@@ -31,9 +32,9 @@ const HomeScreen = () => {
   ];
 
   return (
-    <View className="flex-1" style={{ backgroundColor: '#f3f4ff' }}>
-      <StatusBar backgroundColor="#313574" />
-      <View style={{ backgroundColor: '#313574', height:'20%', borderBottomRightRadius:125 }} className="rounded-br-8xl p-6 pb-12">
+    <View className="flex-1 bg-f3f4ff" >
+      <StatusBar backgroundColor={colors.primaryBackground} />
+      <View style={{  height:'20%', borderBottomRightRadius:125}} className="rounded-br-8xl p-6 pb-12 bg-primaryBackground">
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Image
@@ -65,12 +66,12 @@ const HomeScreen = () => {
             onPress={() => setIsDropdownOpen(!isDropdownOpen)}
             style={{alignSelf: "center"}}
             className="bg-white/20 mt-6 p-3 rounded-xl flex-row items-center">
-            <Text className="text-white">Learning {selectedLanguage} {languages.find(l => l.name === selectedLanguage)?.flag}</Text>
-            <Text className="text-white ml-2">{isDropdownOpen ? '▲' : '▼'}</Text>
+            <Text className="text-primaryText">Learning {selectedLanguage} {languages.find(l => l.name === selectedLanguage)?.flag}</Text>
+            <Text className="text-primaryText ml-2">{isDropdownOpen ? '▲' : '▼'}</Text>
           </TouchableOpacity>
 
           {isDropdownOpen && (
-            <View className="absolute top-16 w-48 bg-white rounded-xl shadow-lg z-50 self-center">
+            <View className="absolute top-16 w-48 bg-primaryText rounded-xl shadow-lg z-50 self-center">
               {languages.map((language) => (
                 <TouchableOpacity
                   key={language.name}
@@ -90,19 +91,19 @@ const HomeScreen = () => {
       </View>
       
       {/* Learning Card */}
-      <View className="mx-4 mt-4 bg-[#8257fe] p-4 rounded-xl">
+      <View className="mx-4 mt-4 bg-homeBackground p-4 rounded-xl">
         <View className="flex-row items-center justify-between">
           <View className="flex-1">
-            <Text className="text-white text-sm font-sm mb-1">Let's start learning Amharic</Text>
-            <Text className="text-white text-lg mb-2 font-normal">Chapter 3</Text>
+            <Text className="text-primaryText text-sm font-sm mb-1">Let's start learning Amharic</Text>
+            <Text className="text-primaryText text-lg mb-2 font-normal">Chapter 3</Text>
             <Text className="text-white/70 text-base">More essential phrases</Text>
-            <View style={{width:"90%"}} className="w-[85%] bg-gray-200/50 rounded-full h-1.5 mb-1 mt-3">
+            <View style={{width:"90%"}} className="w-[85%] bg-white/70 rounded-full h-1.5 mb-1 mt-3">
               
               
             </View>
             <Text className="text-white/50 text-xs mt-1">Last practiced 3 days ago</Text>
             <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start" onPress={() => navigation.navigate('LessonScreen')}>
-              <Text className="text-white">Continue</Text>
+              <Text className="text-primaryText">Continue</Text>
             </TouchableOpacity>
           </View>
           <Image 
@@ -116,7 +117,7 @@ const HomeScreen = () => {
       {/* Progress Section */}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className="p-4">
-        <Text className="text-lg font-bold ">My Progress</Text>
+        <Text className="text-lg font-bold text-primaryBackground">My Progress</Text>
         <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
             <ProgressCard 
