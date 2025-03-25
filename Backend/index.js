@@ -14,6 +14,7 @@ app.use(cors())
 // connectmongo();
 const PORT = process.env.PORT
 
+app.use('/api/auth',AuthRoute,)
 app.use('/profile',UserProfileRoute,)
 app.use('/auth',AuthRoute,)
 
