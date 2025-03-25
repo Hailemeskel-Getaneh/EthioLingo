@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 
-// connectmongo();
+ connectmongo();
 const PORT = process.env.PORT
 
 app.use('/api/auth',AuthRoute,)
