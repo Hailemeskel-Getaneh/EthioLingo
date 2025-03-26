@@ -13,7 +13,7 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen'
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import SignUpScreen from '../screens/Auth/SignUpScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen.jsx'
 import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
@@ -30,6 +30,7 @@ import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
 import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx'
 import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
+import { ThemeProvider } from '../contexts/themeContext.jsx';
 
 // Placeholder screens
 const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
@@ -69,9 +70,11 @@ function LessonDrawerNavigator() {
 }
 
 function AppNavigator() {
+  
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="UserProfileScreen">
+      
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -98,7 +101,9 @@ function AppNavigator() {
         <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
         
       </Stack.Navigator>
+     
     </NavigationContainer>
+
   );
 }
 

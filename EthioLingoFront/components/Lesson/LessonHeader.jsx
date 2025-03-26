@@ -17,7 +17,7 @@ export default function LessonHeader({ navigation }) {
             className="w-10 h-10 rounded-full mr-3"
           />
         </TouchableOpacity>
-        <Text className="text-primaryText text-xl font-bold ml-16">Lessons</Text>
+        <Text className="text-primaryText text-xl font-bold ml-40">Lessons</Text>
       </View>
 
       <View className="flex-row items-center px-4 pb-4">
