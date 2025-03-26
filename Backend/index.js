@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from 'dotenv';
 import connectmongo from './config/db.js'
-import UserProfileRoute from './routes/userProfileRoute.js'
+import userProfileRoute from './routes/userProfileRoute.js'
 import AuthRoute from './routes/authRoute.js'
 import userprefrencesRoute from './routes/userPreferencesRoute.js'
 
@@ -17,8 +17,8 @@ connectmongo();
 const PORT = process.env.PORT
 
 app.use('/api/auth',AuthRoute,)
-app.use('/profile',UserProfileRoute)
 app.use('/api/languages',userprefrencesRoute)
+app.use("/api/userProfile",userProfileRoute);
 
 app.listen(PORT,() =>{
     console.log(`server is running in the port ${PORT}`)

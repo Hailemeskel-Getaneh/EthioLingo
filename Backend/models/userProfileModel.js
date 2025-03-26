@@ -1,41 +1,70 @@
 import mongoose from 'mongoose';
-const userSchema = new mongoose.Schema({
-      userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user",
-        require:true
-      },
-      profileImage:{
-        type:String,
-       default: '/assets/images/SampleProfileImage'
-      },
-      username:{
-        type:String,
-        require:true
-      },
-      language:{
-        type:String,
-        require:true
-      },
-      userGoal:{
-        type:String,
-        required:true
-      },
 
-    Progres:{
-        type:Number,
-        require:true
+const userProfileSchema = new mongoose.Schema(
+  {
+    userId: {
+      type:String,
+      ref: "users",  
+      required: true,
+    },
+    profileImage: {
+      type: String,
+      default: '/assets/images/SampleProfileImage',
+    },
+    username: {
+      type: String,
+      required: true,
+      ref: 'users',
+    },
+    email: {
+      type: String,
+      required: true,
+      ref: 'users',
+    },
+    status: {
+      type: String,
+      enum: ["free", "paid"],
+      default: "free",
+    },
+    nativeLanguage: {
+      type: String,
+      default:"English"
+    },
+    learningLanguage: {
+      type: String,
+      required: true,
+    },
+    goalTime: {  
+      type: Number,
+      required: true,  
+    },
+    progress: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Progress",
+    },
+    favoriteWords: {
+      type: [String],
+      default: [],
     },
     achievements: [
-        {
-          title: String,
-          description: String,
-          date: { type: Date, default: Date.now },
+      {
+        record: {
+          type: Number,
+          default: 0,
         },
-      ],
-    }, 
-    { timestamps: true });
+        points: {
+          type: Number,
+          default: 0,
+        },
+        achievedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-
-const userProfileModel = mongoose.model('userProfileModel', userSchema); 
+const userProfileModel = mongoose.model('UserProfile', userProfileSchema);
 export default userProfileModel;
