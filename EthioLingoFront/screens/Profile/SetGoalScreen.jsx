@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, Text, FlatList, TouchableOpacity, StyleSheet, 
+  Alert 
+} from 'react-native';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import Buttons from '../../components/Common/Buttons';
 import { Ionicons } from '@expo/vector-icons';
+import {setLanguageandTime}  from '../../utils/requests/api'
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -11,109 +15,62 @@ const timeOptions = [
   { id: '4', minutes: 60, label: '60 min' },
   { id: '5', minutes: 90, label: '90 min' },
   { id: '6', minutes: 120, label: '120 min' },
-  { id: '7', minutes: 'other', label: 'Other' },
 ];
 
 export default function SetGoalScreen({ navigation, route }) {
   const [selectedTime, setSelectedTime] = useState(null);
-  const [otherTime, setOtherTime] = useState('');
-  const selectedLanguage = route.params?.selectedLanguage;
+  const selectedLanguage = route.params?.selectedLanguage; // Receive the language from the previous screen
 
-  const displayedTimeOptions = timeOptions.filter(item => item.minutes !== 'other' || !otherTime);
-  
-
-  const renderTimeOption = ({ item }) => {
-    if (item.minutes === 'other') {
-      return (
-        <View style={styles.otherContainer}>
-          <TextInput
-            style={styles.otherInput}
-            placeholder="Enter custom time (min)"
-            placeholderTextColor="#666"
-            value={otherTime}
-            onChangeText={(text) => {
-              setOtherTime(text);
-              setSelectedTime(null); // Clear selectedTime when typing custom time
-            }}
-            keyboardType="numeric"
-            accessibilityLabel="Enter custom learning time in minutes"
-            accessibilityHint="Type the number of minutes for your custom learning goal"
-          />
-        </View>
-      );
-    }
-    return (
-      <TouchableOpacity
-        style={[
-          styles.timeOption,
-          selectedTime?.id === item.id && styles.selectedTime,
-        ]}
-        onPress={() => {
-          setSelectedTime(item);
-          setOtherTime(''); // Clear custom time when selecting predefined option
-        }}
-      >
-        <Text style={styles.timeText}>{item.label}</Text>
-      </TouchableOpacity>
-    );
-  };
+  const renderTimeOption = ({ item }) => (
+    <TouchableOpacity
+      style={[styles.timeOption, selectedTime?.id === item.id && styles.selectedTime]}
+      onPress={() => setSelectedTime(item)}
+    >
+      <Text style={styles.timeText}>{item.label}</Text>
+    </TouchableOpacity>
+  );
 
   const handleGetStartedPress = () => {
-    const finalTime = selectedTime?.minutes !== 'other' 
-      ? selectedTime?.minutes 
-      : (otherTime ? parseInt(otherTime, 10) : null);
-    if (finalTime) {
-      navigation.navigate('HomeScreen', { selectedTime: finalTime, selectedLanguage });
+    if (!selectedTime) {
+      Alert.alert("Select a Goal", "Please choose a daily learning goal before proceeding.");
+      return;
     }
+    setLanguageandTime(selectedLanguage, selectedTime, navigation);
+    // Here you could save the goal and selected language to local storage, Redux, or send it to your backend.
+    Alert.alert('Goal Set', `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
+    navigation.navigate('HomeScreen', { selectedTime: selectedTime.minutes, selectedLanguage });
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.gradientBackground}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-    >
-      <View style={[styles.gradientBackground, { backgroundColor: colors.screenBackground }]}>
-        <View style={globalStyles.screenContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('LanguageSelectionScreen')}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
-            </TouchableOpacity>
-            <View style={styles.progressBars}>
-              <View style={styles.progressBar} />
-              <View style={[styles.progressBar, styles.activeBar]} />
-            </View>
-          </View>
-
-          <Text style={[globalStyles.screenText, styles.headerText]}>
-            Set your Daily Learning Goal
-          </Text>
-          <Text style={[globalStyles.screenText, styles.subText]}>
-            Choose how much time you can dedicate to learning {selectedLanguage || 'your selected language'} each day.
-          </Text>
-
-          <FlatList
-            data={displayedTimeOptions}
-            renderItem={renderTimeOption}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-            ListEmptyComponent={<Text style={styles.emptyText}>No time options available</Text>}
-          />
-         <View style={styles.buttonContainer}>
-           <Buttons
-            title="Get Started"
-            onPress={handleGetStartedPress}
-            style={{ marginBottom: 20 }}
-          />
-           </View>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
+        </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+
+      <Text style={[globalStyles.screenText, styles.headerText]}>Set your Daily Learning Goal</Text>
+      <Text style={[globalStyles.screenText, styles.subText]}>
+        Choose how much time you can dedicate to learning {selectedLanguage} each day.
+      </Text>
+
+      <FlatList
+        data={timeOptions}
+        renderItem={renderTimeOption}
+        keyExtractor={(item) => item.id}
+        style={styles.list}
+      />
+      
+      <View style={styles.buttonContainer}>
+        <Buttons title="Get Started" onPress={handleGetStartedPress} />
+      </View>
+    </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   gradientBackground: {
@@ -132,6 +89,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 5,
+    marginTop:20,
   },
   progressBars: {
     flex: 1,
