@@ -1,49 +1,70 @@
-import React, { useState } from "react";
-import { Text, View, Switch,TouchableOpacity} from "react-native";
+import React from "react";
+import { Text, View, Switch, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "../../contexts/themeContext"; // Assuming you have a Theme Context
 import FontSize from "../../components/Common/FontSize";
 import DeleteAccount from "../Auth/DeleteAccount";
-import { Ionicons } from "@expo/vector-icons";
-import { colors } from "../../styles/globalStyles";
-import { useNavigation } from "@react-navigation/native";
 
 const SettingScreen = () => {
-  const navigation=useNavigation();
-    const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigation = useNavigation();
+  const { isDarkMode, toggleDarkMode } = useTheme(); // Get dark mode state and toggle function
 
-    return (
-        <View className="flex-1 bg-white p-6">
-          <View className="flex-row items-center  justify-between mt-4 ">
-            <TouchableOpacity onPress={() => navigation.navigate("UserProfileScreen")}>
-           <View className="flex-row items-center ">
-          <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
-         
-          <Text className="text-xl font-bold text-primaryBackground ml-2">Back</Text>
+  return (
+    <View
+      className={`flex-1 p-6 ${
+        isDarkMode ? "dark:bg-dark-screenBackground" : "bg-screenBackground"
+      }`}
+    >
+      <View
+        className={`flex-row items-center justify-between mt-4 ${
+          isDarkMode ? "dark:text-dark-primaryText" : "text-primaryText"
+        }`}
+      >
+        <TouchableOpacity onPress={() => navigation.navigate("UserProfileScreen")}>
+          <View className="flex-row items-center">
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color={isDarkMode ? "white" : "black"}
+            />
+            <Text className="text-xl font-bold ml-2">Back</Text>
           </View>
         </TouchableOpacity>
-            <Text className="text-xl font-bold   text-primaryBackground">Settings</Text>
-            </View>
-            <View className="flex-row justify-between items-center py-3 border-b ">
-                <Text className="text-xl text-primaryBackground font-bold">Dark Mode</Text>
-                <Switch
-                    value={isDarkMode}
-                    onValueChange={(value) => setIsDarkMode(value)}
-                />
-            </View>
+        <Text className="text-xl font-bold">Settings</Text>
+      </View>
 
-            <FontSize className="text-xl" />
+      <View
+        className={`flex-row justify-between items-center py-3 border-b ${
+          isDarkMode ? "dark:border-dark-primaryText" : "border-primaryText"
+        }`}
+      >
+        <Text className={`text-xl font-bold ${isDarkMode ? "dark:text-dark-primaryText" : "text-primaryText"}`}>
+          Dark Mode
+        </Text>
+        <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
+      </View>
 
-         
-            <DeleteAccount className="text-xl" />
-             
-            <View>
-                <TouchableOpacity className="flex-row items-center  justify-between mt-4" 
-                  onPress={()=>navigation.navigate('LoginScreen')}>
-                     <Text className=" font-bold text-error text-xl" >Logout</Text>
-                      <Ionicons name="log-out" size={24} color={colors.error} />        
-             </TouchableOpacity>
-            </View>
-        </View>
-    );
+      <FontSize className={`text-xl ${isDarkMode ? "dark:text-dark-primaryText" : "text-primaryText"}`} />
+      <DeleteAccount className={`text-xl ${isDarkMode ? "dark:text-dark-primaryText" : "text-primaryText"}`} />
+
+      <View>
+        <TouchableOpacity
+          className="flex-row items-center justify-between mt-4"
+          onPress={() => navigation.navigate("LoginScreen")}
+        >
+          <Text className={`font-bold text-xl ${isDarkMode ? "dark:text-dark-error" : "text-error"}`}>
+            Logout
+          </Text>
+          <Ionicons
+            name="log-out"
+            size={24}
+            color={isDarkMode ? "#ff4f4f" : "red"}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 };
 
 export default SettingScreen;

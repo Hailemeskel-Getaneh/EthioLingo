@@ -5,14 +5,16 @@ module.exports = {
     "!**/node_modules/**"
   ],
   presets: [require("nativewind/preset")],
+  darkMode: "class", // Enables dark mode based on class
   theme: {
     extend: {
       fontFamily: {
         MainFont: ["MainFont"],
       },
       colors: {
+        // Light Mode Colors
         primaryBackground: '#313574',
-        primaryText: '#f0f2f5',
+        primaryText: '#ffffff',
         secondaryText:'#212121',
         screenBackground: '#fafafb',
         screenText: '#222469',
@@ -29,7 +31,27 @@ module.exports = {
         lightRed: '#FF6666',
         screenText1:"#4B5563",
         homeBackground:"#8257fe",
-        error:"red"
+        error:"red",
+
+        // Dark Mode Colors
+        dark: {
+          primaryBackground: '#ddd',
+          primaryText: '#e3e3e3',
+          secondaryText: '#f5f5f5',
+          screenBackground: '#121212',
+          screenText: '#ffffff',
+          listBarBackground: '#1e1e1e',
+          listBarText: '#f5f5f5',
+          accent1: '#1f4068',
+          accent2: '#16213e',
+          accent3: '#0f3460',
+          accent4: '#e94560',
+          accent5: '#a5a5a5',
+          accent6: '#2b2b2b',
+          accent7: '#404040',
+          homeBackground: '#25274d',
+          error: '#ff4f4f'
+        }
       },
     },
   },

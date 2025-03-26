@@ -25,6 +25,27 @@ export const colors = {
   accent6: '#e1e2f0',
   accent7: '#f1f2c2',
 };
+export const darkColors = {
+  primaryBackground: '#1a1a2e',
+  homeBackground: '#25274d',
+  primaryText: '#e3e3e3',
+  secondaryText: '#f5f5f5',
+  screenBackground: '#121212',
+  screenText: '#ffffff',
+  screenText2: '#d1d1d1',
+  listBarBackground: '#1e1e1e',
+  listBarText: '#f5f5f5',
+  blueColor: '#1e3c72',
+  error: '#ff4f4f',
+  accent1: '#1f4068',
+  accent2: '#16213e',
+  accent3: '#0f3460',
+  accent4: '#e94560',
+  accent5: '#a5a5a5',
+  accent6: '#2b2b2b',
+  accent7: '#404040',
+};
+
 
 // Define screen size breakpoints
 const isSmallScreen = width < 375;
