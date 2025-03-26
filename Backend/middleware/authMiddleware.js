@@ -10,7 +10,8 @@ const authMiddleware = (req, res, next) => {
       if (decoded){
         req.body.userId = decoded.userId;
         req.body.status = "Authorized";
-        next()
+        res.status(401).json({ message: 'you are good' });
+        //next()
       }
       else{
         return res.status(401).json({ message: 'Token invalid' });

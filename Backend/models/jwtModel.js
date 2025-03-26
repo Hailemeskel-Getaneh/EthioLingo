@@ -11,8 +11,12 @@ const refreshTokenSchema = new mongoose.Schema({
     primaryKey: true,
   },
   revoked: {
-    type: Bool,
+    type: Boolean,
     required: true,
+  },
+  ip_address: {
+    type: String,
+    default: "",
   },
   country: {
     type: String,
@@ -37,5 +41,5 @@ const refreshTokenSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const RefreshToken = mongoose.model("refreshToken",refreshTokenSchema); 
+const RefreshToken = mongoose.model("refreshTokens",refreshTokenSchema); 
 export default RefreshToken;

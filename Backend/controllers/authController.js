@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv'
 import User from '../models/userModel.js'
-import RefreshToken from '../models/userModel.js'
+import RefreshToken from '../models/jwtModel.js'
 import bcrypt from 'bcrypt';
 import axios from 'axios';
 dotenv.config()
@@ -12,39 +12,45 @@ const ACCESS_TOKEN_SECRET=process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET=process.env.REFRESH_TOKEN_SECRET;
 
 const generateToken = (userId,secret,expiresIn) => {
-  token = jwt.sign({
+  const token = jwt.sign({
         expiresIn: expiresIn,
         userId
       }, secret);
   return token
 }
-const saveRefreshToken = (userId,refreshToken,ip) => {
+const saveRefreshToken = async (userId,refreshToken,ip) => {
+    let locationData = null;
     try {
-      const response = axios.get(`https://ipapi.co/${ip}/json`);
-      const locationData = response.data;
-      console.log('User location:', locationData);
+      const response = await axios.get(`https://ipapi.co/${ip}/json`);
+      locationData = response.data;
+      if (locationData.error) locationData = null;
     } catch (error) {
       console.error('Error fetching location:', error.message);
     }
+    
+  
 
     // save the refresh token in db
-    const refreshTokenData = RefreshToken.create({
-      refreshToken,
-      userId,
-      revoked:false,
-      country:locationData.country_name, 
-      region:locationData.region, 
-      latitude:locationData.latitude, 
-      longitude:locationData.longitude,
-      generated_at: new Date()
-    })
-}
+    const refreshTokenDoc = await RefreshToken.create({
+          refreshToken,
+          userId,
+          revoked: false,
+          ip_address: ip,
+          country: locationData?.country_name || '',
+          region: locationData?.region || '',
+          latitude: locationData?.latitude || '',
+          longitude: locationData?.longitude || '',
+          generated_at: new Date(),
+        });
+        return refreshTokenDoc
+    }
 
 export const signup = async (req, res) => {
   try {
     let { fullName, email, password } = req.body;
     const ip = req.ip
     const userId = await uuidv4()
+
     const accessToken = generateToken(userId,ACCESS_TOKEN_SECRET,"6h")
     const refreshToken = generateToken(userId,REFRESH_TOKEN_SECRET,"30 days")
 
@@ -57,12 +63,20 @@ export const signup = async (req, res) => {
       }
 
       // save the user in the database
-      const user = User.create({
-        userId,
-        fullName,
-        email,
-        password:hash
-      })
+    let newUser;
+    try {
+          newUser = User.create({
+            userId,
+            fullName,
+            email,
+            password: hash,
+          });
+        } catch (dbError) {
+          if (dbError.code === 11000 && dbError.keyPattern && dbError.keyPattern.email) {
+             return res.status(409).json({ message: 'Email address already in use.' });
+          }
+          throw dbError;
+        }
     });
       
     res.status(200).send({userId,accessToken,refreshToken})
@@ -122,11 +136,11 @@ export const refreshToken = async (req, res) => {
       { refreshToken },
       { $set: { revoked: true }},
       { returnOriginal: true } )
-    if (!result.value) {
+    if (!result) {
       return res.status(404).json({ message: true });
     }
 
-    if ( result.value.revoked === true ) {
+    if ( result.revoked === true ) {
       console.log("refresh token compromised!")
       // maybe revoke all the refresh tokens
       return res.status(404).json({ message: 'refresh token compromised!' });
