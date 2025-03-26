@@ -21,8 +21,11 @@
     "axios": "^1.8.3",
     "expo": "~52.0.37",
     "expo-av": "~15.0.2",
+    "expo-dev-client": "~5.0.14",
     "expo-image-picker": "~16.0.6",
+    "expo-secure-store": "~14.0.1",
     "expo-status-bar": "~2.0.1",
+    "jwt-decode": "^4.0.0",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-native": "0.76.7",
@@ -36,8 +39,7 @@
     "react-native-screens": "~4.4.0",
     "react-redux": "^9.2.0",
     "redux-thunk": "^3.1.0",
-    "tailwindcss": "^3.4.17",
-    "expo-dev-client": "~5.0.14"
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

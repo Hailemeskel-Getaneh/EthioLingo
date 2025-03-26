@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
+import { Signup } from '../../utils/requests/api' 
 
 export default function SignUp({ navigation }) {
   const [fullName, setFullName] = useState('');
@@ -7,8 +8,15 @@ export default function SignUp({ navigation }) {
   const [password, setPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const handleSignUp = () => {
-    navigation.navigate('GreetingScreen')
+  const handleSignUp = async () => {
+    try{
+      const response = await Signup(fullName,email,password)
+      await navigation.navigate('GreetingScreen')
+
+    } catch{
+      console.log("login failed")
+    }
+    
   };
 
   return (

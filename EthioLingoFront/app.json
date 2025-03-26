@@ -6,15 +6,16 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "_comment":{
-    "plugins": [
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
-        }
+    "_comment": {
+      "plugins": [
+        [
+          "@react-native-google-signin/google-signin",
+          {
+            "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+          }
+        ]
       ]
-    ]},
+    },
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/e.jpg",
@@ -43,6 +44,9 @@
       "eas": {
         "projectId": "b6a20617-8d80-48a9-9eb4-282c7372a09d"
       }
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

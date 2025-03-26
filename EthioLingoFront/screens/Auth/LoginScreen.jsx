@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
 // import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { login } from '../../utils/requests/api';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -36,9 +37,14 @@ export default function Login({ navigation }) {
 	// 		//setLoading(false);
 	// 	}
   // }
-  const handleLogin = () => {
+  const handleLogin = async () => {
 
-    navigation .navigate('HomeScreen')
+    try{
+      const response = await login(email,password)
+      await navigation.navigate('HomeScreen')
+    } catch{
+      console.log("login failed")
+    }
   };
 
   return (
