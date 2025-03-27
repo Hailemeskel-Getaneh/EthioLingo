@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
+// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { login } from '../../utils/requests/api';
 import Button from '../../components/Common/Buttons';
 import { colors } from '../../styles/globalStyles';
 
@@ -8,8 +10,43 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
-    navigation .navigate('HomeScreen')
+  // const GoogleLogin = async () => {
+  //   await GoogleSignin.hasPlayServices();
+  //   const userInfo = await GoogleSignin.signIn();
+  //   return userInfo;
+  // };
+
+  // const handleGoogleLogin = async () => {
+  //   console.log("handling google signin")
+  //   try {
+	// 		const response = await GoogleLogin();
+	// 		const { idToken, user } = response;
+
+	// 		if (idToken) {
+	// 			const resp = await authAPI.validateToken({
+	// 				token: idToken,
+	// 				email: user.email,
+	// 			});
+	// 			await handlePostLoginData(resp.data);
+	// 		}
+	// 	} catch (apiError) {
+  //     console.log(statusCodes)
+  //     console.log(apiError.code)
+	// 		setError(
+	// 			apiError?.response?.data?.error?.message || 'Something went wrong'
+	// 		);
+	// 	} finally {
+	// 		//setLoading(false);
+	// 	}
+  // }
+  const handleLogin = async () => {
+
+    try{
+      const response = await login(email,password)
+      await navigation.navigate('HomeScreen')
+    } catch{
+      console.log("login failed")
+    }
   };
 
   return (
@@ -71,7 +108,9 @@ export default function Login({ navigation }) {
               style={styles.socialIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity 
+            onPress={handleGoogleLogin}
+            style={styles.socialButton}>
             <Image
               source={require('../../assets/icons/google.png')}
               style={styles.socialIcon} 

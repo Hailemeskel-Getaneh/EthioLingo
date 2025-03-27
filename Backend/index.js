@@ -16,9 +16,10 @@ app.use(cors())
 connectmongo();
 const PORT = process.env.PORT
 
-app.use('/api/auth',AuthRoute,)
+app.use('/api/auth',AuthRoute)
 app.use('/api/languages',userprefrencesRoute)
-app.use("/api/userProfile",userProfileRoute);
+app.use("/api/userProfile",userProfileRoute)
+app.use('/auth',AuthRoute);
 
 app.listen(PORT,() =>{
     console.log(`server is running in the port ${PORT}`)
