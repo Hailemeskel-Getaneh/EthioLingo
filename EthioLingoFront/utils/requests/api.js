@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = 'http://localhost:6000';
 
 function isTokenExpired(token) {
   if (!token) {
@@ -84,7 +84,7 @@ async function fetchAPI(endpoint, options = {}) {
 
 
 
-const login = async (email,passowrd) => {
+export const login = async (email,passowrd) => {
     try {
         const response = await fetchAPI('/auth/login', {
           method: 'POST',
@@ -110,7 +110,7 @@ const login = async (email,passowrd) => {
     
 }
 
-const Signup = async(fullName, email, password) => {
+export const Signup = async(fullName, email, password) => {
 
     try {
         const response = await fetchAPI('/auth/signup', {

@@ -8,7 +8,7 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  // const GoogleLogin = async () => {
+  const GoogleLogin = async () => {
   //   await GoogleSignin.hasPlayServices();
   //   const userInfo = await GoogleSignin.signIn();
   //   return userInfo;
@@ -36,14 +36,14 @@ export default function Login({ navigation }) {
 	// 	} finally {
 	// 		//setLoading(false);
 	// 	}
-  // }
+   }
   const handleLogin = async () => {
 
     try{
       const response = await login(email,password)
       await navigation.navigate('HomeScreen')
-    } catch{
-      console.log("login failed")
+    } catch(error){
+      console.log("login failed",error)
     }
   };
 
@@ -108,7 +108,7 @@ export default function Login({ navigation }) {
             />
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={handleGoogleLogin}
+            onPress={GoogleLogin}
             style={styles.socialButton}>
             <Image
               source={require('../../assets/icons/google.png')}

@@ -16,9 +16,9 @@ const PORT = process.env.PORT
 
 app.use('/api/auth',AuthRoute)
 app.use('/profile',UserProfileRoute)
-app.use('/auth',AuthRoute,)
+app.use('/auth',AuthRoute)
 
-app.listen(PORT,() =>{
+app.listen(PORT,'0.0.0.0',() =>{
     console.log(`server is running in the port ${PORT}`)
 });
 
