@@ -89,11 +89,10 @@ export default function Login({ navigation }) {
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Sign in</Text>
-        </TouchableOpacity>
-
+        <Button
+             onPress={handleLogin}
+            title="Signin"
+        />
         <View style={styles.orContainer}>
           <View style={styles.line} />
           <Text style={styles.orText}>or login with</Text>
@@ -145,13 +144,14 @@ const styles = StyleSheet.create({
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop:110,
+    marginTop:90,
 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    color:colors.primaryBackground
   },
   subtitle: {
     fontSize: 16,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color:colors.screenText1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -193,14 +193,14 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color:colors.screenText1,
     borderRadius: 4,
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkmark: {
-    color: '#1a237e',
+    color:colors.primaryBackground,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -209,21 +209,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   forgotPassword: {
-    color: '#1a237e',
-  },
-  loginButton: {
-    backgroundColor: '#313574',
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop:50,
-    marginBottom: 40,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color:colors.primaryBackground,
   },
   orContainer: {
     flexDirection: 'row',
@@ -238,7 +224,7 @@ const styles = StyleSheet.create({
   },
   orText: {
     textAlign: 'center',
-    color: '#666',
+    color:colors.screenText1,
     paddingHorizontal: 10,
   },
   socialButtons: {

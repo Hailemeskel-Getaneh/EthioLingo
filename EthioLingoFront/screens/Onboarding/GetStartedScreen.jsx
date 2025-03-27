@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import Button2 from '../../components/Common/onbordingButtons';
 import Button from '../../components/Common/Buttons';
-
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import {getGlobalStyles} from '../../styles/globalStyles';
 
 const GetStartedScreen = () => {
     const navigation =useNavigation();
@@ -14,7 +14,7 @@ const GetStartedScreen = () => {
         <Text style={styles.description}>Learn a new language, Dive into the world of possibilities in Ethiopia</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Button
+        <Button 
         title="GetStarted"
           onPress={()=> navigation.navigate('SignUpScreen')}/>
         <Button2 

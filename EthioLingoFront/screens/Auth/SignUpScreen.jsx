@@ -65,14 +65,15 @@ export default function SignUp({ navigation }) {
             {agreeToTerms && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.termsText}>Agree with </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>navigation.navigate('privacyPolicyScreen')}>
             <Text style={styles.termsLink}>Terms and Policy</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-          <Text style={styles.signUpButtonText}>Sign Up</Text>
-        </TouchableOpacity>
+        <Button
+            title="SignUp"
+            onPress={handleSignUp}
+        />
 
         <View style={styles.orContainer}>
           <View style={styles.line} />
@@ -114,13 +115,14 @@ const styles = StyleSheet.create({
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop:110,
+    marginTop:90,
 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    color:colors.primaryBackground,
   },
   subtitle: {
     fontSize: 16,
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color:colors.screenText1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color:colors.screenText1,
     borderRadius: 4,
     marginRight: 8,
     justifyContent: 'center',
@@ -177,20 +179,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   termsLink: {
-    color: '#1a237e',
-    fontWeight: '600',
-  },
-  signUpButton: {
-    backgroundColor: '#313574',
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  signUpButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color:colors.primaryBackground,
     fontWeight: '600',
   },
   orContainer: {
@@ -202,7 +191,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#ddd',
+    color:colors.screenText1,
   },
   orText: {
     textAlign: 'center',
@@ -219,7 +208,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color:colors.screenText1,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -239,7 +228,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   loginText: {
-    color: '#1a237e',
+    color:colors.primaryBackground,
     fontWeight: '600',
   },
 });

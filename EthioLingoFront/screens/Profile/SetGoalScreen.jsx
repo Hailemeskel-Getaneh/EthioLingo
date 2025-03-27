@@ -20,6 +20,7 @@ export default function SetGoalScreen({ navigation, route }) {
   const selectedLanguage = route.params?.selectedLanguage;
 
   const displayedTimeOptions = timeOptions.filter(item => item.minutes !== 'other' || !otherTime);
+  
 
   const renderTimeOption = ({ item }) => {
     if (item.minutes === 'other') {
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   selectedTime: {
-    backgroundColor: colors.primaryBackground,
+    backgroundColor: colors.homeBackground,
     borderWidth: 2,
     borderColor: colors.primaryText,
     elevation: 4,

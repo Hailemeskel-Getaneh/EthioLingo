@@ -63,7 +63,7 @@ const ForgotPassword = () => {
 
       <View className="mt-20 w-full">
         <Button
-         title="send"
+         title="Send"
          onPress={handlePasswordReset} />
       </View>
 
