@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const userProfileSchema = new mongoose.Schema(
   {
     userId: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "users",  
       required: true,
     },
@@ -11,17 +11,7 @@ const userProfileSchema = new mongoose.Schema(
       type: String,
       default: '/assets/images/SampleProfileImage',
     },
-    username: {
-      type: String,
-      required: true,
-      ref: 'users',
-    },
-    email: {
-      type: String,
-      required: true,
-      ref: 'users',
-    },
-    status: {
+  status: {
       type: String,
       enum: ["free", "paid"],
       default: "free",

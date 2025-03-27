@@ -7,16 +7,18 @@ export const createProfile = async (req, res) => {
   const { language, goalTime } = req.body;
 
   try {
-
     if (!language || !goalTime) {
       return res.status(400).json({ message: 'Language and goal time are required' });
     }
+    const userExists = await userModel.findById(userId);
+    if (!userExists) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-
-    const profile = await UserProfile.findOneAndUpdate(
+    const profile = await userProfileModel.findOneAndUpdate(
       { userId },
       { learningLanguage: language, goalTime },
-      { new: true, upsert: true }  
+      { new: true, upsert: true } 
     );
 
     res.status(200).json({ message: 'Profile created/updated successfully', profile });
@@ -30,21 +32,20 @@ export const createProfile = async (req, res) => {
 // 📌 Get user profile
 export const getUserProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userProfile = await userProfileModel.findOne({ userId: req.params.userId })
+      .populate("userId", "username email");  
 
-   
-    const profile = await userProfileModel.findOne({ userId }).populate("userId");
-
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
+    if (!userProfile) {
+      return res.status(404).json({ message: "User profile not found" });
     }
 
-  
-    res.status(200).json(profile);
+    res.status(200).json(userProfile);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: "Server Error", error });
   }
 };
+
 
 export const updateUserProfile = async (req, res) => {
   try {

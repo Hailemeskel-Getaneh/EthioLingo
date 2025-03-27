@@ -1,8 +1,9 @@
-<<<<<<< HEAD
+
 import { Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env'; 
+import * as SecureStore from 'expo-secure-store';
 
 // Function to set language and time (Goal)
 export const setLanguageandTime = async (selectedLanguage, selectedTime, navigation) => {
@@ -13,7 +14,11 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime, navigat
 
   try {
     // Fetch userId from AsyncStorage
-    const userId = await AsyncStorage.getItem('userId');
+    // const userId = await AsyncStorage.getItem('userId');
+    // if (!userId) {
+    //   throw new Error('User ID not found');
+    // }
+    const userId = await SecureStore.getItemAsync('user_id');
     if (!userId) {
       throw new Error('User ID not found');
     }
@@ -55,31 +60,31 @@ export const getUserProfile = async (userId) => {
     throw error;
   }
 };
-=======
-import * as SecureStore from 'expo-secure-store';
+
+
 import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
-function isTokenExpired(token) {
-  if (!token) {
-    return true; 
-  }
+// function isTokenExpired(token) {
+//   if (!token) {
+//     return true; 
+//   }
 
-  try {
-    const decoded = jwtDecode(token);
-    if (typeof decoded.exp === 'undefined') {
-      return true; 
-    }
+//   try {
+//     const decoded = jwtDecode(token);
+//     if (typeof decoded.exp === 'undefined') {
+//       return true; 
+//     }
 
-    const currentTimeInSeconds = Date.now() / 1000;
-    return decoded.exp < currentTimeInSeconds; 
+//     const currentTimeInSeconds = Date.now() / 1000;
+//     return decoded.exp < currentTimeInSeconds; 
 
-  } catch (error) {
-    console.error("Error decoding token:", error);
-    return true;
-  }
-}
+//   } catch (error) {
+//     console.error("Error decoding token:", error);
+//     return true;
+//   }
+// }
 
 async function rotateToken(){
     let access_token = SecureStore.getItemAsync("access_token");
@@ -195,4 +200,4 @@ const Signup = async(fullName, email, password) => {
     
 }
 
->>>>>>> c562c8e868b750fdb1e71bf3ec0ba56a26bdb3e9
+

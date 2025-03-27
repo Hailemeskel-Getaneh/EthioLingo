@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
-<<<<<<< HEAD
+
 import { colors } from '../../styles/globalStyles';
 import Button from '../../components/Common/Buttons';
-=======
 import { Signup } from '../../utils/requests/api' 
->>>>>>> c562c8e868b750fdb1e71bf3ec0ba56a26bdb3e9
+
 
 export default function SignUp({ navigation }) {
   const [fullName, setFullName] = useState('');

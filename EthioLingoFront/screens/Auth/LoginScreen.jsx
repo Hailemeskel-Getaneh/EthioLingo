@@ -109,7 +109,7 @@ export default function Login({ navigation }) {
             />
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={handleGoogleLogin}
+            // onPress={handleGoogleLogin}
             style={styles.socialButton}>
             <Image
               source={require('../../assets/icons/google.png')}
