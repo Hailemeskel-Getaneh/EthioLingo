@@ -4,10 +4,10 @@ import js from "@eslint/js";
 
 export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs}"],  // ✅ Only lint backend files
+    files: ["**/*.{js,mjs,cjs}"],  
     languageOptions: {
       globals: { 
-        ...globals.node,  // ✅ Enables 'process', 'require', 'module', etc.
+        ...globals.node,  
       },
     },
     plugins: { js },
