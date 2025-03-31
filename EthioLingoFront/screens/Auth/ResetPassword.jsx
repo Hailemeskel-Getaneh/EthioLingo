@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, View, Text, TextInput } from 'react-native';
-import { Ionicons } from "@expo/vector-icons";
+import {
+  TouchableOpacity, View, Text, TextInput,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import {colors} from '../../styles/globalStyles'
-import Button from "../../components/Common/Buttons";
-const ResetPassword = () => {
+import { colors } from '../../styles/globalStyles';
+import Button from '../../components/Common/Buttons';
+
+function ResetPassword() {
   const navigation = useNavigation();
   const [Password, setPassword] = useState('');
   const [ConfirmPassword, setConfirmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-  const [error,setError]= useState("false");
+  const [error, setError] = useState('false');
 
- const handleResetPassword = () =>{
-      navigation.navigate('Complate')  
- }
+  const handleResetPassword = () => {
+    navigation.navigate('Complate');
+  };
 
   return (
     <View className="flex-1 bg-white p-6">
@@ -64,7 +67,7 @@ const ResetPassword = () => {
             placeholder="Confirm Password"
             value={ConfirmPassword}
             onChangeText={setConfirmPassword}
-            secureTextEntry={!isConfirmPasswordVisible} 
+            secureTextEntry={!isConfirmPasswordVisible}
           />
           <TouchableOpacity
             style={{
@@ -83,14 +86,15 @@ const ResetPassword = () => {
           </TouchableOpacity>
         </View>
       </View>
-       <View className="mt-5 w-full" >
-         <Button
+      <View className="mt-5 w-full">
+        <Button
           title="Sumbit"
-          onPress={handleResetPassword}/>
-       </View>
-      
+          onPress={handleResetPassword}
+        />
+      </View>
+
     </View>
   );
-};
+}
 
 export default ResetPassword;

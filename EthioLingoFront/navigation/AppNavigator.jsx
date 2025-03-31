@@ -13,7 +13,7 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen'
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import SignUpScreen from '../screens/Auth/SignUpScreen.jsx'
+import SignUpScreen from '../screens/Auth/SignUpScreen.jsx';
 import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
@@ -25,22 +25,35 @@ import Complate from '../screens/Auth/Complate';
 import UserProfileScreen from '../screens/Profile/UserProfileScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
-import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx'
+import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx';
 import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
-import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx'
+import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
 import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
 import { ThemeProvider } from '../contexts/themeContext.jsx';
 
 // Placeholder screens
-const ProgressScreen = () => <View><Text>Progress Screen</Text></View>;
-const TranslationScreen = () => <View><Text>Translation Screen</Text></View>;
-const WordsHistoryScreen = () => <View><Text>Words History Screen</Text></View>;
-const FAQScreen = () => <View><Text>FAQ Screen</Text></View>;
-const FavoriteWordsScreen = () => <View><Text>Favorite Words Screen</Text></View>;
-const ShareScreen = () => <View><Text>Share Screen</Text></View>;
-const RateAppScreen = () => <View><Text>Rate App Screen</Text></View>;
-
+function ProgressScreen() {
+  return <View><Text>Progress Screen</Text></View>;
+}
+function TranslationScreen() {
+  return <View><Text>Translation Screen</Text></View>;
+}
+function WordsHistoryScreen() {
+  return <View><Text>Words History Screen</Text></View>;
+}
+function FAQScreen() {
+  return <View><Text>FAQ Screen</Text></View>;
+}
+function FavoriteWordsScreen() {
+  return <View><Text>Favorite Words Screen</Text></View>;
+}
+function ShareScreen() {
+  return <View><Text>Share Screen</Text></View>;
+}
+function RateAppScreen() {
+  return <View><Text>Rate App Screen</Text></View>;
+}
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -70,11 +83,9 @@ function LessonDrawerNavigator() {
 }
 
 function AppNavigator() {
-  
   return (
     <NavigationContainer>
-      
-      <Stack.Navigator initialRouteName="LanguageSelectionScreen">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -95,13 +106,13 @@ function AppNavigator() {
         <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ExcellentScreen" component={ExcellentScreen} options={{ headerShown: false }} />
         <Stack.Screen name="TryAgainScreen" component={TryAgainScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />      
+        <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
-        
+
       </Stack.Navigator>
-     
+
     </NavigationContainer>
 
   );

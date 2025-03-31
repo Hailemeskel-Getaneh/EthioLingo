@@ -1,27 +1,35 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
+import {
+  Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet,
+} from 'react-native';
 import { ProgressBar } from '../../components/Progress/ProgressBar';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
 import { colors } from '../../styles/globalStyles';
 
+function ProgressCard({ title, percentage, icon }) {
+  return (
+    <View className="bg-white p-4 rounded-xl" style={styles.cardShadow}>
+      <Image
+        source={icon}
+        className="w-20 h-20 mb-2"
+        style={{ width: '90', height: '80' }}
+        resizeMode="contain"
+      />
 
-const ProgressCard = ({ title, percentage, icon }) => (
-  <View className="bg-white p-4 rounded-xl" style={styles.cardShadow}>
-    <Image source={icon}
-      className="w-20 h-20 mb-2"
-      style={{width:"90",height:"80"}}
-      resizeMode="contain" />
-
-    <Text className="text-gray-800 font-medium mb-1">{title}</Text>
-    <View className="w-full bg-gray-200 rounded-full h-1.5 mb-1 ">
-      <ProgressBar percentage={percentage} color={"#8257fe"}/>
+      <Text className="text-gray-800 font-medium mb-1">{title}</Text>
+      <View className="w-full bg-gray-200 rounded-full h-1.5 mb-1 ">
+        <ProgressBar percentage={percentage} color="#8257fe" />
+      </View>
+      <Text className="text-gray-600 text-sm">
+        {percentage}
+        %
+      </Text>
     </View>
-    <Text className="text-gray-600 text-sm">{percentage}%</Text>
-  </View>
-);
+  );
+}
 
-const HomeScreen = () => {
+function HomeScreen() {
   const navigation = useNavigation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('Amharic');
@@ -32,9 +40,9 @@ const HomeScreen = () => {
   ];
 
   return (
-    <View className="flex-1 bg-f3f4ff" >
+    <View className="flex-1 bg-f3f4ff">
       <StatusBar backgroundColor={colors.primaryBackground} />
-      <View style={{  height:'20%', borderBottomRightRadius:125}} className="rounded-br-8xl p-6 pb-12 bg-primaryBackground">
+      <View style={{ height: '20%', borderBottomRightRadius: 125 }} className="rounded-br-8xl p-6 pb-12 bg-primaryBackground">
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Image
@@ -48,25 +56,31 @@ const HomeScreen = () => {
           </View>
           <View className="flex-row items-center">
             <Text className="text-white mr-2">5</Text>
-            <Image 
-              source={require('../../assets/icons/heart.png')} 
+            <Image
+              source={require('../../assets/icons/heart.png')}
               className="w-6 h-6 mr-2"
             />
-            <Image 
-              source={require('../../assets/icons/notification.png')} 
+            <Image
+              source={require('../../assets/icons/notification.png')}
               className="w-6 h-6 ml-2"
             />
           </View>
-          
+
         </View>
 
         {/* Language Selection */}
         <View>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setIsDropdownOpen(!isDropdownOpen)}
-            style={{alignSelf: "center"}}
-            className="bg-white/20 mt-6 p-3 rounded-xl flex-row items-center">
-            <Text className="text-primaryText">Learning {selectedLanguage} {languages.find(l => l.name === selectedLanguage)?.flag}</Text>
+            style={{ alignSelf: 'center' }}
+            className="bg-white/20 mt-6 p-3 rounded-xl flex-row items-center"
+          >
+            <Text className="text-primaryText">
+              Learning
+              {selectedLanguage}
+              {' '}
+              {languages.find((l) => l.name === selectedLanguage)?.flag}
+            </Text>
             <Text className="text-primaryText ml-2">{isDropdownOpen ? '▲' : '▼'}</Text>
           </TouchableOpacity>
 
@@ -81,15 +95,19 @@ const HomeScreen = () => {
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <Text className="text-gray-800">{language.name} {language.flag}</Text>
+                  <Text className="text-gray-800">
+                    {language.name}
+                    {' '}
+                    {language.flag}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
           )}
         </View>
-  
+
       </View>
-      
+
       {/* Learning Card */}
       <View className="mx-4 mt-4 bg-homeBackground p-4 rounded-xl">
         <View className="flex-row items-center justify-between">
@@ -97,74 +115,70 @@ const HomeScreen = () => {
             <Text className="text-primaryText text-sm font-sm mb-1">Let's start learning Amharic</Text>
             <Text className="text-primaryText text-lg mb-2 font-normal">Chapter 3</Text>
             <Text className="text-white/70 text-base">More essential phrases</Text>
-            <View style={{width:"90%"}} className="w-[85%] bg-white/70 rounded-full h-1.5 mb-1 mt-3">
-              
-              
-            </View>
+            <View style={{ width: '90%' }} className="w-[85%] bg-white/70 rounded-full h-1.5 mb-1 mt-3" />
             <Text className="text-white/50 text-xs mt-1">Last practiced 3 days ago</Text>
             <TouchableOpacity className="bg-white/20 mt-3 py-2 px-4 rounded-lg self-start" onPress={() => navigation.navigate('LessonScreen')}>
               <Text className="text-primaryText">Continue</Text>
             </TouchableOpacity>
           </View>
-          <Image 
-            source={require('../../assets/icons/reading-book.png')} 
+          <Image
+            source={require('../../assets/icons/reading-book.png')}
             // className="w-20 h-20"
-            style={{width:"100",height:"100"}}
+            style={{ width: '100', height: '100' }}
           />
         </View>
       </View>
 
       {/* Progress Section */}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View className="p-4">
-        <Text className="text-lg font-bold text-primaryBackground">My Progress</Text>
-        <View style={styles.gridContainer}>
-        <View style={styles.gridItem}>
-            <ProgressCard 
-              title="Reading" 
-              percentage={60} 
-              icon={require('../../assets/icons/reading-book.png')} 
-            />
+        <View className="p-4">
+          <Text className="text-lg font-bold text-primaryBackground">My Progress</Text>
+          <View style={styles.gridContainer}>
+            <View style={styles.gridItem}>
+              <ProgressCard
+                title="Reading"
+                percentage={60}
+                icon={require('../../assets/icons/reading-book.png')}
+              />
+            </View>
+            <View style={styles.gridItem}>
+              <ProgressCard
+                title="Listening"
+                percentage={90}
+                icon={require('../../assets/icons/listening.png')}
+              />
+            </View>
+            <View style={styles.gridItem}>
+              <ProgressCard
+                title="Speaking"
+                percentage={20}
+                icon={require('../../assets/icons/speaking.png')}
+              />
+            </View>
+            <View style={styles.gridItem}>
+              <ProgressCard
+                title="Writing"
+                percentage={40}
+                icon={require('../../assets/icons/writing.png')}
+              />
+            </View>
+
           </View>
-          <View style={styles.gridItem}>
-            <ProgressCard 
-              title="Listening" 
-              percentage={90} 
-              icon={require('../../assets/icons/listening.png')} 
-            />
-          </View>
-          <View style={styles.gridItem}>
-            <ProgressCard 
-              title="Speaking" 
-              percentage={20} 
-              icon={require('../../assets/icons/speaking.png')} 
-            />
-          </View>
-          <View style={styles.gridItem}>
-            <ProgressCard 
-              title="Writing" 
-              percentage={40} 
-              icon={require('../../assets/icons/writing.png')} 
-            />
-          </View>
-          
+
         </View>
-       
-      </View>
       </ScrollView>
-        <View className=" ">
-            <LessonNavigationBar navigation={navigation} />
-        </View>
+      <View className=" ">
+        <LessonNavigationBar navigation={navigation} />
+      </View>
     </View>
   );
-};
+}
 
 export default HomeScreen;
 
-
 const styles = StyleSheet.create({
   navbar: {
-      height:"50%"
+    height: '50%',
   },
   cardShadow: {
     shadowColor: '#000',
@@ -183,6 +197,6 @@ const styles = StyleSheet.create({
   },
   gridItem: {
     width: '50%',
-    padding: 10, 
-  }
-})
+    padding: 10,
+  },
+});

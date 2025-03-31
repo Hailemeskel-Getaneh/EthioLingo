@@ -1,9 +1,11 @@
 // /EthioLingoFront/components/Lesson/LessonLearningTopics.jsx
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import {
+  View, Text, FlatList, TouchableOpacity, Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, globalStyles } from '../../styles/globalStyles';
 import * as Progress from 'react-native-progress';
+import { colors, globalStyles } from '../../styles/globalStyles';
 
 // Import unique images for each topic
 import NumberIcon from '../../assets/icons/LessonIcons/numberIcon.png';
@@ -26,9 +28,9 @@ const topicImages = {
 
 const updatedTopics = (topics) => {
   if (!Array.isArray(topics)) {
-    return []; 
+    return [];
   }
-  
+
   return topics.map((topic) => ({
     ...topic,
     image: topicImages[topic.title] || NumberIcon,
@@ -43,11 +45,11 @@ const accentColors = [
   colors.accent5,
 ];
 
-const getProgressColor = (index) => {
-  return accentColors[index % accentColors.length];
-};
+const getProgressColor = (index) => accentColors[index % accentColors.length];
 
-const renderLearningTopic = ({ item, index, navigation, selectedTopic, setSelectedTopic }) => {
+const renderLearningTopic = ({
+  item, index, navigation, selectedTopic, setSelectedTopic,
+}) => {
   const progressColor = getProgressColor(index);
   const isSelected = selectedTopic === item.id;
 
@@ -57,7 +59,7 @@ const renderLearningTopic = ({ item, index, navigation, selectedTopic, setSelect
         isSelected ? 'border-2 border-primaryText bg-accent4' : ''
       }`}
       onPress={() => {
-        setSelectedTopic(item.id); 
+        setSelectedTopic(item.id);
         navigation.navigate('TopicScreen', { topic: item });
       }}
       style={({ pressed }) => ({
@@ -76,7 +78,7 @@ const renderLearningTopic = ({ item, index, navigation, selectedTopic, setSelect
         <Progress.Circle
           size={45}
           progress={item.progress / 100}
-          showsText={true}
+          showsText
           color={progressColor}
           unfilledColor="#e0e0e0"
           borderWidth={0}
@@ -105,11 +107,11 @@ export default function LessonLearningTopics({ topics }) {
       </View>
       <FlatList
         data={topicsWithImages}
-        renderItem={(props) =>
-          renderLearningTopic({ ...props, navigation, selectedTopic, setSelectedTopic })
-        }
+        renderItem={(props) => renderLearningTopic({
+          ...props, navigation, selectedTopic, setSelectedTopic,
+        })}
         keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={true}
+        showsVerticalScrollIndicator
       />
     </View>
   );

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
-
+import {
+  TextInput, TouchableOpacity, View, Text, StyleSheet, Image,
+} from 'react-native';
 import { colors } from '../../styles/globalStyles';
 import Button from '../../components/Common/Buttons';
-import { Signup } from '../../utils/requests/api' 
-
+import { Signup } from '../../utils/requests/api';
 
 export default function SignUp({ navigation }) {
   const [fullName, setFullName] = useState('');
@@ -13,14 +13,12 @@ export default function SignUp({ navigation }) {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleSignUp = async () => {
-    try{
-      const response = await Signup(fullName,email,password)
-      await navigation.navigate('GreetingScreen')
-
-    } catch{
-      console.log("login failed")
+    try {
+      const response = await Signup(fullName, email, password);
+      await navigation.navigate('LoginScreen');
+    } catch {
+      console.log('login failed');
     }
-    
   };
 
   return (
@@ -38,7 +36,7 @@ export default function SignUp({ navigation }) {
           value={fullName}
           onChangeText={setFullName}
         />
-        
+
         <Text style={styles.inputLabel}>Email address</Text>
         <TextInput
           style={styles.input}
@@ -47,7 +45,7 @@ export default function SignUp({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
         />
-        
+
         <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
@@ -65,18 +63,20 @@ export default function SignUp({ navigation }) {
         <View style={styles.termsContainer}>
           <TouchableOpacity
             style={styles.checkbox}
-            onPress={() => setAgreeToTerms(!agreeToTerms)}>
+            onPress={() => setAgreeToTerms(!agreeToTerms)}
+          >
             {agreeToTerms && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.termsText}>Agree with </Text>
           <TouchableOpacity
-            onPress={()=>navigation.navigate('privacyPolicyScreen')}>
+            onPress={() => navigation.navigate('privacyPolicyScreen')}
+          >
             <Text style={styles.termsLink}>Terms and Policy</Text>
           </TouchableOpacity>
         </View>
         <Button
-            title="SignUp"
-            onPress={handleSignUp}
+          title="SignUp"
+          onPress={handleSignUp}
         />
 
         <View style={styles.orContainer}>
@@ -113,20 +113,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    
+
   },
   header: {
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop:90,
+    marginTop: 90,
 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
-    color:colors.primaryBackground,
+    color: colors.primaryBackground,
   },
   subtitle: {
     fontSize: 16,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    marginTop:40,
+    marginTop: 40,
 
   },
   inputLabel: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
     borderRadius: 4,
     marginRight: 8,
     justifyContent: 'center',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   termsLink: {
-    color:colors.primaryBackground,
+    color: colors.primaryBackground,
     fontWeight: '600',
   },
   orContainer: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
   },
   orText: {
     textAlign: 'center',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderWidth: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   loginText: {
-    color:colors.primaryBackground,
+    color: colors.primaryBackground,
     fontWeight: '600',
   },
 });

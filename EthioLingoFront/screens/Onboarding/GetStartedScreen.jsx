@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
-import Button2 from '../../components/Common/onbordingButtons';
-import Button from '../../components/Common/Buttons';
+import {
+  StyleSheet, Text, View, Image,
+} from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {getGlobalStyles} from '../../styles/globalStyles';
+import Button2 from '../../components/Common/onbordingButtons';
+import Button from '../../components/Common/Buttons';
 
-const GetStartedScreen = () => {
-    const navigation =useNavigation();
+function GetStartedScreen() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -14,16 +15,18 @@ const GetStartedScreen = () => {
         <Text style={styles.description}>Learn a new language, Dive into the world of possibilities in Ethiopia</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Button 
-        title="GetStarted"
-          onPress={()=> navigation.navigate('SignUpScreen')}/>
-        <Button2 
-         title="I already have an account"
-         onPress={()=> navigation.navigate('LoginScreen')}/>
+        <Button
+          title="GetStarted"
+          onPress={() => navigation.navigate('SignUpScreen')}
+        />
+        <Button2
+          title="I already have an account"
+          onPress={() => navigation.navigate('LoginScreen')}
+        />
       </View>
     </View>
   );
-};
+}
 
 export default GetStartedScreen;
 

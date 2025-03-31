@@ -6,15 +6,15 @@ const ThemeContext = createContext();
 export const useTheme = () => useContext(ThemeContext);
 
 // ThemeProvider component to wrap your app
-export const ThemeProvider = ({ children }) => {
+export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Toggle dark mode
-  const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+  const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );
-};
+}

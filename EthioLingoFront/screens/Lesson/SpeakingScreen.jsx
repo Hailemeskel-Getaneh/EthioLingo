@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View, Text, TouchableOpacity, ScrollView, Alert,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,28 +25,24 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
     audioSource: require('../../assets/audio/Record033.mp3'),
   };
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+  useEffect(() => (sound
+    ? () => {
+      sound.unloadAsync();
+    }
+    : undefined), [sound]);
 
-  useEffect(() => {
-    return recording
-      ? () => {
-          recording.stopAndUnloadAsync().catch((err) => console.log('Unload error:', err));
-        }
-      : undefined;
-  }, [recording]);
+  useEffect(() => (recording
+    ? () => {
+      recording.stopAndUnloadAsync().catch((err) => console.log('Unload error:', err));
+    }
+    : undefined), [recording]);
 
   const loadAndPlayAudio = useCallback(async () => {
     try {
       if (sound) await sound.unloadAsync();
       const { sound: newSound } = await Audio.Sound.createAsync(
         currentExercise.audioSource,
-        { shouldPlay: true }
+        { shouldPlay: true },
       );
       setSound(newSound);
       setIsPlaying(true);
@@ -65,7 +63,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         playsInSilentModeIOS: true,
       });
       const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
       );
       setRecording(newRecording);
       setIsRecording(true);
@@ -102,7 +100,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       await recordedSound.loadAsync({ uri: recordingUri });
       const recordedStatus = await recordedSound.getStatusAsync();
       const durationDiff = Math.abs(
-        (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0)
+        (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0),
       );
       const isMatch = durationDiff < 1000; // Match if within 1 second
       setAnswerStatuses((prev) => ({
@@ -114,7 +112,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         isMatch ? 'Great job!' : 'The duration doesn’t match the original.',
         [
           { text: 'OK', onPress: () => {} },
-        ]
+        ],
       );
       await recordedSound.unloadAsync();
       // Delete the recording from AsyncStorage after comparison

@@ -1,51 +1,54 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
+import {
+  TextInput, TouchableOpacity, View, Text, StyleSheet, Image,
+} from 'react-native';
 // import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { login } from '../../utils/requests/api';
-import Button from '../../components/Common/Buttons';
 import { colors } from '../../styles/globalStyles';
+import Button from '../../components/Common/Buttons';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  // const GoogleLogin = async () => {
+  const GoogleLogin = async () => {
   //   await GoogleSignin.hasPlayServices();
   //   const userInfo = await GoogleSignin.signIn();
   //   return userInfo;
   // };
 
-  // const handleGoogleLogin = async () => {
-  //   console.log("handling google signin")
-  //   try {
-	// 		const response = await GoogleLogin();
-	// 		const { idToken, user } = response;
+    // const handleGoogleLogin = async () => {
+    //   console.log("handling google signin")
+    //   try {
+    // 		const response = await GoogleLogin();
+    // 		const { idToken, user } = response;
 
-	// 		if (idToken) {
-	// 			const resp = await authAPI.validateToken({
-	// 				token: idToken,
-	// 				email: user.email,
-	// 			});
-	// 			await handlePostLoginData(resp.data);
-	// 		}
-	// 	} catch (apiError) {
+    // 		if (idToken) {
+    // 			const resp = await authAPI.validateToken({
+    // 				token: idToken,
+    // 				email: user.email,
+    // 			});
+    // 			await handlePostLoginData(resp.data);
+    // 		}
+    // 	} catch (apiError) {
   //     console.log(statusCodes)
   //     console.log(apiError.code)
-	// 		setError(
-	// 			apiError?.response?.data?.error?.message || 'Something went wrong'
-	// 		);
-	// 	} finally {
-	// 		//setLoading(false);
-	// 	}
-  // }
+    // 		setError(
+    // 			apiError?.response?.data?.error?.message || 'Something went wrong'
+    // 		);
+    // 	} finally {
+    // 		//setLoading(false);
+    // 	}
+  };
   const handleLogin = async () => {
+    try {
+      const response = await login(email, password);
+      console.log('this is success response!!');
 
-    try{
-      const response = await login(email,password)
-      await navigation.navigate('HomeScreen')
-    } catch{
-      console.log("login failed")
+      await navigation.navigate('HomeScreen');
+    } catch (error) {
+      console.log('login failed', error);
     }
   };
 
@@ -65,7 +68,7 @@ export default function Login({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
         />
-        
+
         <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
@@ -83,7 +86,8 @@ export default function Login({ navigation }) {
         <View style={styles.rememberContainer}>
           <TouchableOpacity
             style={styles.checkbox}
-            onPress={() => setRememberMe(!rememberMe)}>
+            onPress={() => setRememberMe(!rememberMe)}
+          >
             {rememberMe && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.rememberText}>Remember me</Text>
@@ -92,8 +96,8 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         </View>
         <Button
-             onPress={handleLogin}
-            title="Signin"
+          onPress={handleLogin}
+          title="Signin"
         />
         <View style={styles.orContainer}>
           <View style={styles.line} />
@@ -103,17 +107,18 @@ export default function Login({ navigation }) {
 
         <View style={styles.socialButtons}>
           <TouchableOpacity style={styles.socialButton}>
-            <Image 
+            <Image
               source={require('../../assets/icons/twitter.png')}
               style={styles.socialIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity 
-            // onPress={handleGoogleLogin}
-            style={styles.socialButton}>
+          <TouchableOpacity
+            // onPress={GoogleLogin}
+            style={styles.socialButton}
+          >
             <Image
               source={require('../../assets/icons/google.png')}
-              style={styles.socialIcon} 
+              style={styles.socialIcon}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.socialButton}>
@@ -140,20 +145,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    
+
   },
   header: {
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop:90,
+    marginTop: 90,
 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
-    color:colors.primaryBackground
+    color: colors.primaryBackground,
   },
   subtitle: {
     fontSize: 16,
@@ -161,7 +166,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    marginTop:60,
+    marginTop: 60,
 
   },
   inputLabel: {
@@ -172,7 +177,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -195,14 +200,14 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    color:colors.screenText1,
+    color: colors.screenText1,
     borderRadius: 4,
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkmark: {
-    color:colors.primaryBackground,
+    color: colors.primaryBackground,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -211,7 +216,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   forgotPassword: {
-    color:colors.primaryBackground,
+    color: colors.primaryBackground,
   },
   orContainer: {
     flexDirection: 'row',
@@ -226,7 +231,7 @@ const styles = StyleSheet.create({
   },
   orText: {
     textAlign: 'center',
-    color:colors.screenText1,
+    color: colors.screenText1,
     paddingHorizontal: 10,
   },
   socialButtons: {

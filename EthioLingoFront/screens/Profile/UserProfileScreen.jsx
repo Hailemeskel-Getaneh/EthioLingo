@@ -1,41 +1,50 @@
-import React, { useState,useEffect } from 'react';
-import { Ionicons } from "@expo/vector-icons";
-import { Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import {
+  Text, View, Image, TouchableOpacity,
+} from 'react-native';
 import * as Progress from 'react-native-progress';
-import { colors } from '../../styles/globalStyles';
-import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar'
 import { useNavigation } from '@react-navigation/native';
-import { getUserProfile } from '../../utils/requests/api';
+import { colors } from '../../styles/globalStyles';
+import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
 
-
-const UserProfileScreen = () => {
-    const navigation = useNavigation('');
+function UserProfileScreen() {
+  const navigation = useNavigation('');
   // Hardcoded user data for now
-  const [userProfile, setUserProfile] = useState(null);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const profileData = await getUserProfile(userId); 
-        setUserProfile(profileData); 
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
+  const userProfile = {
+    username: 'abebe',
+    language: 'English',
+    profileImage: 'https://via.placeholder.com/150',
+    progress: 60,
+    records: 10,
+    points: 500,
+  };
+    // const [userProfile, setUserProfile] = useState(null);
+  // useEffect(() => {
+  //   const fetchUserProfile = async () => {
+  //     try {
+  //       const profileData = await getUserProfile(userId);
+  //       setUserProfile(profileData);
+  //     } catch (error) {
+  //       console.error('Error fetching profile:', error);
+  //     }
+  //   };
 
-    fetchUserProfile();
-  }, []); 
+  //   fetchUserProfile();
+  // }, []);
 
- 
   if (!userProfile) {
     return (
-      <View className="flex-1 justify-center items-center bg-primaryText">
+      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
         <Text>Loading profile...</Text>
       </View>
     );
   }
 
-  const { username, language, profileImage, progress, records, points } = userProfile;
+  const {
+    username, language, profileImage, progress, records, points,
+  } = userProfile;
 
   return (
     <View className="flex-1 bg-primaryText">
@@ -53,7 +62,7 @@ const UserProfileScreen = () => {
         <View className="justify-center items-center w-full p-4 bg-homeBackground rounded-lg mt-5 relative">
           <View className="relative">
             <Image
-              source={{ uri: profileImage }}  // Dynamically load the profile image
+              source={{ uri: profileImage }}
               className="w-24 h-24 rounded-full border-2 border-primaryBackground"
             />
             <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen')} className="absolute bottom-0 right-0 bg-primaryBackground p-1 rounded-full border border-gray-300">
@@ -73,16 +82,21 @@ const UserProfileScreen = () => {
             <Progress.Circle
               size={45}
               progress={progress / 100}
-              showsText={true}
-              progressColor={{ color: "#313574" }}
+              showsText
+              progressColor={{ color: '#313574' }}
               unfilledColor="#e0e0e0"
               borderWidth={0}
               thickness={3}
-              textStyle={{ fontSize: 14, color: "#313574" }}
+              textStyle={{ fontSize: 14, color: '#313574' }}
               formatText={() => `${progress}%`}
             />
           </View>
-          <Text className="text-screenText1 mt-2">You completed {records} Lessons.</Text>
+          <Text className="text-screenText1 mt-2">
+            You completed
+            {records}
+            {' '}
+            Lessons.
+          </Text>
         </View>
 
         <Text className="text-lg font-bold mt-5 text-primaryBackground">Achievements</Text>
@@ -91,7 +105,7 @@ const UserProfileScreen = () => {
             <Text className="text-primaryText font-bold">Records</Text>
             <View className="flex flex-row items-center space-x-2">
               <Ionicons name="trophy" size={16} color="gold" />
-              <Text className="text-primaryText">{records}</Text> 
+              <Text className="text-primaryText">{records}</Text>
             </View>
           </View>
           <View className="w-full h-[1px] bg-primaryText my-2" />
@@ -99,17 +113,17 @@ const UserProfileScreen = () => {
             <Text className="text-primaryText font-bold">Points</Text>
             <View className="flex flex-row items-center space-x-2">
               <Ionicons name="heart" size={16} color="red" />
-              <Text className="text-primaryText">{points}</Text> 
+              <Text className="text-primaryText">{points}</Text>
             </View>
           </View>
         </View>
       </View>
 
       <View className="pt-6 mt-40">
-         <LessonNavigationBar navigation={navigation} />
+        <LessonNavigationBar navigation={navigation} />
       </View>
     </View>
   );
-};
+}
 
 export default UserProfileScreen;

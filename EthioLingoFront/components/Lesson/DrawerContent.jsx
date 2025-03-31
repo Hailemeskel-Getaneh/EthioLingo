@@ -2,8 +2,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, globalStyles } from '../../styles/globalStyles';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { colors, globalStyles } from '../../styles/globalStyles';
 
 export default function DrawerContent(props) {
   return (

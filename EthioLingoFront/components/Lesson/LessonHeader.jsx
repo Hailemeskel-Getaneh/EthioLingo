@@ -1,11 +1,13 @@
 // /EthioLingoFront/components/Lesson/LessonHeader.jsx
 import React from 'react';
-import { View, TouchableOpacity, Image, Text } from 'react-native';
+import {
+  View, TouchableOpacity, Image, Text,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import SampleProfileImage from '../../assets/images/SampleProfileImage.png';
 import LessonSearchBar from './LessonSearchBar';
-import { DrawerActions } from '@react-navigation/native';
 
 export default function LessonHeader({ navigation }) {
   return (
@@ -32,7 +34,6 @@ export default function LessonHeader({ navigation }) {
         <LessonSearchBar />
 
       </View>
-
 
     </View>
   );

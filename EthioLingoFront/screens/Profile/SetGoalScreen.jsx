@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  View, Text, FlatList, TouchableOpacity, StyleSheet, 
-  Alert 
+import {
+  View, Text, FlatList, TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import Buttons from '../../components/Common/Buttons';
-import { Ionicons } from '@expo/vector-icons';
-import {setLanguageandTime}  from '../../utils/requests/api'
+import { setLanguageandTime } from '../../utils/requests/api';
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -19,7 +18,7 @@ const timeOptions = [
 
 export default function SetGoalScreen({ navigation, route }) {
   const [selectedTime, setSelectedTime] = useState(null);
-  const selectedLanguage = route.params?.selectedLanguage; // Receive the language from the previous screen
+  const selectedLanguage = route.params?.selectedLanguage;
 
   const renderTimeOption = ({ item }) => (
     <TouchableOpacity
@@ -32,15 +31,13 @@ export default function SetGoalScreen({ navigation, route }) {
 
   const handleGetStartedPress = () => {
     if (!selectedTime) {
-      Alert.alert("Select a Goal", "Please choose a daily learning goal before proceeding.");
+      Alert.alert('Select a Goal', 'Please choose a daily learning goal before proceeding.');
       return;
     }
     setLanguageandTime(selectedLanguage, selectedTime, navigation);
-    // Here you could save the goal and selected language to local storage, Redux, or send it to your backend.
     Alert.alert('Goal Set', `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
     navigation.navigate('HomeScreen', { selectedTime: selectedTime.minutes, selectedLanguage });
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -54,7 +51,11 @@ export default function SetGoalScreen({ navigation, route }) {
 
       <Text style={[globalStyles.screenText, styles.headerText]}>Set your Daily Learning Goal</Text>
       <Text style={[globalStyles.screenText, styles.subText]}>
-        Choose how much time you can dedicate to learning {selectedLanguage} each day.
+        Choose how much time you can dedicate to learning
+        {' '}
+        {selectedLanguage}
+        {' '}
+        each day.
       </Text>
 
       <FlatList
@@ -63,14 +64,13 @@ export default function SetGoalScreen({ navigation, route }) {
         keyExtractor={(item) => item.id}
         style={styles.list}
       />
-      
+
       <View style={styles.buttonContainer}>
         <Buttons title="Get Started" onPress={handleGetStartedPress} />
       </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   gradientBackground: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 5,
-    marginTop:20,
+    marginTop: 20,
   },
   progressBars: {
     flex: 1,

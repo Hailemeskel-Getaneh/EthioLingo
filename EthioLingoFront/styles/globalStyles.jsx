@@ -46,7 +46,6 @@ export const darkColors = {
   accent7: '#404040',
 };
 
-
 // Define screen size breakpoints
 const isSmallScreen = width < 375;
 const isMediumScreen = width >= 375 && width < 768;
@@ -96,7 +95,6 @@ export const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-
   listBar: {
     backgroundColor: colors.listBarBackground,
     paddingVertical: 10,
@@ -110,7 +108,6 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  
   iconContainer: {
     backgroundColor: colors.accent2,
     padding: 8,
@@ -119,12 +116,10 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-
   container: {
     flex: 1,
     backgroundColor: colors.screenBackground,
   },
-
 
   title: {
     fontSize: isSmallScreen ? 22 : isMediumScreen ? 24 : 28,
@@ -136,7 +131,6 @@ export const globalStyles = StyleSheet.create({
     color: colors.secondaryText,
   },
 
-
   button: {
     borderRadius: 8,
     padding: isSmallScreen ? 10 : isMediumScreen ? 12 : 14,
@@ -146,7 +140,6 @@ export const globalStyles = StyleSheet.create({
     color: colors.primaryText,
   },
 
-
   card: {
     backgroundColor: colors.accent6,
     padding: isSmallScreen ? 12 : isMediumScreen ? 16 : 20,
@@ -154,13 +147,11 @@ export const globalStyles = StyleSheet.create({
     marginVertical: 10,
   },
 
-
   heading: {
     fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
     fontWeight: 'bold',
     color: colors.primaryText,
   },
-
 
   progressBar: {
     flexDirection: 'row',
@@ -169,7 +160,6 @@ export const globalStyles = StyleSheet.create({
     marginVertical: 12,
   },
 
-
   avatar: {
     width: isSmallScreen ? 60 : isMediumScreen ? 80 : 100,
     height: isSmallScreen ? 60 : isMediumScreen ? 80 : 100,
@@ -177,7 +167,6 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.primaryBackground,
   },
-
 
   text: {
     fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,

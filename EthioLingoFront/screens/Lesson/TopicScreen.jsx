@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View, Text, TouchableOpacity, ScrollView,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles/globalStyles';
@@ -7,9 +9,9 @@ import ListeningScreen from './ListeningScreen';
 import SpeakingScreen from './SpeakingScreen';
 import ReadingScreen from './ReadingScreen';
 import WritingScreen from './WritingScreen';
-import { getTopicData } from '../../assets/data/Amharic/topicData'; // import the data 
+import { getTopicData } from '../../assets/data/Amharic/topicData'; // import the data
 
-const TopicScreen = () => {
+function TopicScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { topic } = route.params || { topic: { title: 'Unknown Topic' } };
@@ -60,6 +62,6 @@ const TopicScreen = () => {
       <ScrollView className="flex-1 px-4 pb-4">{renderContent()}</ScrollView>
     </View>
   );
-};
+}
 
 export default React.memo(TopicScreen);

@@ -6,7 +6,7 @@ const lessonSlice = createSlice({
   name: 'lessons',
   initialState: {
     lessons: [],
-    currentLesson: null, 
+    currentLesson: null,
     progress: {},
   },
   reducers: {

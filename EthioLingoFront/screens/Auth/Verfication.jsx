@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import {colors} from '../../styles/globalStyles'
-import Button from "../../components/Common/Buttons";
-const Verfication = () => {
+import React, { useState } from 'react';
+import {
+  Text, TouchableOpacity, TextInput, View,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { colors } from '../../styles/globalStyles';
+import Button from '../../components/Common/Buttons';
+
+function Verfication() {
   const navigation = useNavigation();
-  const [code, setCode] = useState(["", "", "", "", ""]); // State for 5 input boxes
-  const [error, setError] = useState(false); 
+  const [code, setCode] = useState(['', '', '', '', '']);
+  const [error, setError] = useState(false);
 
   const handleChange = (text, index) => {
     const newCode = [...code];
@@ -17,14 +20,14 @@ const Verfication = () => {
   };
 
   const handleVerfication = () => {
-    if (code.some((digit) => digit.trim() === "")) {
+    if (code.some((digit) => digit.trim() === '')) {
       setError(true);
       return;
     }
 
     setError(false);
     // Implement verification logic here
-    navigation.navigate("ResetPassword");
+    navigation.navigate('ResetPassword');
   };
 
   return (
@@ -55,12 +58,12 @@ const Verfication = () => {
             style={{
               width: 50,
               height: 50,
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 24,
               borderWidth: 2,
-              borderColor: error ? "red" : "#313574", 
+              borderColor: error ? 'red' : '#313574',
               borderRadius: 8,
-              marginLeft:3,
+              marginLeft: 3,
             }}
             keyboardType="numeric"
           />
@@ -75,9 +78,9 @@ const Verfication = () => {
 
       <View className="mt-20 w-full">
         <Button
-         title="verify"
-         onPress={handleVerfication}
-          />
+          title="verify"
+          onPress={handleVerfication}
+        />
       </View>
 
       <View className="mt-0 flex flex-row justify-center items-center">
@@ -88,6 +91,6 @@ const Verfication = () => {
       </View>
     </View>
   );
-};
+}
 
 export default Verfication;
