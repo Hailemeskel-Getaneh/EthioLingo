@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 const API_BASE_URL = 'http://192.168.12.100:5000';
 
 function isTokenExpired(token) {
-  console.log("Validating token...",token);
+  console.log("validating token...",token);
   try {
     const decoded = jwtDecode(token);
     const currentTimeInSeconds = Math.floor(Date.now() / 1000);
