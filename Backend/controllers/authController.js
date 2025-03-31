@@ -1,4 +1,4 @@
-import userProfileModel from '../models/userProfileModel.js';
+
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv'
@@ -45,48 +45,44 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
         return refreshTokenDoc
     }
 
-export const signup = async (req, res) => {
-  try {
-    let { fullName, email, password } = req.body;
-    const ip = req.ip
-    const userId = await uuidv4()
-
-    const accessToken = generateToken(userId,ACCESS_TOKEN_SECRET,"6h")
-    const refreshToken = generateToken(userId,REFRESH_TOKEN_SECRET,"30 days")
-
-    // hash the password
-    const saltRounds = 10;
-    await bcrypt.hash(password, saltRounds, function(err, hash) {
-      if (err) {
-        console.error(err);
-        return
-      }
-
-      // save the user in the database
-    let newUser;
-    try {
-          newUser = User.create({
-            userId,
-            fullName,
-            email,
-            password: hash,
-          });
-        } catch (dbError) {
-          if (dbError.code === 11000 && dbError.keyPattern && dbError.keyPattern.email) {
-             return res.status(409).json({ message: 'Email address already in use.' });
+    export const signup = async (req, res) => {
+      try {
+        let { fullName, email, password } = req.body;
+        const ip = req.ip;
+        const userId = uuidv4();
+    
+        const accessToken = generateToken(userId, ACCESS_TOKEN_SECRET, "6h");
+        const refreshToken = generateToken(userId, REFRESH_TOKEN_SECRET, "30 days");
+    
+        const saltRounds = 10;
+        bcrypt.hash(password, saltRounds, async (err, hash) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Error hashing password", error: err });
           }
-          throw dbError;
-        }
-    });
-      
-    res.status(200).send({userId,accessToken,refreshToken})
-
-    saveRefreshToken(userId,refreshToken,ip)
-
-  } catch (error) {
-    res.status(500).json({ message: '', error });
-  }
-};
+    
+          try {
+            const newUser = await User.create({
+              userId,
+              fullName,
+              email,
+              password: hash,
+            });
+    
+            res.status(200).send({ userId, accessToken, refreshToken, newUser });
+            saveRefreshToken(userId, refreshToken, ip);
+          } catch (dbError) {
+            if (dbError.code === 11000 && dbError.keyPattern?.email) {
+              return res.status(409).json({ message: "Email address already in use." });
+            }
+            throw dbError;
+          }
+        });
+      } catch (error) {
+        res.status(500).json({ message: "Signup failed", error });
+      }
+    };
+    
 
 export const login = async (req, res) => {
 
