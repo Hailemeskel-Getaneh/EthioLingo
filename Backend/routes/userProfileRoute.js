@@ -8,7 +8,8 @@ const router=  express.Router();
 
 router.get("/:userId", getUserProfile); 
 // router.post("/:userId", updateUserProfile); 
-router.post('/create-profile/:userId', createProfile);
+router.post('/create-profile', createProfile);
+
 
 
 

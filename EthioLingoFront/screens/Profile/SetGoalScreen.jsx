@@ -18,7 +18,7 @@ const timeOptions = [
 
 export default function SetGoalScreen({ navigation, route }) {
   const [selectedTime, setSelectedTime] = useState(null);
-  const selectedLanguage = route.params?.selectedLanguage;
+  const { selectedLanguage } = route.params || {};
 
   const renderTimeOption = ({ item }) => (
     <TouchableOpacity
@@ -29,15 +29,27 @@ export default function SetGoalScreen({ navigation, route }) {
     </TouchableOpacity>
   );
 
-  const handleGetStartedPress = () => {
+  const handleGetStartedPress = async () => {
     if (!selectedTime) {
-      Alert.alert('Select a Goal', 'Please choose a daily learning goal before proceeding.');
+      Alert.alert("Select a Goal", "Please choose a daily learning goal before proceeding.");
       return;
     }
-    setLanguageandTime(selectedLanguage, selectedTime, navigation);
-    Alert.alert('Goal Set', `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
-    navigation.navigate('HomeScreen', { selectedTime: selectedTime.minutes, selectedLanguage });
+  
+    try {
+      const success = await setLanguageandTime(selectedLanguage, selectedTime);
+  
+      if (success) {
+        Alert.alert("Goal Set", `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
+        navigation.navigate("HomeScreen", { selectedTime: selectedTime.minutes, selectedLanguage });
+      } else {
+        Alert.alert("Error", "Failed to set goal. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+      console.error("Error in handleGetStartedPress:", error);
+    }
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>

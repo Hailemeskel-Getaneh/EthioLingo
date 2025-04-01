@@ -176,38 +176,52 @@ export const Logout = async () => {
   }
 };
 
-export const setLanguageandTime = async (selectedLanguage, selectedTime, navigation) => {
+
+
+export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
   if (!selectedLanguage || !selectedTime) {
-    Alert.alert('Select Goal', 'Please select both a language and a goal before proceeding.');
-    return;
+    Alert.alert("Select Goal", "Please select both a language and a goal before proceeding.");
+    return false;
   }
 
   try {
-    const userId = await SecureStore.getItemAsync('userId');
-
+    const userId = await SecureStore.getItemAsync("userId");
     if (!userId) {
-      throw new Error('User ID not found in SecureStore');
+      Alert.alert("Error", "User ID not found. Please log in again.");
+      return false;
     }
 
-    const response = await axios.post(`${API_URL}/api/profile/create-profile/${userId}`, {
+    const response = await axios.post(`${API_URL}/api/profile/create-profile`, {
+      userId, 
       language: selectedLanguage.name,
       goalTime: selectedTime.minutes,
     });
 
-    console.log('Profile created/updated:', response.data);
-    navigation.navigate('HomeScreen', {
-      selectedLanguage: selectedLanguage.name,
-      selectedTime: selectedTime.minutes,
-    });
+    if (response.status === 200 || response.status === 201) {
+      console.log("Profile Created Successfully:", response.data);
+      return true; 
+    } else {
+      Alert.alert("Error", "Failed to create profile. Please try again.");
+      return false;
+    }
   } catch (error) {
-    console.error('Error creating/updating profile:', error);
-    Alert.alert('Error', 'There was an error creating your profile. Please try again.');
+    console.error("Error creating/updating profile:", error);
+
+    if (error.response) {
+      Alert.alert("Error", error.response.data.message || "Failed to create profile. Please try again.");
+    } else {
+      Alert.alert("Network Error", "Could not connect to the server. Please check your internet connection.");
+    }
+    
+    return false;
   }
 };
+
 
 export const getUserProfile = async () => {
   try {
     const userId = await SecureStore.getItemAsync('userId');
+    console.log("Stored User ID:", userId);
 
     if (!userId) {
       throw new Error('User ID not found');
