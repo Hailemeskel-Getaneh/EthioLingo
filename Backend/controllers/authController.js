@@ -6,6 +6,7 @@ import User from '../models/userModel.js'
 import RefreshToken from '../models/jwtModel.js'
 import bcrypt from 'bcrypt';
 import axios from 'axios';
+import { sendResetEmail } from './authUtils/mail.js'
 dotenv.config()
 
 const ACCESS_TOKEN_SECRET=process.env.ACCESS_TOKEN_SECRET;
@@ -84,7 +85,7 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
     
 
 export const login = async (req, res) => {
-
+  sendResetEmail("johnnybeatzxxd@gmail.com",123);
   try {
     const ip = req.ip
     const { email, password } = req.body;
