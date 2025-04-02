@@ -1,38 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Text, View, Image, TouchableOpacity,
-} from 'react-native';
+import {Text, View, Image, TouchableOpacity,} from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../styles/globalStyles';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
+import {getUserProfile} from '../../utils/requests/api'
+import * as SecureStore from 'expo-secure-store';
+
 
 function UserProfileScreen() {
   const navigation = useNavigation('');
   // Hardcoded user data for now
 
-  const userProfile = {
-    username: 'abebe',
-    language: 'English',
-    profileImage: 'https://via.placeholder.com/150',
-    progress: 60,
-    records: 10,
-    points: 500,
-  };
-    // const [userProfile, setUserProfile] = useState(null);
-  // useEffect(() => {
-  //   const fetchUserProfile = async () => {
-  //     try {
-  //       const profileData = await getUserProfile(userId);
-  //       setUserProfile(profileData);
-  //     } catch (error) {
-  //       console.error('Error fetching profile:', error);
-  //     }
-  //   };
+  // const userProfile = {
+  //   username: 'abebe',
+  //   language: 'English',
+  //   profileImage: 'https://via.placeholder.com/150',
+  //   progress: 60,
+  //   records: 10,
+  //   points: 500,
+  // };
+    const [userProfile, setUserProfile] = useState(null);
+    useEffect(() => {
+      const fetchUserProfile = async () => {
+        try {
+          const userId = await SecureStore.getItemAsync('userId');
+          if (!userId) {
+            Alert.alert('Error', 'User ID not found');
+            return;
+          }
+          const profileData = await getUserProfile(userId); 
+          setUserProfile(profileData);
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+          Alert.alert('Error', 'There was an issue fetching your profile.');
+        } finally {
+          setLoading(false); 
+        }
+      };
 
-  //   fetchUserProfile();
-  // }, []);
+    fetchUserProfile();
+  }, []);
 
   if (!userProfile) {
     return (

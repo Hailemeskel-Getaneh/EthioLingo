@@ -2,6 +2,7 @@ import userProfileModel from "../models/userProfileModel.js";
 import userModel from '../models/userModel.js'
 
 
+
 export const createProfile = async (req, res) => {
   try {
     const { userId, language, goalTime } = req.body;
@@ -10,7 +11,12 @@ export const createProfile = async (req, res) => {
       return res.status(400).json({ message: "User ID, Language, and Goal Time are required" });
     }
 
-    const userExists = await userModel.findById(userId);
+    const isValidUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(userId);
+    if (!isValidUUID) {
+      return res.status(400).json({ message: "Invalid userId format" });
+    }
+
+    const userExists = await userModel.findOne({ userId });
     if (!userExists) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -28,13 +34,23 @@ export const createProfile = async (req, res) => {
   }
 };
 
-
-
 // 📌 Get user profile
+
 export const getUserProfile = async (req, res) => {
   try {
-    const userProfile = await userProfileModel.findOne({ userId: req.params.userId })
-      .populate("userId", "username email");  
+    const { userId } = req.params; 
+
+    if (!isValidUUID(userId)) {
+      return res.status(400).json({ message: "Invalid userId format" });
+    }
+
+    const userProfile = await userProfileModel
+      .findOnefindOne({ userId: req.params.userId }).lean()  
+      .populate({
+        path: "userId",  
+        match: { userId }, 
+        select: "username email",  
+      });
 
     if (!userProfile) {
       return res.status(404).json({ message: "User profile not found" });

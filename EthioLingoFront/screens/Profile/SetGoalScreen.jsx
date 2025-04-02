@@ -17,8 +17,8 @@ const timeOptions = [
 ];
 
 export default function SetGoalScreen({ navigation, route }) {
+  const { selectedLanguage, progressBarActive } = route.params || {};  // Retrieve the prop passed from the previous screen
   const [selectedTime, setSelectedTime] = useState(null);
-  const { selectedLanguage } = route.params || {};
 
   const renderTimeOption = ({ item }) => (
     <TouchableOpacity
@@ -42,14 +42,14 @@ export default function SetGoalScreen({ navigation, route }) {
         Alert.alert("Goal Set", `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
         navigation.navigate("HomeScreen", { selectedTime: selectedTime.minutes, selectedLanguage });
       } else {
-        Alert.alert("Error", "Failed to set goal. Please try again.");
+        Alert.alert("Error", "Failed to set goal and language. Please try again.");
       }
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again.");
       console.error("Error in handleGetStartedPress:", error);
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -59,15 +59,15 @@ export default function SetGoalScreen({ navigation, route }) {
         >
           <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
         </TouchableOpacity>
+        <View style={styles.progressBars}>
+        <View style={styles.progressBar} />
+        <View style={[styles.progressBar, styles.activeBar]} />
+        </View>
       </View>
 
       <Text style={[globalStyles.screenText, styles.headerText]}>Set your Daily Learning Goal</Text>
       <Text style={[globalStyles.screenText, styles.subText]}>
-        Choose how much time you can dedicate to learning
-        {' '}
-        {selectedLanguage}
-        {' '}
-        each day.
+        Choose how much time you can dedicate to learning {selectedLanguage} each day.
       </Text>
 
       <FlatList
@@ -84,14 +84,16 @@ export default function SetGoalScreen({ navigation, route }) {
   );
 }
 
+
 const styles = StyleSheet.create({
-  gradientBackground: {
+  container: {
     flex: 1,
+    backgroundColor: colors.screenBackground,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 30,
+    padding: 20,
     backgroundColor: 'transparent',
     elevation: 4,
     shadowColor: '#000',
@@ -101,13 +103,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 5,
-    marginTop: 20,
+    marginTop:15,
   },
   progressBars: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 15,
+    marginTop:15,
   },
   progressBar: {
     width: 80,
@@ -115,9 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     borderRadius: 7.5,
   },
-  activeBar: {
-    backgroundColor: colors.primaryBackground,
-  },
+  activeBar: { backgroundColor: colors.primaryBackground },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -164,34 +165,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.listBarText,
   },
-  otherContainer: {
-    backgroundColor: colors.listBarBackground,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  otherInput: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: colors.listBarBackground,
-    color: colors.listBarText,
-    fontSize: 16,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#666',
-    marginTop: 20,
-  },
   buttonContainer: {
     padding: 20,
+  },
+  activeBar: {
+    backgroundColor: colors.primaryBackground,
   },
 });

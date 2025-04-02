@@ -1,10 +1,10 @@
 import { Alert } from 'react-native';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE_URL = 'http://192.168.137.205:5000';
+const API_BASE_URL = 'http://192.168.137.249:5000';
 
 function isTokenExpired(token) {
   console.log('Validating token...', token);
@@ -186,16 +186,26 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
 
   try {
     const userId = await SecureStore.getItemAsync("userId");
+    console.log("Retrieved userId:", userId);
     if (!userId) {
       Alert.alert("Error", "User ID not found. Please log in again.");
       return false;
     }
 
-    const response = await axios.post(`${API_URL}/api/profile/create-profile`, {
+    console.log("Making request to:", `${API_URL}/api/profile/create-profile`);
+    console.log("With data:", {
       userId, 
-      language: selectedLanguage.name,
+      language: selectedLanguage,
       goalTime: selectedTime.minutes,
     });
+
+    const response = await axios.post(`${API_URL}/api/profile/create-profile`, {
+      userId, 
+      language: selectedLanguage,
+      goalTime: selectedTime.minutes,
+    });
+
+    console.log("Response:", response);
 
     if (response.status === 200 || response.status === 201) {
       console.log("Profile Created Successfully:", response.data);
@@ -205,12 +215,18 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
       return false;
     }
   } catch (error) {
-    console.error("Error creating/updating profile:", error);
-
+    console.error("Full error object:", error);
+    
     if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
       Alert.alert("Error", error.response.data.message || "Failed to create profile. Please try again.");
+    } else if (error.request) {
+      console.error("Request was made but no response received:", error.request);
+      Alert.alert("Network Error", "Server didn't respond. Please check your connection.");
     } else {
-      Alert.alert("Network Error", "Could not connect to the server. Please check your internet connection.");
+      console.error("Error setting up request:", error.message);
+      Alert.alert("Error", "Failed to setup request. Please try again.");
     }
     
     return false;
@@ -220,6 +236,13 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
 
 export const getUserProfile = async () => {
   try {
+   
+    let access_token = await rotateToken();  
+    if (!access_token) {
+      Alert.alert('Error', 'No valid access token found');
+      throw new Error('No valid token found');
+    }
+
     const userId = await SecureStore.getItemAsync('userId');
     console.log("Stored User ID:", userId);
 
@@ -227,15 +250,25 @@ export const getUserProfile = async () => {
       throw new Error('User ID not found');
     }
 
-    const response = await axios.get(`${API_URL}/profile/${userId}`);
+    // Make the API call to get user profile
+    const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error('Error fetching user profile:', error);
+
     if (error.response && error.response.status === 404) {
       Alert.alert('Profile not found', 'The user profile does not exist.');
+    } else if (error.message === 'No valid token found') {
+      Alert.alert('Error', 'Please login again');
     } else {
       Alert.alert('Error', 'There was an issue fetching your profile.');
     }
+
     throw error;
   }
 };

@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 const userProfileSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",  
+      type: String,
       required: true,
     },
     profileImage: {
