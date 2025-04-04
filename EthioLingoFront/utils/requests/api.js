@@ -4,7 +4,7 @@ import {API_URL} from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE_URL = 'http://192.168.137.249:5000';
+
 
 function isTokenExpired(token) {
   console.log('Validating token...', token);
@@ -54,7 +54,7 @@ async function rotateToken() {
   }
 
   if (isTokenExpired(access_token)) {
-    const response = await fetch(`${API_BASE_URL}/api/auth/refresh_token`, {
+    const response = await fetch(`${API_URL}/api/auth/refresh_token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ async function rotateToken() {
 }
 
 async function fetchAPI(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${API_URL}${endpoint}`;
   const access_token = await rotateToken();
   const defaultOptions = {
     headers: {
@@ -110,7 +110,10 @@ async function fetchAPI(endpoint, options = {}) {
   }
 }
 
-export const login = async (email, password) => {
+
+
+
+export const login = async (email, password, navigation) => {
   try {
     const response = await fetchAPI('/api/auth/login', {
       method: 'POST',
@@ -118,11 +121,21 @@ export const login = async (email, password) => {
     });
 
     if (response) {
-      const { userId, accessToken, refreshToken } = response;
+      const { userId, accessToken, refreshToken, redirectTo } = response;
+
       if (userId && accessToken && refreshToken) {
         await SecureStore.setItemAsync('userId', userId);
         await SecureStore.setItemAsync('access_token', accessToken);
         await SecureStore.setItemAsync('refresh_token', refreshToken);
+
+        
+        if (redirectTo === 'language-selection') {
+          navigation.navigate('LanguageSelectionScreen'); 
+        } else if (redirectTo === 'home') {
+          navigation.navigate('HomeScreen'); 
+        } else {
+          console.error('Unknown redirect target');
+        }
       } else {
         console.error('Missing credentials during login');
       }
@@ -133,6 +146,9 @@ export const login = async (email, password) => {
     throw error;
   }
 };
+
+
+
 
 export const Signup = async (fullName, email, password) => {
   try {
@@ -242,7 +258,6 @@ export const getUserProfile = async () => {
       Alert.alert('Error', 'No valid access token found');
       throw new Error('No valid token found');
     }
-
     const userId = await SecureStore.getItemAsync('userId');
     console.log("Stored User ID:", userId);
 
@@ -250,7 +265,6 @@ export const getUserProfile = async () => {
       throw new Error('User ID not found');
     }
 
-    // Make the API call to get user profile
     const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
       headers: {
         Authorization: `Bearer ${access_token}`,

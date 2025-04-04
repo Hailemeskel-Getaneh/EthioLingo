@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import Buttons from '../../components/Common/Buttons';
 import { setLanguageandTime } from '../../utils/requests/api';
+import {saveLanguageandTime}  from '../../utils/requests/storage'
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -17,7 +18,7 @@ const timeOptions = [
 ];
 
 export default function SetGoalScreen({ navigation, route }) {
-  const { selectedLanguage, progressBarActive } = route.params || {};  // Retrieve the prop passed from the previous screen
+  const { selectedLanguage, progressBarActive } = route.params || {};  
   const [selectedTime, setSelectedTime] = useState(null);
 
   const renderTimeOption = ({ item }) => (
@@ -37,8 +38,10 @@ export default function SetGoalScreen({ navigation, route }) {
   
     try {
       const success = await setLanguageandTime(selectedLanguage, selectedTime);
+      
   
       if (success) {
+        await saveLanguageandTime(selectedLanguage, selectedTime.minutes);
         Alert.alert("Goal Set", `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
         navigation.navigate("HomeScreen", { selectedTime: selectedTime.minutes, selectedLanguage });
       } else {
