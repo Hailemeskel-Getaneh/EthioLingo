@@ -43,12 +43,10 @@ export default function Login({ navigation }) {
   };
   const handleLogin = async () => {
     try {
-      const response = await login(email, password);
-      console.log('this is success response!!');
-
-      await navigation.navigate('HomeScreen');
+      const response = await login(email, password, navigation); 
+      console.log('Login successful:', response);
     } catch (error) {
-      console.log('login failed', error);
+      console.error('Login failed:', error);
     }
   };
 

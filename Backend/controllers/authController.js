@@ -67,6 +67,7 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
               fullName,
               email,
               password: hash,
+              isFirstLogin: true,
             });
     
             res.status(200).send({ userId, accessToken, refreshToken, newUser });
@@ -84,44 +85,70 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
     };
     
 
-export const login = async (req, res) => {
-
-  try {
-    const ip = req.ip
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }); 
-
-    if (!user) {
-        return res.status(404).json({ message: "User not found!" });
-    }
-
-    const hashedPassword = user.password;
-    bcrypt.compare(password, hashedPassword, (err, result) => {
-        if (err) {
+    export const login = async (req, res) => {
+      try {
+        const ip = req.ip;
+        const { email, password } = req.body;
+    
+        // Check if user exists
+        const user = await User.findOne({ email });
+    
+        if (!user) {
+          // If user doesn't exist, return language-selection as the redirect target
+          return res.status(404).json({ 
+            message: "User not found!", 
+            redirectTo: 'language-selection'  // Redirect to language-selection for non-existing user
+          });
+        }
+    
+        const hashedPassword = user.password;
+        bcrypt.compare(password, hashedPassword, async (err, result) => {
+          if (err) {
             console.error('Error comparing passwords:', err);
             return res.status(500).json({ message: "Error comparing passwords", error: err });
-        }
-
-        if (result) {
+          }
+    
+          if (result) {
             const userId = user.userId;
-
-            const accessToken = generateToken(userId,ACCESS_TOKEN_SECRET,'6h') 
-            const refreshToken = generateToken(userId,REFRESH_TOKEN_SECRET,'60 days') 
-            res.status(200).json({ userId, accessToken, refreshToken });
-
-            saveRefreshToken(userId,refreshToken,ip)
-
-        } else {
-            // password doesnt match
-            res.status(400).json({ message: "Wrong password!" });
-        }
-    });
-
-  } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Login failed", error: error.message }); 
-  }
-};
+    
+            const accessToken = generateToken(userId, ACCESS_TOKEN_SECRET, '6h');
+            const refreshToken = generateToken(userId, REFRESH_TOKEN_SECRET, '60 days');
+    
+            // Save refresh token after successful login
+            saveRefreshToken(userId, refreshToken, ip);
+    
+            // If it's the user's first login, send a response with 'language-selection' redirect
+            if (user.isFirstLogin) {
+              user.isFirstLogin = false;  // Mark the first login flag as false
+              await user.save();  // Save the change in the database
+    
+              return res.status(200).json({
+                userId,
+                accessToken,
+                refreshToken,
+                redirectTo: 'language-selection', // Redirect to language-selection
+              });
+            } else {
+              // For non-first-time logins, redirect to home page
+              return res.status(200).json({
+                userId,
+                accessToken,
+                refreshToken,
+                redirectTo: 'home', // Redirect to home page
+              });
+            }
+          } else {
+            // If password doesn't match
+            return res.status(400).json({ message: "Wrong password!" });
+          }
+        });
+      } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ message: "Login failed", error: error.message });
+      }
+    };
+    
+    
 
 export const refreshToken = async (req, res) => {
   try {
