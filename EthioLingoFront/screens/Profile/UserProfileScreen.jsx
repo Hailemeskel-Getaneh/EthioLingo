@@ -1,47 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {Text, View, Image, TouchableOpacity,} from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../styles/globalStyles';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
-import {getUserProfile} from '../../utils/requests/api'
-import * as SecureStore from 'expo-secure-store';
+import { UserProfileContext  } from '../../contexts/UserProfileContext';
 
 
 function UserProfileScreen() {
-  const navigation = useNavigation('');
-  // Hardcoded user data for now
+  const navigation = useNavigation();
+  const { userProfile, loading } = useContext(UserProfileContext);
 
-  // const userProfile = {
-  //   username: 'abebe',
-  //   language: 'English',
-  //   profileImage: 'https://via.placeholder.com/150',
-  //   progress: 60,
-  //   records: 10,
-  //   points: 500,
-  // };
-    const [userProfile, setUserProfile] = useState(null);
-    useEffect(() => {
-      const fetchUserProfile = async () => {
-        try {
-          const userId = await SecureStore.getItemAsync('userId');
-          if (!userId) {
-            Alert.alert('Error', 'User ID not found');
-            return;
-          }
-          const profileData = await getUserProfile(userId); 
-          setUserProfile(profileData);
-        } catch (error) {
-          console.error('Error fetching profile:', error);
-          Alert.alert('Error', 'There was an issue fetching your profile.');
-        } finally {
-          setLoading(false); 
-        }
-      };
+  const user = {
+    progress: 60, 
+  };
 
-    fetchUserProfile();
-  }, []);
+  if (loading || !userProfile) {
+    return (
+      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
+        <Text>Loading profile...</Text>
+      </View>
+    );
+  }
+
+  const {
+    username, learningLanguage, profileImage, records, points,
+  } = userProfile;
 
   if (!userProfile) {
     return (
@@ -51,9 +36,6 @@ function UserProfileScreen() {
     );
   }
 
-  const {
-    username, language, profileImage, progress, records, points,
-  } = userProfile;
 
   return (
     <View className="flex-1 bg-primaryText">
@@ -79,25 +61,25 @@ function UserProfileScreen() {
             </TouchableOpacity>
           </View>
           <Text className="text-primaryText mt-2 text-center">{username}</Text>
-          <Text className="text-primaryText mt-2 text-center">{language}</Text>
+          <Text className="text-primaryText mt-2 text-center">{learningLanguage}</Text>
         </View>
 
         <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
           <Text className="text-lg font-bold text-primaryBackground">Learning Progress</Text>
           <View className="flex flex-row items-center space-x-8 mt-2">
             <View className="w-80 h-2 bg-gray-300 rounded-md overflow-hidden">
-              <View className="h-full bg-primaryBackground" style={{ width: `${progress}%` }} />
+              <View className="h-full bg-primaryBackground" style={{ width: `${user.progress}%` }} />
             </View>
             <Progress.Circle
               size={45}
-              progress={progress / 100}
+              progress={user.progress / 100}
               showsText
               progressColor={{ color: '#313574' }}
               unfilledColor="#e0e0e0"
               borderWidth={0}
               thickness={3}
               textStyle={{ fontSize: 14, color: '#313574' }}
-              formatText={() => `${progress}%`}
+              formatText={() => `${user.progress}%`}
             />
           </View>
           <Text className="text-screenText1 mt-2">
