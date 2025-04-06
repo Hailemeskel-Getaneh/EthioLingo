@@ -12,7 +12,6 @@ function isTokenExpired(token) {
     const decoded = jwtDecode(token);
     const currentTimeInSeconds = Math.floor(Date.now() / 1000);
     let expirationTime;
-
     const expiresInValue = parseInt(decoded.expiresIn);
     const expiresInUnit = decoded.expiresIn.replace(/\d+/g, '');
 
@@ -193,7 +192,6 @@ export const Logout = async () => {
 };
 
 
-
 export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
   if (!selectedLanguage || !selectedTime) {
     Alert.alert("Select Goal", "Please select both a language and a goal before proceeding.");
@@ -264,14 +262,16 @@ export const getUserProfile = async () => {
     if (!userId) {
       throw new Error('User ID not found');
     }
-
+    console.log("API URL:", `${API_URL}/api/profile/${userId}`);
     const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
+      
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
+      
     });
-
-    return response.data;
+  
+return response.data;
   } catch (error) {
     console.error('Error fetching user profile:', error);
 
@@ -282,7 +282,6 @@ export const getUserProfile = async () => {
     } else {
       Alert.alert('Error', 'There was an issue fetching your profile.');
     }
-
     throw error;
   }
 };

@@ -7,7 +7,7 @@ export const createProfile = async (req, res) => {
   try {
     const { userId, language, goalTime } = req.body;
 
-    if (!userId || !language || !goalTime) {
+    if (!userId || !language || goalTime === undefined) {
       return res.status(400).json({ message: "User ID, Language, and Goal Time are required" });
     }
 
@@ -16,51 +16,70 @@ export const createProfile = async (req, res) => {
       return res.status(400).json({ message: "Invalid userId format" });
     }
 
+    const parsedGoalTime = parseFloat(goalTime);
+    if (isNaN(parsedGoalTime)) {
+      return res.status(400).json({ message: "goalTime must be a valid number" });
+    }
+
     const userExists = await userModel.findOne({ userId });
     if (!userExists) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const defaultAchievements = [
+      {
+        record: 10,
+        points: 10,
+        achievedAt: new Date(),
+      },
+    ];
+
     const profile = await userProfileModel.findOneAndUpdate(
       { userId },
-      { learningLanguage: language, goalTime },
+      {
+        learningLanguage: language,
+        goalTime: parsedGoalTime,
+        achievements: defaultAchievements,
+      },
       { new: true, upsert: true }
     );
 
-    res.status(200).json({ message: "Profile created/updated successfully", profile });
+    return res.status(200).json(profile);
   } catch (error) {
-    console.error("Error creating/updating profile:", error);
-    res.status(500).json({ message: "Server Error: Unable to create or update profile" });
+    console.error('Error creating/updating profile:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// 📌 Get user profile
+
 
 export const getUserProfile = async (req, res) => {
   try {
     const { userId } = req.params; 
-
-    if (!isValidUUID(userId)) {
-      return res.status(400).json({ message: "Invalid userId format" });
-    }
-
-    const userProfile = await userProfileModel
-      .findOnefindOne({ userId: req.params.userId }).lean()  
-      .populate({
-        path: "userId",  
-        match: { userId }, 
-        select: "username email",  
-      });
+    console.log('Received userId:', userId);
+    const userProfile = await userProfileModel.findOne({ userId });
+    console.log('User Profile:', userProfile);
 
     if (!userProfile) {
-      return res.status(404).json({ message: "User profile not found" });
+      return res.status(404).json({ message: 'User profile not found' });
     }
+    const user = await userModel.findOne({ userId });
+    console.log('User details:', user);
 
-    res.status(200).json(userProfile);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const combinedProfile = {
+      ...userProfile._doc, 
+      username: user.fullName, 
+      email: user.email 
+    };
+    return res.status(200).json(combinedProfile);
   } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).json({ message: "Server Error", error });
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Error fetching user profile' });
   }
 };
+
 
 

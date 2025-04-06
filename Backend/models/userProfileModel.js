@@ -5,10 +5,11 @@ const userProfileSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true,
+      ref: 'User'
     },
     profileImage: {
       type: String,
-      default: '/assets/images/SampleProfileImage',
+      default: 'https://th.bing.com/th/id/R.b1b463303db368fd76ad68356d1d4f0c?rik=lY2e9ubl6ESqZg&pid=ImgRaw&r=0',
     },
   status: {
       type: String,
@@ -25,12 +26,9 @@ const userProfileSchema = new mongoose.Schema(
     },
     goalTime: {  
       type: Number,
-      required: true,  
+      required: true, 
     },
-    progress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Progress",
-    },
+   
     favoriteWords: {
       type: [String],
       default: [],
