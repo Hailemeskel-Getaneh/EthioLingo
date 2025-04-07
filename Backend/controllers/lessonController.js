@@ -1,42 +1,36 @@
-
 import Lesson from '../models/Lesson.js';
 
-
-// get all lessons
 export const getLessons = async (req, res) => {
   try {
-    const { language, category, limit = 10, page = 1 } = req.query;
-    const query = { language };
-    if (category) query[`content.${category}`] = { $exists: true };
+    const { language, category, lessonName } = req.query;
+    const query = {};
 
-    const lessons = await Lesson.find(query)
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+    if (language) query.language = { $regex: new RegExp(`^${language}$`, 'i') };
+    if (lessonName) query.lesson_name = lessonName;
+
+    const lessons = await Lesson.find(query);
+
+    const filteredLessons = lessons.map(lesson => {
+      const filteredContent = {};
+      if (category && lesson.content[category.toLowerCase()]) {
+        filteredContent[category.toLowerCase()] = lesson.content[category.toLowerCase()];
+      } else {
+        filteredContent = lesson.content;
+      }
+      return {
+        lesson_id: lesson.lesson_id,
+        lesson_name: lesson.lesson_name,
+        language: lesson.language,
+        content: filteredContent
+      };
+    });
 
     res.json({
       success: true,
-      data: {
-        lessons,
-        total: await Lesson.countDocuments(query),
-        page: Number(page),
-        limit: Number(limit)
-      }
+      data: filteredLessons
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// get a lesson by a specific lesson by ID
-export const getLessonById = async (req, res) => {
-  try {
-    const { lessonId } = req.params;
-    const lesson = await Lesson.findOne({ lesson_id: lessonId });
-    if (!lesson) {
-      return res.status(404).json({ success: false, message: 'Lesson not found' });
-    }
-    res.json({ success: true, data: lesson });
-  } catch (error) {
+    console.error('Error fetching lessons:', error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };

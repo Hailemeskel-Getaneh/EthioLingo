@@ -16,9 +16,8 @@ const require = createRequire(import.meta.url);
 const AUDIO_DIR = path.join(__dirname, '../../EthioLingoFront/assets/audio');
 const DATA_DIR = path.join(__dirname, '../../EthioLingoFront/assets/data');
 
-const languages = ['Amharic']; 
-const contentTypes = ['Listening'];
-// const contentTypes = ['Listening', 'Reading', 'Speaking', 'Writing'];
+const languages = ['Amharic'];  // add others
+const contentTypes = ['Listening', 'Reading']; // add others 
 
 const lessonNameToFolderMap = {
   '1-Greetings': 'greetings',
