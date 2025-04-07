@@ -10,7 +10,7 @@ export default function App() {
   const uploadAudio = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "audio/*", // Allow only audio files
+        type: "audio/*", 
       });
 
       if (!result.assets || result.assets.length === 0) {
@@ -32,7 +32,7 @@ export default function App() {
       });
 
       const data = await response.json();
-      console.log("Cloudinary Response:", data); // Debugging
+      console.log("Cloudinary Response:", data); 
 
       if (data.error) {
         throw new Error(data.error.message);

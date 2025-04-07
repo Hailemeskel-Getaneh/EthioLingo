@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,22 +12,22 @@ const ReadingScreen = React.memo(({ topic, data }) => {
   const [recordingUri, setRecordingUri] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [answerStatuses, setAnswerStatuses] = useState({});
+  const [error, setError] = useState(null);
 
-  // Use the dynamic data passed via props, falling back to an empty array if undefined
   const readingExercises = data?.readingExercises || [];
 
   const currentExercise = readingExercises[currentExerciseIndex] || {
     motherTongueText: 'No exercise available',
     learningText: 'N/A',
-    audioSource: require('../../assets/audio/Record033.mp3'),
   };
 
   useEffect(() => {
     return sound
       ? () => {
-          sound.unloadAsync();
+          sound.unloadAsync().catch((err) => console.log('Unload error:', err));
         }
       : undefined;
   }, [sound]);
@@ -42,19 +42,34 @@ const ReadingScreen = React.memo(({ topic, data }) => {
 
   const loadAndPlayAudio = useCallback(async () => {
     try {
-      if (sound) await sound.unloadAsync();
+      setIsLoading(true);
+      setError(null);
+
+      const audioSource = currentExercise.audioSource;
+      if (!audioSource || typeof audioSource !== 'string') {
+        throw new Error('Invalid or missing audio source URL');
+      }
+
+      if (sound) {
+        await sound.unloadAsync();
+      }
+
       const { sound: newSound } = await Audio.Sound.createAsync(
-        currentExercise.audioSource,
+        { uri: audioSource },
         { shouldPlay: true }
       );
       setSound(newSound);
       setIsPlaying(true);
       newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) setIsPlaying(false);
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+        }
       });
     } catch (error) {
-      console.error('Error playing audio:', error);
-      Alert.alert('Error', 'Failed to play audio.');
+      console.error('Error playing audio:', error.message);
+      setError('Failed to play audio: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   }, [sound, currentExercise]);
 
@@ -66,12 +81,12 @@ const ReadingScreen = React.memo(({ topic, data }) => {
         playsInSilentModeIOS: true,
       });
       const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       setRecording(newRecording);
       setIsRecording(true);
     } catch (error) {
-      console.error('Error starting recording:', error);
+      console.error('Error starting recording:', error.message);
       Alert.alert('Error', 'Failed to start recording. Check permissions.');
     }
   }, []);
@@ -87,7 +102,7 @@ const ReadingScreen = React.memo(({ topic, data }) => {
         setRecording(null);
       }
     } catch (error) {
-      console.error('Error stopping recording:', error);
+      console.error('Error stopping recording:', error.message);
       Alert.alert('Error', 'Failed to stop recording.');
     }
   }, [recording, currentExercise.id, currentExerciseIndex]);
@@ -105,7 +120,7 @@ const ReadingScreen = React.memo(({ topic, data }) => {
       const durationDiff = Math.abs(
         (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0)
       );
-      const isMatch = durationDiff < 1000; // Match if within 1 second (crude check)
+      const isMatch = durationDiff < 1000;
       setAnswerStatuses((prev) => ({
         ...prev,
         [currentExerciseIndex]: isMatch ? 'correct' : 'incorrect',
@@ -113,7 +128,7 @@ const ReadingScreen = React.memo(({ topic, data }) => {
       setFeedback(isMatch ? 'Correct!' : 'Wrong! The duration doesn’t match the original.');
       await recordedSound.unloadAsync();
     } catch (error) {
-      console.error('Error checking recording:', error);
+      console.error('Error checking recording:', error.message);
       setFeedback('Error comparing recordings.');
     }
   }, [recordingUri, sound, currentExerciseIndex]);
@@ -130,7 +145,8 @@ const ReadingScreen = React.memo(({ topic, data }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setFeedback('');
-      setRecordingUri(null); // Clear recording for the next exercise
+      setRecordingUri(null);
+      setError(null);
     }
   }, [currentExerciseIndex, answerStatuses, readingExercises.length]);
 
@@ -146,16 +162,33 @@ const ReadingScreen = React.memo(({ topic, data }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setFeedback('');
-      setRecordingUri(null); // Clear recording for the previous exercise
+      setRecordingUri(null);
+      setError(null);
     }
   }, [currentExerciseIndex, answerStatuses]);
+
+  if (readingExercises.length === 0) {
+    return (
+      <View className="flex-1 p-6 justify-center">
+        <Text className="text-screenText text-xl font-bold text-center">No reading content available</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 p-6 justify-center">
+        <Text className="text-error text-xl font-bold text-center">Error: {error}</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="flex-1 bg-screenBackground p-6">
       <Text className="text-2xl font-bold text-screenText text-center mb-6">Reading Exercise</Text>
 
       <View className="flex-row justify-center mb-6">
-        {Array.from({ length: 10 }, (_, i) => {
+        {Array.from({ length: readingExercises.length }, (_, i) => {
           const status = answerStatuses[i];
           let bgColor = 'bg-listBarBackground';
           if (i === currentExerciseIndex) {
@@ -198,13 +231,17 @@ const ReadingScreen = React.memo(({ topic, data }) => {
           <TouchableOpacity
             className="items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-accent1"
             onPress={loadAndPlayAudio}
-            disabled={isPlaying || !sound}
+            disabled={isPlaying || isLoading || !currentExercise.audioSource}
           >
-            <Ionicons
-              name={isPlaying ? 'pause' : 'volume-high'}
-              size={20}
-              color="#313574"
-            />
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#313574" />
+            ) : (
+              <Ionicons
+                name={isPlaying ? 'pause' : 'volume-high'}
+                size={20}
+                color="#313574"
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>

@@ -22,11 +22,11 @@ const listeningData = {
   const readingData = {
     '1-Greetings': require('./Reading/greetings').default,
     '2-Emergency': require('./Reading/emergency').default,
-    '3-Number': require('./Listening/number').default,
-    '4-Family': require('./Listening/family').default,
-    '5-Definite Article': require('./Listening/definiteArticle').default,
-    '6-Sentence & Months': require('./Listening/sentenceMonths').default,
-    '7-Adjective': require('./Listening/adjective').default,
+    '3-Number': require('./Reading/number').default,
+    '4-Family': require('./Reading/family').default,
+    '5-Definite Article': require('./Reading/definiteArticle').default,
+    '6-Sentence & Months': require('./Reading/sentenceMonths').default,
+    '7-Adjective': require('./Reading/adjective').default,
   };
   
   const writingData = {

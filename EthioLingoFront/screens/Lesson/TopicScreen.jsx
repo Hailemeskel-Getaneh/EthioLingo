@@ -1,23 +1,112 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, globalStyles } from '../../styles/globalStyles';
+import { colors } from '../../styles/globalStyles';
 import ListeningScreen from './ListeningScreen';
 import SpeakingScreen from './SpeakingScreen';
 import ReadingScreen from './ReadingScreen';
 import WritingScreen from './WritingScreen';
-import { getTopicData } from '../../assets/data/Amharic/topicData'; 
+import { getLessons } from '../../api/api';
+import { getLessonsFromStorage, saveLessons } from '../../services/localStorageService';
 
 const TopicScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { topic } = route.params || { topic: { title: 'Unknown Topic' } };
   const [activeTab, setActiveTab] = useState('listening');
+  const [topicData, setTopicData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const topicData = getTopicData(topic.title, activeTab);
+  useEffect(() => {
+    const fetchTopicData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        let lessons = await getLessonsFromStorage();
+        let lesson = lessons.find(l => l.lesson_name === topic.title);
+
+        if (!lesson) {
+          const response = await getLessons('Amharic', activeTab, topic.title);
+          if (response.success && response.data.length > 0) {
+            lessons = response.data;
+            await saveLessons(lessons);
+            lesson = lessons.find(l => l.lesson_name === topic.title);
+          }
+        }
+
+        if (lesson) {
+          const content = lesson.content[activeTab] || {};
+
+          let normalizedData;
+          switch (activeTab) {
+            case 'listening':
+              normalizedData = {
+                title: lesson.lesson_name,
+                audioFiles: content.audioFiles || []
+              };
+              break;
+            case 'speaking':
+              normalizedData = {
+                title: lesson.lesson_name,
+                speakingExercises: content.speakingExercises || []
+              };
+              break;
+            case 'reading':
+              normalizedData = {
+                title: lesson.lesson_name,
+                readingExercises: content.readingExercises || []
+              };
+              break;
+            case 'writing':
+              normalizedData = {
+                title: lesson.lesson_name,
+                writingExercises: content.writingExercises || []
+              };
+              break;
+            default:
+              normalizedData = {
+                title: lesson.lesson_name,
+                audioFiles: []
+              };
+          }
+
+          setTopicData(normalizedData);
+        } else {
+          setTopicData({
+            title: 'Topic Not Found',
+            audioFiles: [],
+            speakingExercises: [],
+            readingExercises: [],
+            writingExercises: []
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching topic data:', err.message, err.response?.data);
+        setError('Failed to load topic data: ' + err.message);
+        setTopicData({
+          title: 'Topic Not Found',
+          audioFiles: [],
+          speakingExercises: [],
+          readingExercises: [],
+          writingExercises: []
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopicData();
+  }, [activeTab, topic.title]);
 
   const renderContent = () => {
+    if (loading) {
+      return <Text className="text-center text-lg">Loading...</Text>;
+    }
+    if (error) {
+      return <Text className="text-center text-lg text-red-500">{error}</Text>;
+    }
     switch (activeTab) {
       case 'listening':
         return <ListeningScreen topic={topic} data={topicData} />;
