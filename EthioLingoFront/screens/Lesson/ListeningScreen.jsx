@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Animated, Alert, ActivityIndicator } from 'react-native';
+import {
+  View, Text, TouchableOpacity, Animated, Alert, ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 
@@ -27,17 +29,15 @@ const ListeningScreen = React.memo(({ topic, data }) => {
       Animated.sequence([
         Animated.timing(waveAnimation, { toValue: 1, duration: 500, useNativeDriver: true }),
         Animated.timing(waveAnimation, { toValue: 0, duration: 500, useNativeDriver: true }),
-      ])
+      ]),
     ).start();
   }, [waveAnimation]);
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync().catch((err) => console.log('Unload error:', err));
-        }
-      : undefined;
-  }, [sound]);
+  useEffect(() => (sound
+    ? () => {
+      sound.unloadAsync().catch((err) => console.log('Unload error:', err));
+    }
+    : undefined), [sound]);
 
   const loadAndPlayAudio = useCallback(async (index = currentAudioIndex) => {
     try {
@@ -188,7 +188,8 @@ const ListeningScreen = React.memo(({ topic, data }) => {
                 i === currentAudioIndex || status === 'correct' || status === 'incorrect'
                   ? 'text-primaryText'
                   : 'text-screenText'
-              }`}>
+              }`}
+              >
                 {i + 1}
               </Text>
             </View>
@@ -261,7 +262,11 @@ const ListeningScreen = React.memo(({ topic, data }) => {
         className="bg-primaryBackground py-3 px-10 rounded-lg self-center"
         onPress={handleSpeedChange}
       >
-        <Text className="text-primaryText text-base font-bold">Speed: {playbackSpeed}x</Text>
+        <Text className="text-primaryText text-base font-bold">
+          Speed:
+          {playbackSpeed}
+          x
+        </Text>
       </TouchableOpacity>
     </View>
   );

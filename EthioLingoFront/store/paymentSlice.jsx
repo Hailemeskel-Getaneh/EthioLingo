@@ -1,4 +1,3 @@
-
 // /EthioLingoFront/store/paymentSlice.js
 
 import { createSlice } from '@reduxjs/toolkit';
@@ -6,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const paymentSlice = createSlice({
   name: 'payment',
   initialState: {
-    subscriptionStatus: 'inactive', 
+    subscriptionStatus: 'inactive',
     transactions: [],
     error: null,
   },

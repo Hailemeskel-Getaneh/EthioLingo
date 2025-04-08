@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { colors, globalStyles } from '../../styles/globalStyles';
-import Buttons from '../../components/Common/Buttons';
+import {
+  View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Alert,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import Buttons from '../../components/Common/Buttons';
+import { colors, globalStyles } from '../../styles/globalStyles';
 
 const languages = [
   { id: '1', name: 'Amharic', flag: '🇪🇹' },
@@ -30,38 +32,40 @@ export default function LanguageSelectionScreen({ navigation, route }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const filteredLanguages = languages.filter(language =>
-    language.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredLanguages = languages.filter((language) => language.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const renderLanguageItem = ({ item }) => (
+    <TouchableOpacity
+      accessibilityLabel={`Select ${item.name} language`}
+      accessibilityRole="button"
+      accessibilityHint={`Select to learn ${item.name}`}
+      style={[styles.languageItem, selectedLanguage?.id === item.id && styles.selectedLanguage]}
+      onPress={() => setSelectedLanguage(item)}
+    >
+      <View style={styles.languageContainer}>
+        <Text style={styles.languageText}>
+          {item.flag}
+          {' '}
+          {item.name}
+        </Text>
+        <View style={styles.radioButtonContainer}>
+          <View
+            style={[
+              styles.radioButton,
+              selectedLanguage?.id === item.id && styles.radioButtonSelected,
+            ]}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 
-  const renderLanguageItem = ({ item }) => {
-    // console.log('Rendering item:', item);
-    return (
-      <TouchableOpacity
-        accessibilityLabel={`Select ${item.name} language`}
-        accessibilityRole="button"
-        accessibilityHint={`Select to learn ${item.name}`}
-        style={[
-          styles.languageItem,
-          selectedLanguage?.id === item.id && styles.selectedLanguage,
-        ]}
-        onPress={() => setSelectedLanguage(item)}
-      >
-        <Text style={styles.languageText}>
-          {item.flag} {item.name}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
   const handleNextPress = () => {
-    if (selectedLanguage) {
-      dispatch({ type: 'settings/setSelectedLanguage', payload: selectedLanguage.name });
-      console.log('After dispatch - Redux state:', settings);
-      navigation.navigate('SetGoalScreen', { selectedLanguage: selectedLanguage.name });
-    } else {
-      console.log('No language selected');
+    if (!selectedLanguage) {
+      Alert.alert('Select a Language', 'Please choose a language before proceeding.');
+      return;
     }
+    navigation.navigate('SetGoalScreen', { selectedLanguage: selectedLanguage.name });
   };
 
   return (
@@ -82,7 +86,7 @@ export default function LanguageSelectionScreen({ navigation, route }) {
           </View>
         </View>
 
-        <Text style={[ styles.headerText]}>
+        <Text style={[styles.headerText]}>
           Which language do you want to learn?
         </Text>
         <Text style={[globalStyles.screenText, styles.subText]}>
@@ -116,14 +120,14 @@ export default function LanguageSelectionScreen({ navigation, route }) {
             ListEmptyComponent={<Text style={styles.emptyText}>No languages found</Text>}
           />
         )}
-        <View  style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Buttons
-          title="Next"
-          onPress={handleNextPress}
-          style={{ marginBottom: 20  }}
-        />
+            title="Next"
+            onPress={handleNextPress}
+            style={{ marginBottom: 20 }}
+          />
         </View>
-        
+
       </View>
     </View>
   );
@@ -144,16 +148,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   backButton: { padding: 5 },
-  backButtonBackground: {
-    backgroundColor: colors.listBarBackground,
-    borderRadius: 20,
-    padding: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
   progressBars: {
     flex: 1,
     flexDirection: 'row',
@@ -185,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 20,
     textAlign: 'center',
-    color:colors.primaryBackground
+    color: colors.primaryBackground,
   },
   subText: {
     fontSize: 18,
@@ -210,9 +204,40 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  languageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
+  },
+  languageText: {
+    fontSize: 16,
+    color: colors.listBarText,
+    flex: 1, // Makes the text take up available space
+  },
+  radioButtonContainer: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.primaryText,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  radioButton: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: 'transparent',
+  },
+  radioButtonSelected: {
+    backgroundColor: colors.primaryText,
   },
   selectedLanguage: {
-    backgroundColor: colors.primaryBackground,
+    backgroundColor: colors.homeBackground,
     borderWidth: 2,
     borderColor: colors.primaryText,
   },

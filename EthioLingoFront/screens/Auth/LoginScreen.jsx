@@ -1,13 +1,53 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet,Image } from 'react-native';
+import {
+  TextInput, TouchableOpacity, View, Text, StyleSheet, Image,
+} from 'react-native';
+// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { login } from '../../utils/requests/api';
+import { colors } from '../../styles/globalStyles';
+import Button from '../../components/Common/Buttons';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
-   
+  const GoogleLogin = async () => {
+  //   await GoogleSignin.hasPlayServices();
+  //   const userInfo = await GoogleSignin.signIn();
+  //   return userInfo;
+  // };
+
+    // const handleGoogleLogin = async () => {
+    //   console.log("handling google signin")
+    //   try {
+    // 		const response = await GoogleLogin();
+    // 		const { idToken, user } = response;
+
+    // 		if (idToken) {
+    // 			const resp = await authAPI.validateToken({
+    // 				token: idToken,
+    // 				email: user.email,
+    // 			});
+    // 			await handlePostLoginData(resp.data);
+    // 		}
+    // 	} catch (apiError) {
+  //     console.log(statusCodes)
+  //     console.log(apiError.code)
+    // 		setError(
+    // 			apiError?.response?.data?.error?.message || 'Something went wrong'
+    // 		);
+    // 	} finally {
+    // 		//setLoading(false);
+    // 	}
+  };
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password, navigation); 
+      console.log('Login successful:', response);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (
@@ -26,7 +66,7 @@ export default function Login({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
         />
-        
+
         <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
@@ -44,7 +84,8 @@ export default function Login({ navigation }) {
         <View style={styles.rememberContainer}>
           <TouchableOpacity
             style={styles.checkbox}
-            onPress={() => setRememberMe(!rememberMe)}>
+            onPress={() => setRememberMe(!rememberMe)}
+          >
             {rememberMe && <Text style={styles.checkmark}>✓</Text>}
           </TouchableOpacity>
           <Text style={styles.rememberText}>Remember me</Text>
@@ -52,11 +93,10 @@ export default function Login({ navigation }) {
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Sign in</Text>
-        </TouchableOpacity>
-
+        <Button
+          onPress={handleLogin}
+          title="Signin"
+        />
         <View style={styles.orContainer}>
           <View style={styles.line} />
           <Text style={styles.orText}>or login with</Text>
@@ -65,15 +105,18 @@ export default function Login({ navigation }) {
 
         <View style={styles.socialButtons}>
           <TouchableOpacity style={styles.socialButton}>
-            <Image 
+            <Image
               source={require('../../assets/icons/twitter.png')}
               style={styles.socialIcon}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity
+            // onPress={GoogleLogin}
+            style={styles.socialButton}
+          >
             <Image
               source={require('../../assets/icons/google.png')}
-              style={styles.socialIcon} 
+              style={styles.socialIcon}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.socialButton}>
@@ -86,7 +129,7 @@ export default function Login({ navigation }) {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignupScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
             <Text style={styles.signUpText}>Sign up</Text>
           </TouchableOpacity>
         </View>
@@ -100,19 +143,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    
+
   },
   header: {
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop:110,
+    marginTop: 90,
 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: colors.primaryBackground,
   },
   subtitle: {
     fontSize: 16,
@@ -120,7 +164,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    marginTop:60,
+    marginTop: 60,
 
   },
   inputLabel: {
@@ -131,7 +175,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color: colors.screenText1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -154,14 +198,14 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    color: colors.screenText1,
     borderRadius: 4,
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkmark: {
-    color: '#1a237e',
+    color: colors.primaryBackground,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -170,21 +214,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   forgotPassword: {
-    color: '#1a237e',
-  },
-  loginButton: {
-    backgroundColor: '#313574',
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop:50,
-    marginBottom: 40,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.primaryBackground,
   },
   orContainer: {
     flexDirection: 'row',
@@ -199,7 +229,7 @@ const styles = StyleSheet.create({
   },
   orText: {
     textAlign: 'center',
-    color: '#666',
+    color: colors.screenText1,
     paddingHorizontal: 10,
   },
   socialButtons: {

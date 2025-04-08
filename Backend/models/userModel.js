@@ -1,0 +1,40 @@
+import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+
+
+const userSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    default: () => uuidv4(),
+    primaryKey: true,
+  },
+  fullName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  verificationCode: {
+    type: String,
+    default: "",
+  },
+  verification_code_generated_time: {
+    type: Date,
+  },
+  isFirstLogin: { 
+    type: Boolean, 
+    default: true 
+  },
+}, {
+  timestamps: true,
+});
+
+const userModel = mongoose.model("users",userSchema); 
+export default userModel;

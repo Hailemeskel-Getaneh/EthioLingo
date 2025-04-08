@@ -10,7 +10,7 @@ import WritingScreen from './WritingScreen';
 import { getLessons } from '../../api/api';
 import { getLessonsFromStorage, saveLessons } from '../../services/localStorageService';
 
-const TopicScreen = () => {
+function TopicScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { topic } = route.params || { topic: { title: 'Unknown Topic' } };
@@ -148,6 +148,6 @@ const TopicScreen = () => {
       <ScrollView className="flex-1 px-4 pb-4">{renderContent()}</ScrollView>
     </View>
   );
-};
+}
 
 export default React.memo(TopicScreen);

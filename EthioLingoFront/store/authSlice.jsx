@@ -1,4 +1,3 @@
-
 // /EthioLingoFront/store/authSlice.js
 
 import { createSlice } from '@reduxjs/toolkit';
@@ -6,9 +5,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: null, 
+    user: null,
     isAuthenticated: false,
-    token: null, 
+    token: null,
   },
   reducers: {
     login: (state, action) => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, View, Text } from 'react-native';
-import Button from "../../components/Common/Buttons";
+import Button from '../../components/Common/Buttons';
 
-const Complate = () => {
+function Complate() {
   return (
     <View className="flex-1 bg-white items-center justify-center p-6">
       <View className="w-48 h-48">
@@ -19,14 +19,14 @@ const Complate = () => {
       <Text className="text-screenText1 text-center mt-2 px-4">
         Good job! Your password has been reset successfully. You are all set to log in with your new password.
       </Text>
-      <View  className="mt-48 w-full">
-      <Button
-         title="Done"
+      <View className="mt-48 w-full">
+        <Button
+          title="Done"
         />
       </View>
     </View>
 
   );
-};
+}
 
 export default Complate;

@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View, Text, FlatList, TouchableOpacity, StyleSheet, Alert,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles/globalStyles';
 import Buttons from '../../components/Common/Buttons';
-import { Ionicons } from '@expo/vector-icons';
+import { setLanguageandTime } from '../../utils/requests/api';
+import {saveLanguageandTime}  from '../../utils/requests/storage'
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -11,117 +15,88 @@ const timeOptions = [
   { id: '4', minutes: 60, label: '60 min' },
   { id: '5', minutes: 90, label: '90 min' },
   { id: '6', minutes: 120, label: '120 min' },
-  { id: '7', minutes: 'other', label: 'Other' },
 ];
 
 export default function SetGoalScreen({ navigation, route }) {
+  const { selectedLanguage, progressBarActive } = route.params || {};  
   const [selectedTime, setSelectedTime] = useState(null);
-  const [otherTime, setOtherTime] = useState('');
-  const selectedLanguage = route.params?.selectedLanguage;
 
-  const displayedTimeOptions = timeOptions.filter(item => item.minutes !== 'other' || !otherTime);
+  const renderTimeOption = ({ item }) => (
+    <TouchableOpacity
+      style={[styles.timeOption, selectedTime?.id === item.id && styles.selectedTime]}
+      onPress={() => setSelectedTime(item)}
+    >
+      <Text style={styles.timeText}>{item.label}</Text>
+    </TouchableOpacity>
+  );
 
-  const renderTimeOption = ({ item }) => {
-    if (item.minutes === 'other') {
-      return (
-        <View style={styles.otherContainer}>
-          <TextInput
-            style={styles.otherInput}
-            placeholder="Enter custom time (min)"
-            placeholderTextColor="#666"
-            value={otherTime}
-            onChangeText={(text) => {
-              setOtherTime(text);
-              setSelectedTime(null); // Clear selectedTime when typing custom time
-            }}
-            keyboardType="numeric"
-            accessibilityLabel="Enter custom learning time in minutes"
-            accessibilityHint="Type the number of minutes for your custom learning goal"
-          />
-        </View>
-      );
+  const handleGetStartedPress = async () => {
+    if (!selectedTime) {
+      Alert.alert("Select a Goal", "Please choose a daily learning goal before proceeding.");
+      return;
     }
-    return (
-      <TouchableOpacity
-        style={[
-          styles.timeOption,
-          selectedTime?.id === item.id && styles.selectedTime,
-        ]}
-        onPress={() => {
-          setSelectedTime(item);
-          setOtherTime(''); // Clear custom time when selecting predefined option
-        }}
-      >
-        <Text style={styles.timeText}>{item.label}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const handleGetStartedPress = () => {
-    const finalTime = selectedTime?.minutes !== 'other' 
-      ? selectedTime?.minutes 
-      : (otherTime ? parseInt(otherTime, 10) : null);
-    if (finalTime) {
-      navigation.navigate('LessonScreen', { selectedTime: finalTime, selectedLanguage });
+  
+    try {
+      const success = await setLanguageandTime(selectedLanguage, selectedTime);
+      
+  
+      if (success) {
+        await saveLanguageandTime(selectedLanguage, selectedTime.minutes);
+        Alert.alert("Goal Set", `You will learn ${selectedLanguage} for ${selectedTime.label} daily!`);
+        navigation.navigate("HomeScreen", { selectedTime: selectedTime.minutes, selectedLanguage });
+      } else {
+        Alert.alert("Error", "Failed to set goal and language. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+      console.error("Error in handleGetStartedPress:", error);
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.gradientBackground}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-    >
-      <View style={[styles.gradientBackground, { backgroundColor: colors.screenBackground }]}>
-        <View style={globalStyles.screenContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('LanguageSelectionScreen')}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
-            </TouchableOpacity>
-            <View style={styles.progressBars}>
-              <View style={styles.progressBar} />
-              <View style={[styles.progressBar, styles.activeBar]} />
-            </View>
-          </View>
-
-          <Text style={[globalStyles.screenText, styles.headerText]}>
-            Set your Daily Learning Goal
-          </Text>
-          <Text style={[globalStyles.screenText, styles.subText]}>
-            Choose how much time you can dedicate to learning {selectedLanguage || 'your selected language'} each day.
-          </Text>
-
-          <FlatList
-            data={displayedTimeOptions}
-            renderItem={renderTimeOption}
-            keyExtractor={(item) => item.id}
-            style={styles.list}
-            ListEmptyComponent={<Text style={styles.emptyText}>No time options available</Text>}
-          />
-         <View style={styles.buttonContainer}>
-           <Buttons
-            title="Get Started"
-            onPress={handleGetStartedPress}
-            style={{ marginBottom: 20 }}
-          />
-           </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.primaryBackground} />
+        </TouchableOpacity>
+        <View style={styles.progressBars}>
+        <View style={styles.progressBar} />
+        <View style={[styles.progressBar, styles.activeBar]} />
         </View>
       </View>
-    </KeyboardAvoidingView>
+
+      <Text style={[globalStyles.screenText, styles.headerText]}>Set your Daily Learning Goal</Text>
+      <Text style={[globalStyles.screenText, styles.subText]}>
+        Choose how much time you can dedicate to learning {selectedLanguage} each day.
+      </Text>
+
+      <FlatList
+        data={timeOptions}
+        renderItem={renderTimeOption}
+        keyExtractor={(item) => item.id}
+        style={styles.list}
+      />
+
+      <View style={styles.buttonContainer}>
+        <Buttons title="Get Started" onPress={handleGetStartedPress} />
+      </View>
+    </View>
   );
 }
 
+
 const styles = StyleSheet.create({
-  gradientBackground: {
+  container: {
     flex: 1,
+    backgroundColor: colors.screenBackground,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 30,
+    padding: 20,
     backgroundColor: 'transparent',
     elevation: 4,
     shadowColor: '#000',
@@ -131,12 +106,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 5,
+    marginTop:15,
   },
   progressBars: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 15,
+    marginTop:15,
   },
   progressBar: {
     width: 80,
@@ -144,9 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     borderRadius: 7.5,
   },
-  activeBar: {
-    backgroundColor: colors.primaryBackground,
-  },
+  activeBar: { backgroundColor: colors.primaryBackground },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -180,7 +155,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   selectedTime: {
-    backgroundColor: colors.primaryBackground,
+    backgroundColor: colors.homeBackground,
     borderWidth: 2,
     borderColor: colors.primaryText,
     elevation: 4,
@@ -193,34 +168,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.listBarText,
   },
-  otherContainer: {
-    backgroundColor: colors.listBarBackground,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  otherInput: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: colors.listBarBackground,
-    color: colors.listBarText,
-    fontSize: 16,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#666',
-    marginTop: 20,
-  },
   buttonContainer: {
     padding: 20,
+  },
+  activeBar: {
+    backgroundColor: colors.primaryBackground,
   },
 });
