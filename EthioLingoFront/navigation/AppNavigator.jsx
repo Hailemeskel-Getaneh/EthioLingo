@@ -30,6 +30,7 @@ import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
 import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
 import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
+import NotficationScreen from '../screens/Profile/NotificationScreen.jsx' 
 import { ThemeProvider } from '../contexts/themeContext.jsx';
 
 // Placeholder screens
@@ -85,7 +86,7 @@ function LessonDrawerNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LanguageSelectionScreen">
+      <Stack.Navigator initialRouteName="NotficationScreen">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -110,6 +111,8 @@ function AppNavigator() {
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="NotficationScreen" component={NotficationScreen} options={{ headerShown: false }} />
+
 
       </Stack.Navigator>
 
