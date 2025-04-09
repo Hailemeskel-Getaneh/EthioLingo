@@ -82,4 +82,46 @@ export const getUserProfile = async (req, res) => {
 };
 
 
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { username, goalTime, profileImage } = req.body; 
 
+    console.log(`Updating profile for userId: ${userId}`);
+    console.log('New data:', { username, goalTime, profileImage });
+  
+    const user = await userModel.findOneAndUpdate(
+      { userId }, 
+      { username }, 
+      { new: true } 
+    );
+
+    console.log('Updated user:', user);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    
+    const userProfile = await userProfileModel.findOneAndUpdate(
+      { userId }, 
+      { goalTime, profileImage }, 
+      { new: true, upsert: true } 
+    );
+
+    console.log('Updated user profile:', userProfile);
+
+    if (!userProfile) {
+      return res.status(400).json({ message: 'Failed to update user profile' });
+    }
+
+    return res.status(200).json({
+      message: 'Profile updated successfully',
+      user,
+      userProfile,
+    });
+  } catch (error) {
+    console.error('Update error:', error);
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};

@@ -200,26 +200,16 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
 
   try {
     const userId = await SecureStore.getItemAsync("userId");
-    console.log("Retrieved userId:", userId);
     if (!userId) {
       Alert.alert("Error", "User ID not found. Please log in again.");
       return false;
     }
-
-    console.log("Making request to:", `${API_URL}/api/profile/create-profile`);
-    console.log("With data:", {
-      userId, 
-      language: selectedLanguage,
-      goalTime: selectedTime.minutes,
-    });
 
     const response = await axios.post(`${API_URL}/api/profile/create-profile`, {
       userId, 
       language: selectedLanguage,
       goalTime: selectedTime.minutes,
     });
-
-    console.log("Response:", response);
 
     if (response.status === 200 || response.status === 201) {
       console.log("Profile Created Successfully:", response.data);
@@ -232,14 +222,10 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
     console.error("Full error object:", error);
     
     if (error.response) {
-      console.error("Response data:", error.response.data);
-      console.error("Response status:", error.response.status);
       Alert.alert("Error", error.response.data.message || "Failed to create profile. Please try again.");
     } else if (error.request) {
-      console.error("Request was made but no response received:", error.request);
       Alert.alert("Network Error", "Server didn't respond. Please check your connection.");
     } else {
-      console.error("Error setting up request:", error.message);
       Alert.alert("Error", "Failed to setup request. Please try again.");
     }
     
@@ -257,12 +243,10 @@ export const getUserProfile = async () => {
       throw new Error('No valid token found');
     }
     const userId = await SecureStore.getItemAsync('userId');
-    console.log("Stored User ID:", userId);
 
     if (!userId) {
       throw new Error('User ID not found');
     }
-    console.log("API URL:", `${API_URL}/api/profile/${userId}`);
     const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
       
       headers: {
@@ -283,5 +267,44 @@ return response.data;
       Alert.alert('Error', 'There was an issue fetching your profile.');
     }
     throw error;
+  }
+};
+
+export const updateUserProfile = async ({ username, goalTime, profileImage }) => {
+  try {
+    console.log('Updating user profile with the following data:', {
+      username,
+      goalTime,
+      profileImage,
+    });
+
+    const userId = await SecureStore.getItemAsync('userId'); 
+
+    if (!userId) {
+      console.error('User ID not found');
+      throw new Error('User ID not found');
+    } else {
+      console.log('Retrieved userId:', userId);
+    }
+
+    const response = await axios.put(`${API_URL}/api/profile/update-profile/${userId}`, {
+      username,
+      goalTime,
+      profileImage,
+    });
+
+    if (response.status === 200) {
+      console.log('Profile updated successfully');
+      return true;
+    } else {
+      console.error('Failed to update profile. Status:', response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('API error updating profile:', error);
+    if (error.response) {
+      console.error('Error Response:', error.response.data); 
+    }
+    return false;
   }
 };
