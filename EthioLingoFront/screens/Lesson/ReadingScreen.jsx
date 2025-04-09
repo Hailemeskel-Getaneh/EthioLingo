@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } fr
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { colors, globalStyles } from '../../styles/globalStyles';
+// import { colors, globalStyles } from '../../styles/globalStyles';
 
-const ReadingScreen = React.memo(({ topic, data }) => {
+const ReadingScreen = React.memo(({  data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [sound, setSound] = useState(null);
   const [recording, setRecording] = useState(null);

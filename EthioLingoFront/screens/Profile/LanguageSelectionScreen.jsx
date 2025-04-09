@@ -20,8 +20,8 @@ export default function LanguageSelectionScreen({ navigation, route }) {
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch();
-  const settings = useSelector((state) => state.settings);
+  // const dispatch = useDispatch();
+  // const settings = useSelector((state) => state.settings);
 
   useEffect(() => {
     console.log('LanguageSelectionScreen mounted, route params:', route.params);
@@ -216,7 +216,8 @@ const styles = StyleSheet.create({
   languageText: {
     fontSize: 16,
     color: colors.listBarText,
-    flex: 1, // Makes the text take up available space
+    flex: 1, 
+    
   },
   radioButtonContainer: {
     width: 20,
@@ -241,10 +242,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.primaryText,
   },
-  languageText: {
-    fontSize: 16,
-    color: colors.listBarText,
-  },
+  
   emptyText: {
     textAlign: 'center',
     color: '#666',

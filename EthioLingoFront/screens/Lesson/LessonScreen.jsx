@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, globalStyles } from '../../styles/globalStyles';
+// import { colors, globalStyles } from '../../styles/globalStyles';
 import LessonHeader from '../../components/Lesson/LessonHeader';
 import LessonLearningTopics from '../../components/Lesson/LessonLearningTopics';
 import LessonCountSentence from '../../components/Lesson/LessonCountSentence';

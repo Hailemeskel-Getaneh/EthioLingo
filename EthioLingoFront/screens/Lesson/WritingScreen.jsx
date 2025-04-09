@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, globalStyles } from '../../styles/globalStyles';
+import { colors } from '../../styles/globalStyles';
 
 const WritingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);

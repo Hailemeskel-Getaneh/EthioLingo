@@ -11,12 +11,10 @@ export const getLessons = async (req, res) => {
     const lessons = await Lesson.find(query);
 
     const filteredLessons = lessons.map(lesson => {
-      const filteredContent = {};
-      if (category && lesson.content[category.toLowerCase()]) {
-        filteredContent[category.toLowerCase()] = lesson.content[category.toLowerCase()];
-      } else {
-        filteredContent = lesson.content;
-      }
+      const filteredContent = category && lesson.content[category.toLowerCase()]
+        ? { [category.toLowerCase()]: lesson.content[category.toLowerCase()] }
+        : lesson.content;
+
       return {
         lesson_id: lesson.lesson_id,
         lesson_name: lesson.lesson_name,
