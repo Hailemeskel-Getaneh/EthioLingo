@@ -8,8 +8,8 @@ import userProfileRoute from "./routes/userProfileRoute.js";
 import AuthRoute from "./routes/authRoute.js";
 // import audioUploadRoutes from './routes/audioUploadRoutes.js'; 
 
-dotenv.config();
 
+dotenv.config();
 const app = express();
 
 app.use(cors());

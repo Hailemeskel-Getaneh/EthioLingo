@@ -11,6 +11,8 @@ export const saveLessons = async (lessons) => {
   }
 };
 
+
+
 export const getLessonsFromStorage = async () => {
   try {
     const lessons = await AsyncStorage.getItem(LESSONS_KEY);
@@ -20,6 +22,8 @@ export const getLessonsFromStorage = async () => {
     return [];
   }
 };
+
+
 
 export const clearLessons = async () => {
   try {

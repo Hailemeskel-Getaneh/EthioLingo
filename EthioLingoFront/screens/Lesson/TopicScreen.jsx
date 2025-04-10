@@ -25,55 +25,57 @@ function TopicScreen() {
       setError(null);
       try {
         let lessons = await getLessonsFromStorage();
+        console.log('Lessons from storage:', JSON.stringify(lessons, null, 2));
         let lesson = lessons.find(l => l.lesson_name === topic.title);
 
         if (!lesson) {
-          const response = await getLessons('Amharic', activeTab, topic.title);
+          const response = await getLessons('Amharic', null, topic.title); // Fetch all content
+          // console.log('API response:', JSON.stringify(response, null, 2));
+          console.log('Hailemeskel')
           if (response.success && response.data.length > 0) {
             lessons = response.data;
             await saveLessons(lessons);
             lesson = lessons.find(l => l.lesson_name === topic.title);
+            console.log('Lesson after API fetch:', JSON.stringify(lesson, null, 2));
           }
         }
 
         if (lesson) {
-          const content = lesson.content[activeTab] || {};
-
+          const content = lesson.content || {};
+          console.log(`Content for ${activeTab}:`, JSON.stringify(content, null, 2));
           let normalizedData;
           switch (activeTab) {
             case 'listening':
               normalizedData = {
                 title: lesson.lesson_name,
-                audioFiles: content.audioFiles || []
+                audioFiles: content.listening?.audioFiles || []
               };
               break;
             case 'speaking':
               normalizedData = {
                 title: lesson.lesson_name,
-                speakingExercises: content.speakingExercises || []
+                speakingExercises: content.speaking?.speakingExercises || []
               };
               break;
             case 'reading':
               normalizedData = {
                 title: lesson.lesson_name,
-                readingExercises: content.readingExercises || []
+                readingExercises: content.reading?.readingExercises || []
               };
               break;
             case 'writing':
               normalizedData = {
                 title: lesson.lesson_name,
-                writingExercises: content.writingExercises || []
+                writingExercises: content.writing?.writingExercises || []
               };
               break;
             default:
-              normalizedData = {
-                title: lesson.lesson_name,
-                audioFiles: []
-              };
+              normalizedData = { title: lesson.lesson_name, audioFiles: [] };
           }
-
+          console.log('Normalized topicData:', JSON.stringify(normalizedData, null, 2));
           setTopicData(normalizedData);
         } else {
+          console.log('No lesson found, setting fallback data');
           setTopicData({
             title: 'Topic Not Found',
             audioFiles: [],
@@ -83,7 +85,7 @@ function TopicScreen() {
           });
         }
       } catch (err) {
-        console.error('Error fetching topic data:', err.message, err.response?.data);
+        console.error('Error fetching topic data:', err.message);
         setError('Failed to load topic data: ' + err.message);
         setTopicData({
           title: 'Topic Not Found',
@@ -96,17 +98,13 @@ function TopicScreen() {
         setLoading(false);
       }
     };
-
     fetchTopicData();
   }, [activeTab, topic.title]);
 
   const renderContent = () => {
-    if (loading) {
-      return <Text className="text-center text-lg">Loading...</Text>;
-    }
-    if (error) {
-      return <Text className="text-center text-lg text-red-500">{error}</Text>;
-    }
+    if (loading) return <Text className="text-center text-lg">Loading...</Text>;
+    if (error) return <Text className="text-center text-lg text-red-500">{error}</Text>;
+    if (!topicData) return <Text className="text-center text-lg">No data loaded</Text>;
     switch (activeTab) {
       case 'listening':
         return <ListeningScreen topic={topic} data={topicData} />;
@@ -130,7 +128,6 @@ function TopicScreen() {
         <Text className="text-primaryText text-xl font-bold">{topic.title}</Text>
         <View className="w-7" />
       </View>
-
       <View className="flex-row justify-around p-2 bg-secondaryBackground rounded-b-2xl mb-4">
         {['listening', 'speaking', 'reading', 'writing'].map((tab) => (
           <TouchableOpacity
@@ -144,7 +141,6 @@ function TopicScreen() {
           </TouchableOpacity>
         ))}
       </View>
-
       <ScrollView className="flex-1 px-4 pb-4">{renderContent()}</ScrollView>
     </View>
   );
