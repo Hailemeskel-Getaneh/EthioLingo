@@ -1,50 +1,47 @@
 import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {Text, View, Image, TouchableOpacity,} from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../styles/globalStyles';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
-import { UserProfileContext  } from '../../contexts/UserProfileContext';
-
+import { UserProfileContext } from '../../contexts/UserProfileContext';
+import { NotificationContext } from '../../contexts/NotificationContext';
 
 function UserProfileScreen() {
   const navigation = useNavigation();
-  const { userProfile, loading } = useContext(UserProfileContext);
+  const { userProfile } = useContext(UserProfileContext);
+  const { notifications,loading } = useContext(NotificationContext);
+  const hasUnread = Array.isArray(notifications) && notifications.some((notif) => !notif.read);
 
   const user = {
-    progress: 60, 
+    progress: 60,
   };
-
-  if (loading || !userProfile) {
-    return (
-      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
-        <Text>Loading profile...</Text>
-      </View>
-    );
+  if (loading) {
+    return <Text>Loading...</Text>;
   }
 
   const {
-    username, learningLanguage, profileImage, records, points,
+    username, learningLanguage, profileImage, records, points
   } = userProfile;
 
-  if (!userProfile) {
-    return (
-      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
-        <Text>Loading profile...</Text>
-      </View>
-    );
-  }
-
-
   return (
-    <View className="flex-1 bg-primaryText">
+    <View className="flex-1 bg-primaryText ">
       <View className="p-6">
         <View className="flex-row justify-between items-center">
           <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
           <View className="flex-row space-x-10">
-          <TouchableOpacity onPress={() => navigation.navigate('NotficationScreen')}>
-            <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+            <TouchableOpacity onPress={() => navigation.navigate('NotficationScreen')}>
+              <View className="relative">
+                <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+              {hasUnread && (
+                <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                  <Text className="text-white text-xs font-bold">
+                    {notifications.filter((notif) => !notif.read).length}
+                  </Text>
+                </View>
+              )}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
               <Ionicons name="settings" size={24} color={colors.primaryBackground} />
@@ -85,10 +82,7 @@ function UserProfileScreen() {
             />
           </View>
           <Text className="text-screenText1 mt-2">
-            You completed
-            {records}
-            {' '}
-            Lessons.
+            You completed {records} Lessons.
           </Text>
         </View>
 
