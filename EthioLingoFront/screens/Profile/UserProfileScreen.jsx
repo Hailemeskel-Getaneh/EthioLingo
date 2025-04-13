@@ -43,7 +43,9 @@ function UserProfileScreen() {
         <View className="flex-row justify-between items-center">
           <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
           <View className="flex-row space-x-10">
+          <TouchableOpacity onPress={() => navigation.navigate('NotficationScreen')}>
             <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
               <Ionicons name="settings" size={24} color={colors.primaryBackground} />
             </TouchableOpacity>
