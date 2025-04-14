@@ -16,7 +16,7 @@ export const UserProvider = ({ children }) => {
         Alert.alert('Error', 'User ID not found');
         return;
       }
-      const profileData = await getUserProfile();  
+      const profileData = await getUserProfile(userId);  
       setUserProfile(profileData);  
     } catch (error) {
       console.error('Error fetching profile:', error);

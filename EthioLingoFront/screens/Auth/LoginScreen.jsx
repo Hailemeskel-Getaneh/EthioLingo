@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext} from 'react';
 import {
   TextInput, TouchableOpacity, View, Text, StyleSheet, Image,
 } from 'react-native';
@@ -6,8 +6,10 @@ import {
 import { login } from '../../utils/requests/api';
 import { colors } from '../../styles/globalStyles';
 import Button from '../../components/Common/Buttons';
+import { UserProfileContext } from '../../contexts/UserProfileContext';
 
 export default function Login({ navigation }) {
+  const { setUserProfile } = useContext(UserProfileContext); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -43,7 +45,7 @@ export default function Login({ navigation }) {
   };
   const handleLogin = async () => {
     try {
-      const response = await login(email, password, navigation); 
+      const response = await login(email, password, navigation,setUserProfile); 
       console.log('Login successful:', response);
     } catch (error) {
       console.error('Login failed:', error);
