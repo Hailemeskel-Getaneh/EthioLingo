@@ -33,6 +33,7 @@ import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
 import NotficationScreen from '../screens/Profile/NotificationScreen.jsx' 
 import { ThemeProvider } from '../contexts/themeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
+import {NotificationProvider} from '../contexts/NotificationContext.jsx'
 import PaymentScreen from '../screens/PaymenetScreen/PaymentScreen.jsx';
 
 // Placeholder screens
@@ -87,6 +88,7 @@ function LessonDrawerNavigator() {
 
 function AppNavigator() {
   return (
+    <NotificationProvider>
     <UserProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
@@ -121,6 +123,7 @@ function AppNavigator() {
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>
+    </NotificationProvider>
   );
 }
 
