@@ -104,7 +104,7 @@ function EditProfileScreen() {
         setShowSuccessMessage(true);
         setTimeout(() => {
           setShowSuccessMessage(false);
-          navigation.goBack();
+          navigation.goBack(); 
         }, 1000);
       }
     } catch (error) {

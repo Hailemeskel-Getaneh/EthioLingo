@@ -92,7 +92,7 @@ export const updateUserProfile = async (req, res) => {
   
     const user = await userModel.findOneAndUpdate(
       { userId }, 
-      { username }, 
+      { fullName:username }, 
       { new: true } 
     );
 

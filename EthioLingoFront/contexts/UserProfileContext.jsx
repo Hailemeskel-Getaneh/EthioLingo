@@ -29,18 +29,21 @@ export const UserProvider = ({ children }) => {
   // Function to update the user profile
   const updateUserProfileData = async (updatedProfile) => {
     try {
-      const success = await updateUserProfile(updatedProfile); 
+      const success = await updateUserProfile(updatedProfile); // your API call
       if (success) {
         setUserProfile((prevProfile) => ({
           ...prevProfile,
-          ...updatedProfile, 
+          ...updatedProfile,
         }));
+        return true; // ✅ add this
       } else {
         Alert.alert('Error', 'Failed to update profile');
+        return false;
       }
     } catch (error) {
       console.error('Error updating profile:', error);
       Alert.alert('Error', 'There was an issue updating your profile.');
+      return false;
     }
   };
 
