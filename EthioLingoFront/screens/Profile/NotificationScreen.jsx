@@ -10,7 +10,7 @@ import { NotificationContext } from '../../contexts/NotificationContext';
 function Notification() {
   const navigation = useNavigation();
   const { notifications, markNotificationAsRead } = useContext(NotificationContext);
-  const [filter, setFilter] = useState('all'); // 'all' or 'unread'
+  const [filter, setFilter] = useState('all'); 
 
   useEffect(() => {
     

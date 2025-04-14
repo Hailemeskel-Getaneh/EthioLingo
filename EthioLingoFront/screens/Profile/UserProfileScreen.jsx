@@ -11,19 +11,18 @@ import { NotificationContext } from '../../contexts/NotificationContext';
 function UserProfileScreen() {
   const navigation = useNavigation();
   const { userProfile } = useContext(UserProfileContext);
-  const { notifications,loading } = useContext(NotificationContext);
-  const hasUnread = Array.isArray(notifications) && notifications.some((notif) => !notif.read);
+  const { unreadNotifications } = useContext(NotificationContext);
+  const hasUnread = unreadNotifications.length > 0;
+ 
 
   const user = {
     progress: 60,
   };
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
 
-  const {
-    username, learningLanguage, profileImage, records, points
-  } = userProfile;
+
+
+  const { username, learningLanguage, profileImage, records, points, notifications = [] } = userProfile;
+
 
   return (
     <View className="flex-1 bg-primaryText ">
@@ -34,13 +33,14 @@ function UserProfileScreen() {
             <TouchableOpacity onPress={() => navigation.navigate('NotficationScreen')}>
               <View className="relative">
                 <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
-              {hasUnread && (
+                {hasUnread && (
                 <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
                   <Text className="text-white text-xs font-bold">
-                    {notifications.filter((notif) => !notif.read).length}
+                    {unreadNotifications.length}
                   </Text>
                 </View>
               )}
+
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
