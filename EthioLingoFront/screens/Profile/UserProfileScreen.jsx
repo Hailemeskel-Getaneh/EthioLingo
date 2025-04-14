@@ -25,7 +25,7 @@ function UserProfileScreen() {
   }
 
   const {
-    username, learningLanguage, profileImage, records, points,
+      fullName, learningLanguage, profileImage, records, points,
   } = userProfile;
 
   if (!userProfile) {
@@ -62,7 +62,7 @@ function UserProfileScreen() {
               <Ionicons name="pencil" size={16} color="white" />
             </TouchableOpacity>
           </View>
-          <Text className="text-primaryText mt-2 text-center">{username}</Text>
+          <Text className="text-primaryText mt-2 text-center">{fullName}</Text>
           <Text className="text-primaryText mt-2 text-center">{learningLanguage}</Text>
         </View>
 

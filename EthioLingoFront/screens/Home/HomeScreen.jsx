@@ -37,7 +37,7 @@ function HomeScreen() {
   const [selectedLanguage, setSelectedLanguage] = useState('Amharic');
   const { userProfile } = useContext(UserProfileContext);
   const {
-    username,profileImage,points
+    fullName,profileImage,points
   } = userProfile;
 
   const languages = [
@@ -57,7 +57,7 @@ function HomeScreen() {
             />
             <View className="ml-3">
               <Text className="text-white text-lg font-bold">Hello!</Text>
-              <Text className="text-white">{username}</Text>
+              <Text className="text-white">{fullName}</Text>
             </View>
           </View>
           <View className="flex-row items-center">

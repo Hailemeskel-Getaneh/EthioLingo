@@ -13,7 +13,7 @@ function EditProfileScreen() {
   const navigation = useNavigation();
   const { userProfile, updateUserProfileData } = useContext(UserProfileContext);
 
-  const [username, setUsername] = useState('');
+  const [fullName, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [goal, setGoal] = useState('');
   const [profileImage, setProfileImage] = useState(null);
@@ -22,7 +22,7 @@ function EditProfileScreen() {
 
   useEffect(() => {
     if (userProfile) {
-      setUsername(userProfile.username || '');
+      setUsername(userProfile.fullName || '');
       setEmail(userProfile.email || '');
       setGoal(userProfile.goalTime ? String(userProfile.goalTime) : '');
       setProfileImage(userProfile.profileImage || null);
@@ -92,7 +92,7 @@ function EditProfileScreen() {
     }
 
     const updatedProfile = {
-      username,
+      fullName,
       goalTime: Number(goal),
       profileImage,
     };
@@ -150,9 +150,9 @@ function EditProfileScreen() {
       </View>
 
       <View className="mt-6">
-        <Text className="text-screenText1">Username</Text>
+        <Text className="text-screenText1">Fullname</Text>
         <TextInput
-          value={username}
+          value={fullName}
           onChangeText={setUsername}
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
           placeholder="Enter new username"
