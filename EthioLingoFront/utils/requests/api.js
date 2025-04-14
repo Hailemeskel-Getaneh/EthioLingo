@@ -112,39 +112,43 @@ async function fetchAPI(endpoint, options = {}) {
 
 
 
-export const login = async (email, password, navigation) => {
-  try {
-    const response = await fetchAPI('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response) {
-      const { userId, accessToken, refreshToken, redirectTo } = response;
-
-      if (userId && accessToken && refreshToken) {
-        await SecureStore.setItemAsync('userId', userId);
-        await SecureStore.setItemAsync('access_token', accessToken);
-        await SecureStore.setItemAsync('refresh_token', refreshToken);
-
-        
-        if (redirectTo === 'language-selection') {
-          navigation.navigate('LanguageSelectionScreen'); 
-        } else if (redirectTo === 'home') {
-          navigation.navigate('HomeScreen'); 
+export const login = async (email, password, navigation, setUserProfile) => {
+    try {
+      const response = await fetchAPI('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response) {
+        const { userId, accessToken, refreshToken, redirectTo } = response;
+  
+        if (userId && accessToken && refreshToken) {
+          await SecureStore.setItemAsync('userId', userId);
+          await SecureStore.setItemAsync('access_token', accessToken);
+          await SecureStore.setItemAsync('refresh_token', refreshToken);
+  
+          setUserProfile(null); 
+          const profile = await getUserProfile(userId);
+          setUserProfile(profile);
+  
+          if (redirectTo === 'language-selection') {
+            navigation.navigate('LanguageSelectionScreen');
+          } else if (redirectTo === 'home') {
+            navigation.navigate('HomeScreen');
+          } else {
+            console.error('Unknown redirect target');
+          }
         } else {
-          console.error('Unknown redirect target');
+          console.error('Missing login credentials in response');
         }
-      } else {
-        console.error('Missing credentials during login');
       }
+  
+      return response;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
     }
-    return response;
-  } catch (error) {
-    console.error('Login failed:', error);
-    throw error;
-  }
-};
+  };
 
 
 
@@ -234,41 +238,40 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
 };
 
 
-export const getUserProfile = async () => {
-  try {
-   
-    let access_token = await rotateToken();  
-    if (!access_token) {
-      Alert.alert('Error', 'No valid access token found');
-      throw new Error('No valid token found');
-    }
-    const userId = await SecureStore.getItemAsync('userId');
-
-    if (!userId) {
-      throw new Error('User ID not found');
-    }
-    const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
-      
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-      
-    });
+export const getUserProfile = async (userIdParam) => {
+    try {
+      const access_token = await rotateToken();
+      if (!access_token) {
+        Alert.alert('Error', 'No valid access token found');
+        throw new Error('No valid token found');
+      }
   
-return response.data;
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-
-    if (error.response && error.response.status === 404) {
-      Alert.alert('Profile not found', 'The user profile does not exist.');
-    } else if (error.message === 'No valid token found') {
-      Alert.alert('Error', 'Please login again');
-    } else {
-      Alert.alert('Error', 'There was an issue fetching your profile.');
+      const userId = userIdParam || await SecureStore.getItemAsync('userId');
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+  
+      const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+  
+      if (error.response && error.response.status === 404) {
+        Alert.alert('Profile not found', 'The user profile does not exist.');
+      } else if (error.message === 'No valid token found') {
+        Alert.alert('Error', 'Please login again');
+      } else {
+        Alert.alert('Error', 'There was an issue fetching your profile.');
+      }
+      throw error;
     }
-    throw error;
-  }
-};
+  };
+  
 
 export const updateUserProfile = async ({ username, goalTime, profileImage }) => {
   try {
