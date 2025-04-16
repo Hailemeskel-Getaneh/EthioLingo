@@ -13,7 +13,7 @@ import LanguageSelectionScreen from '../screens/Profile/LanguageSelectionScreen'
 import SetGoalScreen from '../screens/Profile/SetGoalScreen';
 import LessonScreen from '../screens/Lesson/LessonScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import SignupScreen from '../screens/Auth/SignupScreen';
+import SignupScreen from '../screens/Auth/SignUpScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
