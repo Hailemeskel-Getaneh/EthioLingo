@@ -111,7 +111,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       }));
       Alert.alert(
         isMatch ? 'Correct!' : 'Wrong!',
-        isMatch ? 'Great job!' : 'The duration doesn’t match the original.',
+        isMatch ? 'Great job!' : "The duration doesn't match the original.",
         [
           { text: 'OK', onPress: () => {} },
         ]
@@ -207,58 +207,61 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       </Text>
 
       {/* Mother Tongue Text */}
-      <View className="bg-accent3 p-6 rounded-xl shadow-lg mb-6">
+      <View className="bg-accent7 p-6 rounded-xl mb-6">
         <Text className="text-screenText text-lg">{currentExercise.motherTongueText}</Text>
       </View>
 
       {/* Learning Language Text with Play Button */}
-      <View className="bg-accent5 p-6 rounded-xl shadow-lg mb-6">
-        <View className="flex-row items-center">
-          <Text className="text-screenText text-lg mr-2">{currentExercise.learningText}</Text>
+      <View className="bg-accent6 p-6 rounded-xl shadow-lg mb-6">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-screenText text-lg mr-2 flex-1">{currentExercise.learningText}</Text>
           <TouchableOpacity
-            className="items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-accent1"
+            className="items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200"
             onPress={loadAndPlayAudio}
-            disabled={isPlaying || !sound}
+            disabled={isPlaying}
           >
             <Ionicons
               name={isPlaying ? 'pause' : 'volume-high'}
               size={20}
-              color="#313574"
+              color={colors.primaryBackground}
             />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Record Button */}
-      <TouchableOpacity
-        className={`items-center justify-center w-16 h-16 rounded-full ${
-          isRecording ? 'bg-red-300' : 'bg-white'
-        } border-2 border-accent1 self-center mb-6`}
-        onPress={isRecording ? stopRecording : startRecording}
-      >
-        <Ionicons
-          name={isRecording ? 'stop' : 'mic'}
-          size={30}
-          color="#313574"
-        />
-        <Text className="text-screenText text-center text-xs mt-1">Hold to speak</Text>
-      </TouchableOpacity>
+      {/* Record Button Area */}
+      <View className="items-center mb-6">
+        <TouchableOpacity
+          className={`items-center justify-center w-20 h-20 rounded-full ${
+            isRecording ? 'bg-lightRed' : 'bg-white'
+          } border-2 border-accent1 shadow-md`}
+          onPress={isRecording ? stopRecording : startRecording}
+        >
+          <Ionicons
+            name={isRecording ? 'stop' : 'mic'}
+            size={36}
+            color={colors.primaryBackground}
+          />
+        </TouchableOpacity>
+        <Text className="text-screenText1 text-sm mt-2">{isRecording ? 'Tap to Stop' : 'Hold to Speak'}</Text>
+      </View>
 
       {/* Retry and Check Buttons */}
-      <View className="flex-row justify-center mb-6">
+      <View className="flex-row justify-center items-center mb-8">
         {recordingUri && (
           <TouchableOpacity
-            className="bg-accent2 py-3 px-6 rounded-lg mr-4"
+            className="bg-accent4 py-3 px-6 rounded-lg mr-4 shadow"
             onPress={retryRecording}
           >
-            <Text className="text-primaryText text-base font-bold">Retry</Text>
+            <Text className="text-primaryText text-base font-semibold">Retry</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          className="bg-primaryBackground py-3 px-10 rounded-lg"
+          className={`py-3 px-10 rounded-lg shadow ${!recordingUri ? 'bg-gray-400' : 'bg-primaryBackground'}`}
           onPress={checkRecording}
+          disabled={!recordingUri}
         >
-          <Text className="text-primaryText text-base font-bold">Check</Text>
+          <Text className="text-primaryText text-base font-semibold">Check</Text>
         </TouchableOpacity>
       </View>
 

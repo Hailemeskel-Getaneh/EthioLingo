@@ -1,4 +1,3 @@
-
 import { StyleSheet } from 'react-native';
 
 export const colors = {
@@ -13,9 +12,9 @@ export const colors = {
   blueColor: '#211C84',
 
   accent1: '#fbfaff',
-  accent2: '#70a595',
-  accent3: '#959163',
-  accent4: '#d4ac9a',
+  accent2: '#4DD0E1',
+  accent3: '#90A4AE',
+  accent4: '#B0BEC5',
   accent5: '#e0c4aa',
   accent6:'#e1e2f0',
   accent7:'#f1f2c2',
