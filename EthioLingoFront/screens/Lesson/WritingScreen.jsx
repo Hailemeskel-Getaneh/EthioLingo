@@ -66,29 +66,29 @@ const WritingScreen = React.memo(({ topic, data }) => {
     <ScrollView className="flex-1 bg-screenBackground p-6">
       <Text className="text-2xl font-bold text-screenText text-center mb-6">Writing Exercise</Text>
 
-      <View className="flex-row justify-center mb-6">
+      {/* Progress Indicator */}
+      <View className="flex-row justify-center mb-12">
         {Array.from({ length: 10 }, (_, i) => {
           const status = answerStatuses[i];
-          let bgColor = 'bg-listBarBackground';
+          let bgColor = 'bg-accent6';
+          let textColor = 'text-screenText';
+
           if (i === currentExerciseIndex) {
             bgColor = 'bg-accent2';
+            textColor = 'text-primaryText';
           } else if (status === 'correct') {
-            bgColor = 'bg-primaryBackground';
+            bgColor = 'bg-accent2';
+            textColor = 'text-primaryText';
           } else if (status === 'incorrect') {
-            bgColor = 'bg-accent4';
+            bgColor = 'bg-lightRed';
+            textColor = 'text-primaryText';
           }
           return (
             <View
               key={i}
               className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${bgColor}`}
             >
-              <Text
-                className={`text-base ${
-                  i === currentExerciseIndex || status === 'correct' || status === 'incorrect'
-                    ? 'text-primaryText'
-                    : 'text-screenText'
-                }`}
-              >
+              <Text className={`text-base font-medium ${textColor}`}>
                 {i + 1}
               </Text>
             </View>
@@ -96,41 +96,42 @@ const WritingScreen = React.memo(({ topic, data }) => {
         })}
       </View>
 
-      <Text className="text-screenText text-base text-center mb-4">
+      <Text className="text-screenText text-base text-center mb-4 mt-6">
         Write the equivalent phrase in the learning language.
       </Text>
 
       {/* Mother Tongue Text */}
-      <View className="bg-accent3 p-6 rounded-xl shadow-lg mb-6">
-        <Text className="text-screenText text-lg">{currentExercise.motherTongueText}</Text>
+      <View className="bg-listBarBackground p-6 rounded-xl shadow-md mb-6">
+        <Text className="text-screenText text-lg text-center">{currentExercise.motherTongueText}</Text>
       </View>
 
       {/* Input Field */}
-      <View className="bg-accent5 p-6 rounded-xl shadow-lg mb-6">
+      <View className="bg-listBarBackground p-6 rounded-xl shadow-md mb-6">
         <TextInput
-          className="text-screenText text-base p-2 border border-primaryBackground rounded-lg"
+          className="text-screenText text-base p-3 border border-accent6 rounded-lg bg-accent1"
           placeholder="Type here..."
           placeholderTextColor={colors.listBarText}
           value={userInput}
           onChangeText={setUserInput}
           multiline={true}
           numberOfLines={3}
+          textAlignVertical="top"
         />
       </View>
 
       {/* Check Button */}
       <TouchableOpacity
-        className="bg-primaryBackground py-3 px-10 rounded-lg self-center mb-6"
+        className="bg-primaryBackground py-3 px-10 rounded-lg self-center mb-8 shadow-sm"
         onPress={handleCheck}
       >
-        <Text className="text-primaryText text-base font-bold">Check</Text>
+        <Text className="text-primaryText text-lg font-bold">Check</Text>
       </TouchableOpacity>
 
       {/* Navigation Controls */}
-      <View className="flex-row justify-between mb-6">
+      <View className="flex-row justify-between items-center mb-6">
         <TouchableOpacity
           className={`p-3 rounded-full ${
-            currentExerciseIndex === 0 ? 'bg-gray-300' : 'bg-accent2'
+            currentExerciseIndex === 0 ? 'bg-accent6' : 'bg-accent2'
           }`}
           onPress={handleBack}
           disabled={currentExerciseIndex === 0}
@@ -138,14 +139,18 @@ const WritingScreen = React.memo(({ topic, data }) => {
           <Ionicons
             name="arrow-back"
             size={24}
-            color={currentExerciseIndex === 0 ? '#9ca3af' : '#f0f2f5'}
+            color={currentExerciseIndex === 0 ? colors.listBarText : colors.primaryText}
           />
         </TouchableOpacity>
+
+        <Text className="text-screenText text-sm">
+          {currentExerciseIndex + 1} / {writingExercises.length}
+        </Text>
 
         <TouchableOpacity
           className={`p-3 rounded-full ${
             currentExerciseIndex === writingExercises.length - 1
-              ? 'bg-gray-300'
+              ? 'bg-accent6'
               : 'bg-accent2'
           }`}
           onPress={handleNext}
@@ -156,8 +161,8 @@ const WritingScreen = React.memo(({ topic, data }) => {
             size={24}
             color={
               currentExerciseIndex === writingExercises.length - 1
-                ? '#9ca3af'
-                : '#f0f2f5'
+                ? colors.listBarText
+                : colors.primaryText
             }
           />
         </TouchableOpacity>

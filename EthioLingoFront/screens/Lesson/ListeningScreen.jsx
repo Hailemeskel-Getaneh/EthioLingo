@@ -156,13 +156,18 @@ const ListeningScreen = React.memo(({ topic, data }) => {
         <View className="flex-row justify-center mb-4">
           {Array.from({ length: 10 }, (_, i) => {
             const status = answerStatuses[i];
-            let bgColor = 'bg-listBarBackground';
+            let bgColor = 'bg-accent6';
+            let textColor = 'text-screenText';
+
             if (i === currentAudioIndex) {
               bgColor = 'bg-accent2';
+              textColor = 'text-primaryText';
             } else if (status === 'correct') {
-              bgColor = 'bg-primaryBackground';
+              bgColor = 'bg-accent2';
+              textColor = 'text-primaryText';
             } else if (status === 'incorrect') {
-              bgColor = 'bg-accent4';
+              bgColor = 'bg-lightRed';
+              textColor = 'text-primaryText';
             }
 
             return (
@@ -170,11 +175,7 @@ const ListeningScreen = React.memo(({ topic, data }) => {
                 key={i}
                 className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${bgColor}`}
               >
-                <Text className={`text-base ${
-                  i === currentAudioIndex || status === 'correct' || status === 'incorrect'
-                    ? 'text-primaryText'
-                    : 'text-screenText'
-                }`}>
+                <Text className={`text-base font-medium ${textColor}`}>
                   {i + 1}
                 </Text>
               </View>

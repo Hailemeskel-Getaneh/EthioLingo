@@ -157,13 +157,13 @@ const ReadingScreen = React.memo(({ topic, data }) => {
       <View className="flex-row justify-center mb-6">
         {Array.from({ length: 10 }, (_, i) => {
           const status = answerStatuses[i];
-          let bgColor = 'bg-listBarBackground';
+          let bgColor = 'bg-accent6';
           if (i === currentExerciseIndex) {
             bgColor = 'bg-accent2';
           } else if (status === 'correct') {
-            bgColor = 'bg-primaryBackground';
+            bgColor = 'bg-accent2';
           } else if (status === 'incorrect') {
-            bgColor = 'bg-accent4';
+            bgColor = 'bg-lightRed';
           }
           return (
             <View
