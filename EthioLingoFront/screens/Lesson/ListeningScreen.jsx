@@ -149,80 +149,96 @@ const ListeningScreen = React.memo(({ topic, data }) => {
   }
 
   return (
-    <View className="flex-1 p-6 justify-center bg-screenBackground">
-      <Text className="text-screenText text-base text-center mb-2">Choose the correct question</Text>
+    <View className="flex-1 p-6 justify-between bg-screenBackground">
+      {/* Top Section: Progress Bar */}
+      <View>
+        <Text className="text-screenText text-base text-center mb-2">Choose the correct question</Text>
+        <View className="flex-row justify-center mb-4">
+          {Array.from({ length: 10 }, (_, i) => {
+            const status = answerStatuses[i];
+            let bgColor = 'bg-listBarBackground';
+            if (i === currentAudioIndex) {
+              bgColor = 'bg-accent2';
+            } else if (status === 'correct') {
+              bgColor = 'bg-primaryBackground';
+            } else if (status === 'incorrect') {
+              bgColor = 'bg-accent4';
+            }
 
-      <View className="flex-row justify-center mb-4">
-        {Array.from({ length: 10 }, (_, i) => {
-          const status = answerStatuses[i];
-          let bgColor = 'bg-listBarBackground';
-          if (i === currentAudioIndex) {
-            bgColor = 'bg-accent2';
-          } else if (status === 'correct') {
-            bgColor = 'bg-primaryBackground';
-          } else if (status === 'incorrect') {
-            bgColor = 'bg-accent4';
-          }
-
-          return (
-            <View
-              key={i}
-              className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${bgColor}`}
-            >
-              <Text className={`text-base ${
-                i === currentAudioIndex || status === 'correct' || status === 'incorrect'
-                  ? 'text-primaryText'
-                  : 'text-screenText'
-              }`}>
-                {i + 1}
-              </Text>
-            </View>
-          );
-        })}
+            return (
+              <View
+                key={i}
+                className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${bgColor}`}
+              >
+                <Text className={`text-base ${
+                  i === currentAudioIndex || status === 'correct' || status === 'incorrect'
+                    ? 'text-primaryText'
+                    : 'text-screenText'
+                }`}>
+                  {i + 1}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
       </View>
 
-      <Text className="text-screenText text-base text-center mb-4">Listen to the audio and identify the phrase.</Text>
+      {/* Middle Section: Prompt, Text, Audio Controls, Options */}
+      <View className="flex-1 justify-center mb-6">
+        <Text className="text-screenText text-base text-center mb-2">Listen to the audio and identify the phrase.</Text>
+        <Text className="text-screenText text-xl font-bold text-center mb-6">{currentAudio.correctText}</Text>
 
-      <Text className="text-screenText text-xl font-bold text-center mb-4">{currentAudio.correctText}</Text>
-
-      <TouchableOpacity
-        className="items-center justify-center w-16 h-16 rounded-full bg-white self-center mb-4 border-2 border-accent1"
-        onPress={handlePlayPause}
-        disabled={isLoading}
-      >
-        {isLoading ? (
-          <ActivityIndicator size="small" color="#313574" />
-        ) : (
-          <Ionicons name={isPlaying ? 'pause' : 'volume-high'} size={24} color="#313574" />
-        )}
-      </TouchableOpacity>
-
-      <View className="mb-4">
-        {currentAudio.options.map((option, index) => (
+        {/* Audio Controls */}
+        <View className="flex-row justify-center items-center mb-6 space-x-4">
           <TouchableOpacity
-            key={index}
-            className={`p-3 my-1 ${
-              selectedOption === option ? 'bg-primaryBackground' : 'bg-listBarBackground'
-            } rounded-lg border border-primaryBackground`}
-            onPress={() => setSelectedOption(option)}
+            className="items-center justify-center w-16 h-16 rounded-full bg-white border-2 border-accent1"
+            onPress={handlePlayPause}
+            disabled={isLoading}
           >
-            <Text className={`text-center ${selectedOption === option ? 'text-primaryText' : 'text-listBarText'}`}>
-              {option}
-            </Text>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#313574" />
+            ) : (
+              <Ionicons name={isPlaying ? 'pause' : 'volume-high'} size={24} color="#313574" />
+            )}
           </TouchableOpacity>
-        ))}
+          <TouchableOpacity
+            className="bg-primaryBackground py-2 px-4 rounded-lg"
+            onPress={handleSpeedChange}
+          >
+            <Text className="text-primaryText text-base font-bold">Speed: {playbackSpeed}x</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Options */}
+        <View className="mb-6">
+          {currentAudio.options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              className={`p-3 my-1 ${
+                selectedOption === option ? 'bg-primaryBackground' : 'bg-listBarBackground'
+              } rounded-lg border border-primaryBackground`}
+              onPress={() => setSelectedOption(option)}
+            >
+              <Text className={`text-center ${selectedOption === option ? 'text-primaryText' : 'text-listBarText'}`}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Check Button */}
+        <TouchableOpacity
+          className="bg-primaryBackground py-3 px-10 rounded-lg self-center"
+          onPress={checkAnswer}
+        >
+          <Text className="text-primaryText text-base font-bold">Check</Text>
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        className="bg-primaryBackground py-3 px-10 rounded-lg self-center mb-4"
-        onPress={checkAnswer}
-      >
-        <Text className="text-primaryText text-base font-bold">Check</Text>
-      </TouchableOpacity>
-
-      <View className="flex-row justify-center mb-4">
+      {/* Bottom Section: Navigation */}
+      <View className="flex-row justify-between mb-4">
         <TouchableOpacity
-          className={`bg-accent2 py-3 px-4 rounded-lg mr-4 ${
+          className={`bg-accent2 py-3 px-6 rounded-lg flex-1 mr-2 items-center ${
             currentAudioIndex <= 0 ? 'opacity-50' : ''
           }`}
           onPress={handlePrevious}
@@ -232,7 +248,7 @@ const ListeningScreen = React.memo(({ topic, data }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className={`bg-accent2 py-3 px-4 rounded-lg ${
+          className={`bg-accent2 py-3 px-6 rounded-lg flex-1 ml-2 items-center ${
             currentAudioIndex >= audioTracks.length - 1 ? 'opacity-50' : ''
           }`}
           onPress={handleNext}
@@ -241,13 +257,6 @@ const ListeningScreen = React.memo(({ topic, data }) => {
           <Ionicons name="arrow-forward" size={24} color="#f0f2f5" />
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity
-        className="bg-primaryBackground py-3 px-10 rounded-lg self-center"
-        onPress={handleSpeedChange}
-      >
-        <Text className="text-primaryText text-base font-bold">Speed: {playbackSpeed}x</Text>
-      </TouchableOpacity>
     </View>
   );
 });
