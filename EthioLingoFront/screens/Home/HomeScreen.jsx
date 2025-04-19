@@ -57,7 +57,7 @@ function HomeScreen() {
             />
             <View className="ml-3">
               <Text className="text-white text-lg font-bold">Hello!</Text>
-              <Text className="text-white">{fullName}</Text>
+              <Text className="text-white">fullName</Text>
             </View>
           </View>
           <View className="flex-row items-center">
