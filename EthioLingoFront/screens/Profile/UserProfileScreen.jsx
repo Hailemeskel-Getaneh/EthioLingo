@@ -1,58 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Text, View, Image, TouchableOpacity,
-} from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../styles/globalStyles';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
+import { UserProfileContext } from '../../contexts/UserProfileContext';
+import { NotificationContext } from '../../contexts/NotificationContext';
 
 function UserProfileScreen() {
-  const navigation = useNavigation('');
-  // Hardcoded user data for now
+  const navigation = useNavigation();
+  const { userProfile } = useContext(UserProfileContext);
+  const { unreadNotifications } = useContext(NotificationContext);
+  const hasUnread = unreadNotifications.length > 0;
+ 
 
-  const userProfile = {
-    username: 'abebe',
-    language: 'English',
-    profileImage: 'https://via.placeholder.com/150',
+  const user = {
     progress: 60,
-    records: 10,
-    points: 500,
   };
-    // const [userProfile, setUserProfile] = useState(null);
-  // useEffect(() => {
-  //   const fetchUserProfile = async () => {
-  //     try {
-  //       const profileData = await getUserProfile(userId);
-  //       setUserProfile(profileData);
-  //     } catch (error) {
-  //       console.error('Error fetching profile:', error);
-  //     }
-  //   };
 
-  //   fetchUserProfile();
-  // }, []);
 
-  if (!userProfile) {
-    return (
-      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
-        <Text>Loading profile...</Text>
-      </View>
-    );
-  }
 
-  const {
-    username, language, profileImage, progress, records, points,
-  } = userProfile;
+  const {   fullName, learningLanguage, profileImage, records, points, notifications = [] } = userProfile;
+
 
   return (
-    <View className="flex-1 bg-primaryText">
+    <View className="flex-1 bg-primaryText ">
       <View className="p-6">
         <View className="flex-row justify-between items-center">
           <Text className="text-lg font-bold text-primaryBackground text-center">Profile</Text>
           <View className="flex-row space-x-10">
-            <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+            <TouchableOpacity onPress={() => navigation.navigate('NotficationScreen')}>
+              <View className="relative">
+                <Ionicons name="notifications" size={24} color={colors.primaryBackground} />
+                {hasUnread && (
+                <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                  <Text className="text-white text-xs font-bold">
+                    {unreadNotifications.length}
+                  </Text>
+                </View>
+              )}
+
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
               <Ionicons name="settings" size={24} color={colors.primaryBackground} />
             </TouchableOpacity>
@@ -69,33 +59,30 @@ function UserProfileScreen() {
               <Ionicons name="pencil" size={16} color="white" />
             </TouchableOpacity>
           </View>
-          <Text className="text-primaryText mt-2 text-center">{username}</Text>
-          <Text className="text-primaryText mt-2 text-center">{language}</Text>
+          <Text className="text-primaryText mt-2 text-center">{fullName}</Text>
+          <Text className="text-primaryText mt-2 text-center">{learningLanguage}</Text>
         </View>
 
         <View className="mt-6 w-full p-4 border-2 border-primaryBackground rounded-lg">
           <Text className="text-lg font-bold text-primaryBackground">Learning Progress</Text>
           <View className="flex flex-row items-center space-x-8 mt-2">
             <View className="w-80 h-2 bg-gray-300 rounded-md overflow-hidden">
-              <View className="h-full bg-primaryBackground" style={{ width: `${progress}%` }} />
+              <View className="h-full bg-primaryBackground" style={{ width: `${user.progress}%` }} />
             </View>
             <Progress.Circle
               size={45}
-              progress={progress / 100}
+              progress={user.progress / 100}
               showsText
               progressColor={{ color: '#313574' }}
               unfilledColor="#e0e0e0"
               borderWidth={0}
               thickness={3}
               textStyle={{ fontSize: 14, color: '#313574' }}
-              formatText={() => `${progress}%`}
+              formatText={() => `${user.progress}%`}
             />
           </View>
           <Text className="text-screenText1 mt-2">
-            You completed
-            {records}
-            {' '}
-            Lessons.
+            You completed {records} Lessons.
           </Text>
         </View>
 

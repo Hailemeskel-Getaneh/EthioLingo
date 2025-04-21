@@ -1,5 +1,5 @@
 import express from 'express';
-import {getUserProfile, createProfile} from '../controllers/userProfileController.js';
+import {getUserProfile, createProfile,updateUserProfile} from '../controllers/userProfileController.js';
 
 
 
@@ -7,8 +7,9 @@ const router=  express.Router();
 
 
 router.get("/:userId", getUserProfile); 
-// router.post("/:userId", updateUserProfile); 
-router.post('/create-profile/:userId', createProfile);
+router.put('/update-profile/:userId', updateUserProfile);
+router.post('/create-profile', createProfile);
+
 
 
 

@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   Text, View, TextInput, TouchableOpacity, Image, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import { colors } from '../../styles/globalStyles';
 import Button from '../../components/Common/Buttons';
+import { colors } from '../../styles/globalStyles';
+import { UserProfileContext } from '../../contexts/UserProfileContext'; 
 
 function EditProfileScreen() {
   const navigation = useNavigation();
+  const { userProfile, updateUserProfileData } = useContext(UserProfileContext);
 
-  const [username, setUsername] = useState('username');
-  const [email, setEmail] = useState('user@example.com');
-  const [Goal, setGoal] = useState('15min');
+  const [fullName, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [goal, setGoal] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isEmailEditable, setIsEmailEditable] = useState(false);
+
+  useEffect(() => {
+    if (userProfile) {
+      setUsername(userProfile.fullName || '');
+      setEmail(userProfile.email || '');
+      setGoal(userProfile.goalTime ? String(userProfile.goalTime) : '');
+      setProfileImage(userProfile.profileImage || null);
+    }
+  }, [userProfile]);
 
   useEffect(() => {
     (async () => {
@@ -51,30 +63,63 @@ function EditProfileScreen() {
     }
   };
 
-  const saveProfile = () => {
+  const deleteProfileImage = () => {
     Alert.alert(
-      'Are you sure?',
-      'Do you want to save your changes?',
+      'Delete Profile Image',
+      'Are you sure you want to delete your profile image?',
       [
         {
-          text: 'Discard',
+          text: 'Cancel',
+          onPress: () => console.log('Image delete canceled'),
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Delete',
           onPress: () => {
-            // Logic to save changes (e.g., API call or local storage update)
-            setShowSuccessMessage(true);
-
-            setTimeout(() => {
-              setShowSuccessMessage(false);
-            }, 1000);
+            setProfileImage(null); 
+            Alert.alert('Success', 'Profile image deleted successfully');
           },
         },
       ],
-      { cancelable: true },
+      { cancelable: false }
     );
   };
+
+  const saveProfile = async () => {
+    if (isEmailEditable) {
+      Alert.alert('Error', 'Email cannot be edited.');
+      return;
+    }
+
+    const updatedProfile = {
+      fullName,
+      goalTime: Number(goal),
+      profileImage,
+    };
+
+    try {
+      const success = await updateUserProfileData(updatedProfile);
+
+      if (success) {
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+          navigation.goBack(); 
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      Alert.alert('Error', 'There was an issue saving your profile.');
+    }
+  };
+
+  if (!userProfile) {
+    return (
+      <View className="flex-1 justify-center items-center bg-primaryText text-homeBackground">
+        <Text>Loading profile...</Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-white p-6">
@@ -87,10 +132,12 @@ function EditProfileScreen() {
       </View>
 
       <View className="items-center mt-6">
-        <Image
-          source={profileImage ? { uri: profileImage } : require('../../assets/images/SampleProfileImage.png')}
-          className="w-24 h-24 rounded-full border-2 border-primaryBackground"
-        />
+        <TouchableOpacity onPress={deleteProfileImage}>
+          <Image
+            source={profileImage ? { uri: profileImage } : require('../../assets/images/SampleProfileImage.png')}
+            className="w-24 h-24 rounded-full border-2 border-primaryBackground"
+          />
+        </TouchableOpacity>
       </View>
 
       <View className="mt-4 flex-row justify-center space-x-4 gap-3">
@@ -103,9 +150,9 @@ function EditProfileScreen() {
       </View>
 
       <View className="mt-6">
-        <Text className="text-screenText1">Username</Text>
+        <Text className="text-screenText1">Fullname</Text>
         <TextInput
-          value={username}
+          value={fullName}
           onChangeText={setUsername}
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
           placeholder="Enter new username"
@@ -116,20 +163,21 @@ function EditProfileScreen() {
         <Text className="text-screenText1">Email</Text>
         <TextInput
           value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
-          placeholder="Enter new email"
+          editable={false} 
+          className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2 bg-gray-300"
+          placeholder="Email (Cannot be edited)"
         />
+        <Text className="text-red-500 mt-2">You cannot edit your email</Text>
       </View>
+
       <View className="mt-4">
-        <Text className="text-screenText1">DailyGoal</Text>
+        <Text className="text-screenText1">Daily Goal</Text>
         <TextInput
-          value={Goal}
+          value={goal}
           onChangeText={setGoal}
-          keyboardType="email-address"
+          keyboardType="numeric"
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
-          placeholder="Enter new email"
+          placeholder="Enter new goal"
         />
       </View>
 
@@ -137,15 +185,14 @@ function EditProfileScreen() {
         <Button
           onPress={saveProfile}
           className="w-40 p-3 bg-primaryBackground rounded-lg"
-          title="SaveChanges"
+          title="Save Changes"
         />
-
       </View>
 
       {showSuccessMessage && (
-      <View className="mt-4 items-center">
-        <Text className="text-homeBackground text-lg">Your profile has been successfully updated!</Text>
-      </View>
+        <View className="mt-4 items-center">
+          <Text className="text-homeBackground text-lg">Your profile has been successfully updated!</Text>
+        </View>
       )}
     </View>
   );

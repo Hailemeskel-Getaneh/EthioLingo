@@ -67,6 +67,7 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
               fullName,
               email,
               password: hash,
+              isFirstLogin: true,
             });
     
             res.status(200).send({ userId, accessToken, refreshToken, newUser });
@@ -84,44 +85,66 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
     };
     
 
-export const login = async (req, res) => {
+    export const login = async (req, res) => {
+      try {
+        const ip = req.ip;
+        const { email, password } = req.body;
 
-  try {
-    const ip = req.ip
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }); 
-
-    if (!user) {
-        return res.status(404).json({ message: "User not found!" });
-    }
-
-    const hashedPassword = user.password;
-    bcrypt.compare(password, hashedPassword, (err, result) => {
-        if (err) {
+        const user = await User.findOne({ email });
+    
+        if (!user) {
+          return res.status(404).json({ 
+            message: "User not found!", 
+            redirectTo: 'language-selection'  
+          });
+        }
+    
+        const hashedPassword = user.password;
+        bcrypt.compare(password, hashedPassword, async (err, result) => {
+          if (err) {
             console.error('Error comparing passwords:', err);
             return res.status(500).json({ message: "Error comparing passwords", error: err });
-        }
-
-        if (result) {
+          }
+    
+          if (result) {
             const userId = user.userId;
+    
+            const accessToken = generateToken(userId, ACCESS_TOKEN_SECRET, '6h');
+            const refreshToken = generateToken(userId, REFRESH_TOKEN_SECRET, '60 days');
+    
 
-            const accessToken = generateToken(userId,ACCESS_TOKEN_SECRET,'6h') 
-            const refreshToken = generateToken(userId,REFRESH_TOKEN_SECRET,'60 days') 
-            res.status(200).json({ userId, accessToken, refreshToken });
-
-            saveRefreshToken(userId,refreshToken,ip)
-
-        } else {
-            // password doesnt match
-            res.status(400).json({ message: "Wrong password!" });
-        }
-    });
-
-  } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Login failed", error: error.message }); 
-  }
-};
+            saveRefreshToken(userId, refreshToken, ip);
+    
+            if (user.isFirstLogin) {
+              user.isFirstLogin = false; 
+              await user.save();  
+    
+              return res.status(200).json({
+                userId,
+                accessToken,
+                refreshToken,
+                redirectTo: 'language-selection', // Redirect to language-selection
+              });
+            } else {
+              // For non-first-time logins, redirect to home page
+              return res.status(200).json({
+                userId,
+                accessToken,
+                refreshToken,
+                redirectTo: 'home', 
+              });
+            }
+          } else {
+            return res.status(400).json({ message: "Wrong password!" });
+          }
+        });
+      } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ message: "Login failed", error: error.message });
+      }
+    };
+    
+    
 
 export const refreshToken = async (req, res) => {
   try {
@@ -138,16 +161,13 @@ export const refreshToken = async (req, res) => {
 
     if ( result.revoked === true ) {
       console.log("refresh token compromised!")
-      // maybe revoke all the refresh tokens
       return res.status(404).json({ message: 'refresh token compromised!' });
     }
 
-    // generate new access token and refresh token
     accessToken = generateToken(userId,ACCESS_TOKEN_SECRET,"6h")
     refreshToken = generateToken(userId,REFRESH_TOKEN_SECRET,"30 days")
 
     res.status(200).send({userId,accessToken,refreshToken})
-    // save the refresh token
     saveRefreshToken(userId,refreshToken,ip)
 
   } catch (error) {

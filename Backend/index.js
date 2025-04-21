@@ -17,7 +17,7 @@ connectmongo();
 const PORT = process.env.PORT
 
 app.use('/api/auth',AuthRoute,)
-app.use('api/profile',userProfileRoute)
+app.use('/api/profile',userProfileRoute)
 
 
 app.listen(PORT,'0.0.0.0',() =>{

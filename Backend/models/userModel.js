@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
   verification_code_generated_time: {
     type: Date,
   },
+  isFirstLogin: { 
+    type: Boolean, 
+    default: true 
+  },
 }, {
   timestamps: true,
 });

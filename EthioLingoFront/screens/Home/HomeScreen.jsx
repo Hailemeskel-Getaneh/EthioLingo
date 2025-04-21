@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   Text, View, Image, TouchableOpacity, ScrollView, StatusBar, StyleSheet,
@@ -6,6 +6,8 @@ import {
 import { ProgressBar } from '../../components/Progress/ProgressBar';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
 import { colors } from '../../styles/globalStyles';
+import { UserProfileContext  } from '../../contexts/UserProfileContext';
+
 
 function ProgressCard({ title, percentage, icon }) {
   return (
@@ -33,6 +35,10 @@ function HomeScreen() {
   const navigation = useNavigation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('Amharic');
+  const { userProfile } = useContext(UserProfileContext);
+  const {
+    fullName,profileImage,points
+  } = userProfile;
 
   const languages = [
     { name: 'Amharic', flag: '🇪🇹' },
@@ -46,16 +52,16 @@ function HomeScreen() {
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Image
-              source={require('../../assets/icons/woman.png')}
+              source={{ uri: profileImage }}
               className="w-12 h-12 rounded-full bg-white border-2 border-white"
             />
             <View className="ml-3">
               <Text className="text-white text-lg font-bold">Hello!</Text>
-              <Text className="text-white">Bhavithra</Text>
+              <Text className="text-white">fullName</Text>
             </View>
           </View>
           <View className="flex-row items-center">
-            <Text className="text-white mr-2">5</Text>
+            <Text className="text-white mr-2">{points}</Text>
             <Image
               source={require('../../assets/icons/heart.png')}
               className="w-6 h-6 mr-2"
