@@ -34,6 +34,7 @@ import NotficationScreen from '../screens/Profile/NotificationScreen.jsx'
 import { ThemeProvider } from '../contexts/themeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
 import {NotificationProvider} from '../contexts/NotificationContext.jsx'
+import PaymentScreen from '../screens/PaymenetScreen/PaymentScreen.jsx';
 
 // Placeholder screens
 function ProgressScreen() {
@@ -116,6 +117,8 @@ function AppNavigator() {
         <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
         <Stack.Screen name="NotficationScreen" component={NotficationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />
+
 
       </Stack.Navigator>
     </NavigationContainer>
