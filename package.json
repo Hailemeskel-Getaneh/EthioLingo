@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "multer": "^1.4.5-lts.1"
+  },
+  "scripts": {
+    "lint": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint": "^9.24.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-native": "^5.0.0",
+    "globals": "^16.0.0"
+  },
+  "type": "module"
+}

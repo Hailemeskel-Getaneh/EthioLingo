@@ -5,7 +5,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 
-const ListeningScreen = React.memo(({ topic, data }) => {
+const ListeningScreen = React.memo(({  data }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,6 @@ const ListeningScreen = React.memo(({ topic, data }) => {
   const audioTracks = data?.audioFiles || [];
 
   const currentAudio = audioTracks[currentAudioIndex] || {
-    source: require('../../assets/audio/Record033.mp3'),
     correctText: 'No audio available',
     correctOption: 'N/A',
     options: ['N/A'],
@@ -44,11 +43,19 @@ const ListeningScreen = React.memo(({ topic, data }) => {
     try {
       setIsLoading(true);
       setSelectedOption(null);
-      if (sound) await sound.unloadAsync();
+
+      const audioSource = audioTracks[index]?.source;
+      if (!audioSource || typeof audioSource !== 'string') {
+        throw new Error('Invalid or missing audio source URL');
+      }
+
+      if (sound) {
+        await sound.unloadAsync();
+      }
 
       const { sound: newSound } = await Audio.Sound.createAsync(
-        audioTracks[index]?.source || require('../../assets/audio/Record033.mp3'),
-        { shouldPlay: true, rate: playbackSpeed, shouldCorrectPitch: true },
+        { uri: audioSource }, 
+        { shouldPlay: true, rate: playbackSpeed, shouldCorrectPitch: true }
       );
 
       setSound(newSound);
@@ -63,8 +70,8 @@ const ListeningScreen = React.memo(({ topic, data }) => {
         }
       });
     } catch (error) {
-      console.error('Error loading audio:', error);
-      setError('Failed to load audio.');
+      console.error('Error loading audio:', error.message);
+      setError('Failed to load audio: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +128,7 @@ const ListeningScreen = React.memo(({ topic, data }) => {
       Alert.alert('Please select an option!');
       return;
     }
-    const correctOption = currentAudio.correctOption.toLowerCase().trim();
+    const correctOption = currentAudio.correctOption?.toLowerCase().trim() || '';
     const userText = selectedOption.toLowerCase().trim();
     const isCorrect = userText === correctOption;
 
@@ -143,10 +150,15 @@ const ListeningScreen = React.memo(({ topic, data }) => {
   if (error) {
     return (
       <View className="flex-1 p-6 justify-center">
-        <Text className="text-error text-xl font-bold text-center">
-          Error:
-          {error}
-        </Text>
+        <Text className="text-error text-xl font-bold text-center">Error: {error}</Text>
+      </View>
+    );
+  }
+
+  if (audioTracks.length === 0) {
+    return (
+      <View className="flex-1 p-6 justify-center">
+        <Text className="text-screenText text-xl font-bold text-center">No listening content available</Text>
       </View>
     );
   }
@@ -156,7 +168,7 @@ const ListeningScreen = React.memo(({ topic, data }) => {
       <Text className="text-screenText text-base text-center mb-2">Choose the correct question</Text>
 
       <View className="flex-row justify-center mb-4">
-        {Array.from({ length: 10 }, (_, i) => {
+        {Array.from({ length: audioTracks.length }, (_, i) => {
           const status = answerStatuses[i];
           let bgColor = 'bg-listBarBackground';
           if (i === currentAudioIndex) {
@@ -192,7 +204,7 @@ const ListeningScreen = React.memo(({ topic, data }) => {
       <TouchableOpacity
         className="items-center justify-center w-16 h-16 rounded-full bg-white self-center mb-4 border-2 border-accent1"
         onPress={handlePlayPause}
-        disabled={isLoading}
+        disabled={isLoading || !currentAudio.source}
       >
         {isLoading ? (
           <ActivityIndicator size="small" color="#313574" />

@@ -183,9 +183,9 @@ function HomeScreen() {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  navbar: {
-    height: '50%',
-  },
+  // navbar: {
+  //   height: '50%',
+  // },
   cardShadow: {
     shadowColor: '#000',
     shadowOffset: {

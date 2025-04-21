@@ -171,7 +171,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: 20,
   },
-  activeBar: {
-    backgroundColor: colors.primaryBackground,
-  },
+
 });
