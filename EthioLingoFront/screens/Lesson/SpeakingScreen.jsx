@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View, Text, TouchableOpacity, ScrollView, Alert,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { colors, globalStyles } from '../../styles/globalStyles';
+// import { colors, globalStyles } from '../../styles/globalStyles';
 
 const SpeakingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -14,44 +12,63 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
   const [recordingUri, setRecordingUri] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [answerStatuses, setAnswerStatuses] = useState({});
+  const [error, setError] = useState(null);
 
-  // Use the dynamic data passed via props, falling back to an empty array if undefined
   const speakingExercises = data?.speakingExercises || [];
 
   const currentExercise = speakingExercises[currentExerciseIndex] || {
     motherTongueText: 'No exercise available',
     learningText: 'N/A',
-    audioSource: require('../../assets/audio/Record033.mp3'),
   };
 
-  useEffect(() => (sound
-    ? () => {
-      sound.unloadAsync();
-    }
-    : undefined), [sound]);
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync().catch((err) => console.log('Unload error:', err));
+        }
+      : undefined;
+  }, [sound]);
 
-  useEffect(() => (recording
-    ? () => {
-      recording.stopAndUnloadAsync().catch((err) => console.log('Unload error:', err));
-    }
-    : undefined), [recording]);
+  useEffect(() => {
+    return recording
+      ? () => {
+          recording.stopAndUnloadAsync().catch((err) => console.log('Unload error:', err));
+        }
+      : undefined;
+  }, [recording]);
 
   const loadAndPlayAudio = useCallback(async () => {
     try {
-      if (sound) await sound.unloadAsync();
+      setIsLoading(true);
+      setError(null);
+
+      const audioSource = currentExercise.audioSource;
+      if (!audioSource || typeof audioSource !== 'string') {
+        throw new Error('Invalid or missing audio source URL');
+      }
+
+      if (sound) {
+        await sound.unloadAsync();
+      }
+
       const { sound: newSound } = await Audio.Sound.createAsync(
-        currentExercise.audioSource,
-        { shouldPlay: true },
+        { uri: audioSource },
+        { shouldPlay: true }
       );
       setSound(newSound);
       setIsPlaying(true);
       newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) setIsPlaying(false);
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+        }
       });
     } catch (error) {
-      console.error('Error playing audio:', error);
-      Alert.alert('Error', 'Failed to play audio.');
+      console.error('Error playing audio:', error.message);
+      setError('Failed to play audio: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   }, [sound, currentExercise]);
 
@@ -63,12 +80,12 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         playsInSilentModeIOS: true,
       });
       const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       setRecording(newRecording);
       setIsRecording(true);
     } catch (error) {
-      console.error('Error starting recording:', error);
+      console.error('Error starting recording:', error.message);
       Alert.alert('Error', 'Failed to start recording. Check permissions.');
     }
   }, []);
@@ -84,7 +101,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         setRecording(null);
       }
     } catch (error) {
-      console.error('Error stopping recording:', error);
+      console.error('Error stopping recording:', error.message);
       Alert.alert('Error', 'Failed to stop recording.');
     }
   }, [recording, currentExercise.id, currentExerciseIndex]);
@@ -100,9 +117,9 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       await recordedSound.loadAsync({ uri: recordingUri });
       const recordedStatus = await recordedSound.getStatusAsync();
       const durationDiff = Math.abs(
-        (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0),
+        (originalStatus.durationMillis || 0) - (recordedStatus.durationMillis || 0)
       );
-      const isMatch = durationDiff < 1000; // Match if within 1 second
+      const isMatch = durationDiff < 1000;
       setAnswerStatuses((prev) => ({
         ...prev,
         [currentExerciseIndex]: isMatch ? 'correct' : 'incorrect',
@@ -110,16 +127,13 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       Alert.alert(
         isMatch ? 'Correct!' : 'Wrong!',
         isMatch ? 'Great job!' : 'The duration doesn’t match the original.',
-        [
-          { text: 'OK', onPress: () => {} },
-        ],
+        [{ text: 'OK', onPress: () => {} }]
       );
       await recordedSound.unloadAsync();
-      // Delete the recording from AsyncStorage after comparison
       await AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
       setRecordingUri(null);
     } catch (error) {
-      console.error('Error checking recording:', error);
+      console.error('Error checking recording:', error.message);
       Alert.alert('Error', 'Failed to compare recordings.');
     }
   }, [recordingUri, sound, currentExerciseIndex]);
@@ -145,6 +159,7 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setRecordingUri(null);
+      setError(null);
       AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
     }
   }, [currentExerciseIndex, answerStatuses, currentExercise.id, speakingExercises.length]);
@@ -161,17 +176,33 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
       setIsPlaying(false);
       setIsRecording(false);
       setRecordingUri(null);
+      setError(null);
       AsyncStorage.removeItem(`speaking_recording_${currentExercise.id || currentExerciseIndex}`);
     }
   }, [currentExerciseIndex, answerStatuses, currentExercise.id]);
+
+  if (speakingExercises.length === 0) {
+    return (
+      <View className="flex-1 p-6 justify-center">
+        <Text className="text-screenText text-xl font-bold text-center">No speaking content available</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 p-6 justify-center">
+        <Text className="text-error text-xl font-bold text-center">Error: {error}</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView className="flex-1 bg-screenBackground p-6">
       <Text className="text-2xl font-bold text-screenText text-center mb-6">Speaking Exercise</Text>
 
-      {/* Progress Indicator */}
       <View className="flex-row justify-center mb-6">
-        {Array.from({ length: 10 }, (_, i) => {
+        {Array.from({ length: speakingExercises.length }, (_, i) => {
           const status = answerStatuses[i];
           let bgColor = 'bg-listBarBackground';
           if (i === currentExerciseIndex) {
@@ -204,30 +235,31 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         Speak the phrase in the learning language.
       </Text>
 
-      {/* Mother Tongue Text */}
       <View className="bg-accent3 p-6 rounded-xl shadow-lg mb-6">
         <Text className="text-screenText text-lg">{currentExercise.motherTongueText}</Text>
       </View>
 
-      {/* Learning Language Text with Play Button */}
       <View className="bg-accent5 p-6 rounded-xl shadow-lg mb-6">
         <View className="flex-row items-center">
           <Text className="text-screenText text-lg mr-2">{currentExercise.learningText}</Text>
           <TouchableOpacity
             className="items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-accent1"
             onPress={loadAndPlayAudio}
-            disabled={isPlaying || !sound}
+            disabled={isPlaying || isLoading || !currentExercise.audioSource}
           >
-            <Ionicons
-              name={isPlaying ? 'pause' : 'volume-high'}
-              size={20}
-              color="#313574"
-            />
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#313574" />
+            ) : (
+              <Ionicons
+                name={isPlaying ? 'pause' : 'volume-high'}
+                size={20}
+                color="#313574"
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Record Button */}
       <TouchableOpacity
         className={`items-center justify-center w-16 h-16 rounded-full ${
           isRecording ? 'bg-red-300' : 'bg-white'
@@ -242,7 +274,6 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         <Text className="text-screenText text-center text-xs mt-1">Hold to speak</Text>
       </TouchableOpacity>
 
-      {/* Retry and Check Buttons */}
       <View className="flex-row justify-center mb-6">
         {recordingUri && (
           <TouchableOpacity
@@ -260,7 +291,6 @@ const SpeakingScreen = React.memo(({ topic, data }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Navigation Controls */}
       <View className="flex-row justify-between mb-6">
         <TouchableOpacity
           className={`p-3 rounded-full ${

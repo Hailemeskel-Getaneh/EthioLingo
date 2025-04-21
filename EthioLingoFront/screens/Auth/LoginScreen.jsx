@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
     marginTop: 80,
     marginBottom: 0,
     alignItems: 'center',
-    marginTop: 90,
 
   },
   title: {

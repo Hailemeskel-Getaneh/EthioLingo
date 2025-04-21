@@ -36,7 +36,6 @@ EthioLingo aims to bridge language learning gaps in Ethiopia by providing a user
 - Offline access for rural users with limited internet.
 
 ## 3. Key Features
-
 ### 3.1 User Authentication
 - **Description**: Secure and flexible access to personalized features.
 - **Details**:

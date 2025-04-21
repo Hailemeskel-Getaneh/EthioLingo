@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true
   },
   password: {
     type: String,
@@ -25,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  verification_code_generated_time: {
+  verificationCodeCreatedAt: {
     type: Date,
   },
   isFirstLogin: { 

@@ -6,6 +6,7 @@ import User from '../models/userModel.js'
 import RefreshToken from '../models/jwtModel.js'
 import bcrypt from 'bcrypt';
 import axios from 'axios';
+import { sendResetEmail } from './authUtils/mail.js'
 dotenv.config()
 
 const ACCESS_TOKEN_SECRET=process.env.ACCESS_TOKEN_SECRET;
@@ -18,6 +19,7 @@ const generateToken = (userId,secret,expiresIn) => {
       }, secret);
   return token
 }
+
 const saveRefreshToken = async (userId,refreshToken,ip) => {
     let locationData = null;
     try {
@@ -28,8 +30,6 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
       console.error('Error fetching location:', error.message);
     }
     
-  
-
     // save the refresh token in db
     const refreshTokenDoc = await RefreshToken.create({
           refreshToken,
@@ -86,7 +86,7 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
     
 
     export const login = async (req, res) => {
-      try {
+  sendResetEmail("johnnybeatzxxd@gmail.com",123);      try {
         const ip = req.ip;
         const { email, password } = req.body;
 
@@ -175,3 +175,73 @@ export const refreshToken = async (req, res) => {
   }
 };
 
+export const forgotPassword = async(req,res) => {
+  let {email} = req.body
+  const now = new Date();
+  try{
+    const code = Math.floor(1000 + Math.random() * 9000);
+    const user = await User.findOneAndUpdate(
+      { email },
+      {$set:{
+        verificationCode:code,
+        verificationCodeCreatedAt:now
+      }},
+      { new: true, upsert: false }
+    ); 
+
+    if (!user) {
+        console.log(user)
+        return res.status(404).json({ message: "User not found!" });
+    }
+
+    res.status(200).send({message:`OTP sent to ${email}.`})
+    // send the code via email
+
+  }catch(error){
+    return res.status(404).json({ message: `Error sending OTP.${error}` });
+  }
+
+}
+
+export const resetPassword = async(req,res) => {
+  let {email,otp,newPassword} = req.body
+
+  const user = await User.findOne({email})
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  if (user.verificationCodeCreatedAt < fiveMinutesAgo){
+    return res.status(404).json({ message: "OTP expired." });
+  }
+
+  if (user.verificationCode === otp){
+    // change the password
+    const saltRounds = 10;
+    bcrypt.hash(newPassword, saltRounds, async (err, hash) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error hashing password", error: err });
+      }
+
+      await User.updateOne({email},{$set:{password:hash}})
+    });
+    return res.status(200).send({message:`passowrd changed!`})
+    }
+  
+    return res.status(400).send({message:`Invalid OTP.`})
+}
+
+export const checkOTP = async(req,res) => {
+
+  let {email,otp,newPassword} = req.body
+  const user = await User.findOne({email})
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+  if (user.verificationCodeCreatedAt < fiveMinutesAgo){
+    return res.status(404).json({ message: "OTP expired." });
+  }
+
+  if (user.verificationCode != otp){
+    return res.status(404).json({ message: "invalid OTP." });
+  }
+
+  return res.status(200).json({ message: "OTP vaild." });
+}
