@@ -127,10 +127,6 @@ export const login = async (email, password, navigation, setUserProfile) => {
           await SecureStore.setItemAsync('access_token', accessToken);
           await SecureStore.setItemAsync('refresh_token', refreshToken);
   
-          setUserProfile(null); 
-          const profile = await getUserProfile(userId);
-          setUserProfile(profile);
-  
           if (redirectTo === 'language-selection') {
             navigation.navigate('LanguageSelectionScreen');
           } else if (redirectTo === 'home') {

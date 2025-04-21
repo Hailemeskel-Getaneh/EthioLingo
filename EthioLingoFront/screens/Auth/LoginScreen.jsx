@@ -9,7 +9,6 @@ import Button from '../../components/Common/Buttons';
 import { UserProfileContext } from '../../contexts/UserProfileContext';
 
 export default function Login({ navigation }) {
-  const { setUserProfile } = useContext(UserProfileContext); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -45,7 +44,7 @@ export default function Login({ navigation }) {
   };
   const handleLogin = async () => {
     try {
-      const response = await login(email, password, navigation,setUserProfile); 
+      const response = await login(email, password, navigation); 
       console.log('Login successful:', response);
     } catch (error) {
       console.error('Login failed:', error);
