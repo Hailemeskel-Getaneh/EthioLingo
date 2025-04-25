@@ -1,36 +1,71 @@
+// styles/globalStyles.js
+import { StyleSheet, Dimensions } from 'react-native';
 
-import { StyleSheet } from 'react-native';
+// Get initial screen width from Dimensions
+const { width } = Dimensions.get('window');
 
+// Colors
 export const colors = {
   primaryBackground: '#313574',
-  primaryText: '#f0f2f5', 
-  secondaryText:'#212121',
-  screenBackground: '#fafafb', 
+  homeBackground: '#8257fe',
+  primaryText: '#f0f2f5',
+  secondaryText: '#212121',
+  screenBackground: '#fafafb',
   screenText: '#222469',
-  screenText2: '#060614', 
-  listBarBackground: '#ffffff', 
-  listBarText: '#131313', 
+  screenText2: '#060614',
+  listBarBackground: '#ffffff',
+  listBarText: '#131313',
   blueColor: '#211C84',
-
+  error: 'red',
   accent1: '#fbfaff',
   accent2: '#70a595',
   accent3: '#959163',
   accent4: '#d4ac9a',
   accent5: '#e0c4aa',
-  accent6:'#e1e2f0',
-  accent7:'#f1f2c2',
+  accent6: '#e1e2f0',
+  accent7: '#f1f2c2',
+};
+export const darkColors = {
+  primaryBackground: '#1a1a2e',
+  homeBackground: '#25274d',
+  primaryText: '#e3e3e3',
+  secondaryText: '#f5f5f5',
+  screenBackground: '#121212',
+  screenText: '#ffffff',
+  screenText2: '#d1d1d1',
+  listBarBackground: '#1e1e1e',
+  listBarText: '#f5f5f5',
+  blueColor: '#1e3c72',
+  error: '#ff4f4f',
+  accent1: '#1f4068',
+  accent2: '#16213e',
+  accent3: '#0f3460',
+  accent4: '#e94560',
+  accent5: '#a5a5a5',
+  accent6: '#2b2b2b',
+  accent7: '#404040',
 };
 
+// Define screen size breakpoints
+const isSmallScreen = width < 375;
+const isMediumScreen = width >= 375 && width < 768;
+const isLargeScreen = width >= 768;
+
+// Create global styles based on the initial width
 export const globalStyles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: colors.screenBackground,
+    padding: isSmallScreen ? 8 : isMediumScreen ? 12 : 16,
   },
   screenText: {
     color: colors.screenText,
-    fontSize: 19,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
   },
-
+  screenText2: {
+    color: colors.screenText2,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
+  },
   primaryButton: {
     backgroundColor: colors.primaryBackground,
     paddingVertical: 12,
@@ -41,25 +76,25 @@ export const globalStyles = StyleSheet.create({
   },
   primaryButtonText: {
     color: colors.primaryText,
-    fontSize: 16,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
     fontWeight: 'bold',
   },
-secondaryButton:{
-  backgroundColor: "white",
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  borderRadius: 8,
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderWidth: 2,
-  borderColor:colors.primaryBackground,
-},
-secondaryButtonText:{
-  color: colors.primaryBackground,
-  fontSize: 16,
-  fontWeight: 'bold',
-},
-  
+  secondaryButton: {
+    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.primaryBackground,
+  },
+  secondaryButtonText: {
+    color: colors.primaryBackground,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
+    fontWeight: 'bold',
+  },
+
   listBar: {
     backgroundColor: colors.listBarBackground,
     paddingVertical: 10,
@@ -69,36 +104,77 @@ secondaryButtonText:{
   },
   listBarText: {
     color: colors.listBarText,
-    fontSize: 23,
+    fontSize: isSmallScreen ? 18 : isMediumScreen ? 20 : 23,
     fontWeight: '500',
   },
 
   iconContainer: {
-    backgroundColor: colors.accent2, 
+    backgroundColor: colors.accent2,
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.screenBackground,
   },
+
   title: {
-    fontSize: 24,
+    fontSize: isSmallScreen ? 22 : isMediumScreen ? 24 : 28,
     fontWeight: 'bold',
     color: colors.primaryText,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
     color: colors.secondaryText,
   },
+
   button: {
     borderRadius: 8,
-    padding: 12,
+    padding: isSmallScreen ? 10 : isMediumScreen ? 12 : 14,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
     color: colors.primaryText,
+  },
+
+  card: {
+    backgroundColor: colors.accent6,
+    padding: isSmallScreen ? 12 : isMediumScreen ? 16 : 20,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+
+  heading: {
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
+    fontWeight: 'bold',
+    color: colors.primaryText,
+  },
+
+  progressBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 12,
+  },
+
+  avatar: {
+    width: isSmallScreen ? 60 : isMediumScreen ? 80 : 100,
+    height: isSmallScreen ? 60 : isMediumScreen ? 80 : 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: colors.primaryBackground,
+  },
+
+  text: {
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
+    color: colors.primaryText,
+  },
+
+  cardText: {
+    fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 18,
+    color: colors.secondaryText,
   },
 });

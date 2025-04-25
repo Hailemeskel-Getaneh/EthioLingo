@@ -4,24 +4,34 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/netinfo": "11.4.1",
+    "@react-native-google-signin/google-signin": "^13.2.0",
     "@react-navigation/bottom-tabs": "^7.2.1",
     "@react-navigation/drawer": "^7.1.2",
     "@react-navigation/native": "^7.0.15",
     "@react-navigation/stack": "^7.1.2",
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.4",
+    "babel-plugin-inline-import": "^3.0.0",
+    "date-fns": "^4.1.0",
+    "drizzle-orm": "^0.43.1",
     "expo": "~52.0.37",
     "expo-av": "~15.0.2",
+    "expo-dev-client": "~5.0.14",
+    "expo-drizzle-studio-plugin": "^0.1.2",
     "expo-image-picker": "~16.0.6",
+    "expo-secure-store": "~14.0.1",
+    "expo-sqlite": "^15.2.6",
     "expo-status-bar": "~2.0.1",
+    "jwt-decode": "^4.0.0",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-native": "0.76.7",
@@ -38,7 +48,14 @@
     "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "drizzle-kit": "^0.31.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.4",
+    "react-native-dotenv": "^3.4.11"
   },
   "private": true
 }

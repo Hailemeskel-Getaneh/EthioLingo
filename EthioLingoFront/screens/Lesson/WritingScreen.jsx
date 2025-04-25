@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View, Text, TextInput, TouchableOpacity, ScrollView, Alert,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, globalStyles } from '../../styles/globalStyles';
+import { colors } from '../../styles/globalStyles';
 
 const WritingScreen = React.memo(({ topic, data }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -32,7 +34,7 @@ const WritingScreen = React.memo(({ topic, data }) => {
       isCorrect ? 'Great job!' : `The correct answer is "${currentExercise.equivalentText}".`,
       [
         { text: 'OK', onPress: () => setUserInput('') },
-      ]
+      ],
     );
   }, [userInput, currentExercise, currentExerciseIndex]);
 
@@ -113,7 +115,7 @@ const WritingScreen = React.memo(({ topic, data }) => {
           placeholderTextColor={colors.listBarText}
           value={userInput}
           onChangeText={setUserInput}
-          multiline={true}
+          multiline
           numberOfLines={3}
         />
       </View>
