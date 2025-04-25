@@ -1,10 +1,7 @@
-// /EthioLingoFront/AppNavigator.jsx
-import React ,{useEffect}from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles/globalStyles';
 import WelcomeScreen from '../screens/Onboarding/WelcomeScreen';
 import GetStartedScreen from '../screens/Onboarding/GetStartedScreen';
@@ -30,16 +27,14 @@ import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
 import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
 import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
-import NotficationScreen from '../screens/Profile/NotificationScreen.jsx' 
+import NotficationScreen from '../screens/Profile/NotificationScreen.jsx';
 import { ThemeProvider } from '../contexts/themeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
-import {NotificationProvider} from '../contexts/NotificationContext.jsx'
+import { NotificationProvider } from '../contexts/NotificationContext.jsx';
 import PaymentScreen from '../screens/PaymenetScreen/PaymentScreen.jsx';
-import { getDBConnection } from '../database/db.js';
+import { getDBConnection, initializeDatabase,  } from '../database/db.js';
+import { testLessonInsert } from '../database/lessonOperations.js';
 
-
-
-// Placeholder screens
 function ProgressScreen() {
   return <View><Text>Progress Screen</Text></View>;
 }
@@ -91,59 +86,53 @@ function LessonDrawerNavigator() {
 
 function AppNavigator() {
   useEffect(() => {
-    const initializeDatabase = async () => {
+    const initialize = async () => {
       try {
-        await getDBConnection();
-        console.log('Database initialized successfully.');
+        await initializeDatabase();
+        await testLessonInsert(); 
       } catch (error) {
-        console.error('Failed to initialize database:', error);
+        console.error('Failed to initialize:', error);
       }
-      
     };
-
-    initializeDatabase();
+    initialize();
   }, []);
 
   return (
     <NotificationProvider>
-    <UserProvider>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
-        <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
-        <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
-        <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ExcellentScreen" component={ExcellentScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TryAgainScreen" component={TryAgainScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="NotficationScreen" component={NotficationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />
-
-
-      </Stack.Navigator>
-    </NavigationContainer>
-    </UserProvider>
+      <UserProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="LessonScreen">
+            <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="LanguageSelectionScreen" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SetGoalScreen" component={SetGoalScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="LessonScreen" component={LessonDrawerNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+            <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
+            <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
+            {/* <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} /> */}
+            {/* <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} /> */}
+            <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ExcellentScreen" component={ExcellentScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="TryAgainScreen" component={TryAgainScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="LevelCompletScreen" component={LevelCompletScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="privacyPolicyScreen" component={privacyPolicyScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="feedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="NotficationScreen" component={NotficationScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </UserProvider>
     </NotificationProvider>
   );
 }
 
-
 export default AppNavigator;
-
