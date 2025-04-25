@@ -1,4 +1,12 @@
 import { getDBConnection } from './db';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+export const tasks = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  lastname: text('lastname'),
+});
+
 
 export const createUserTable = async () => {
   const db = await getDBConnection();
