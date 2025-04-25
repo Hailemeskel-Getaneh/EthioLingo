@@ -1,21 +1,27 @@
 import * as SQLite from 'expo-sqlite';
 import { drizzle } from "drizzle-orm/expo-sqlite";
-import { openDatabaseSync } from "expo-sqlite/next";
+import { openDatabaseSync } from "expo-sqlite";
+
 let db;
 
 export const getDBConnection = async () => {
   if (!db) {
     try {
-      const expo = openDatabaseSync("ethiolingo.db");
-      const db = drizzle(expo);
-      console.log('Database opened:', db);
-      await db.select().from("users");
+      console.log('Attempting to open the database...');
+      const expoDb = openDatabaseSync("ethiolingo.db");
+
+      if (!expoDb) {
+        throw new Error('Failed to open the database.');
+      }
+      db = drizzle(expoDb); 
+      console.log('Database opened successfully');
     } catch (error) {
-      console.error('Failed to open the database:', error);
+      console.error('Error opening database:', error.message);
     }
   }
   return db;
 };
+
 
 //export const getDBConnection = async () => {
 //  if (!db) {

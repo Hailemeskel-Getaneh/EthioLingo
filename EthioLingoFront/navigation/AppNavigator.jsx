@@ -1,5 +1,5 @@
 // /EthioLingoFront/AppNavigator.jsx
-import React from 'react';
+import React ,{useEffect}from 'react';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -35,6 +35,9 @@ import { ThemeProvider } from '../contexts/themeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
 import {NotificationProvider} from '../contexts/NotificationContext.jsx'
 import PaymentScreen from '../screens/PaymenetScreen/PaymentScreen.jsx';
+import { getDBConnection } from '../database/db.js';
+
+
 
 // Placeholder screens
 function ProgressScreen() {
@@ -87,11 +90,25 @@ function LessonDrawerNavigator() {
 }
 
 function AppNavigator() {
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      try {
+        await getDBConnection();
+        console.log('Database initialized successfully.');
+      } catch (error) {
+        console.error('Failed to initialize database:', error);
+      }
+      
+    };
+
+    initializeDatabase();
+  }, []);
+
   return (
     <NotificationProvider>
     <UserProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LessonScreen">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -126,6 +143,7 @@ function AppNavigator() {
     </NotificationProvider>
   );
 }
+
 
 export default AppNavigator;
 
