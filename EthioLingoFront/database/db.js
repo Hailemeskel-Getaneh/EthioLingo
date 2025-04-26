@@ -16,6 +16,7 @@ export const getDBConnection = async () => {
 
 export const initializeDatabase = async () => {
   const drizzleDb = await getDBConnection();
+  
   const tableQueries = [
     {
       name: 'lessons',
