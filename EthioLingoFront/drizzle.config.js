@@ -1,8 +1,9 @@
-import type { Config } from 'drizzle-kit';
-
-export default {
+/** @type {import('drizzle-kit').Config} */
+const config = {
   schema: './database/schema.js',
   out: './drizzle',
   dialect: 'sqlite',
   driver: 'expo',
-} satisfies Config;
+};
+
+export default config;
