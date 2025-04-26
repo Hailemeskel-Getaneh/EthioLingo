@@ -1,9 +1,4 @@
-import { getDBConnection } from './db';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-
-
-
-// here is lessons table schema
 
 export const lessons = sqliteTable('lessons', {
   lessonId: text('lesson_id').primaryKey(),
