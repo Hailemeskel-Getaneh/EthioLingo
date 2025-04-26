@@ -10,7 +10,7 @@ export const testLessonInsert = async () => {
     language: 'Amharic',
     premiumRequired: false,
     content: JSON.stringify({
-      listening: { audioFiles: [{ source: 'test.mp3', correctText: 'Hello', correctOption: 'A', options: ['A', 'B'] }] },
+      listening: { audioFiles: [{ source: 'test.mp3', correctText: 'Hello', correctOption: 'ABC', options: ['ABC', 'BCD'] }] },
       reading: { readingExercises: [{ id: 1, motherTongueText: 'Selam', learningText: 'Hello', audioSource: 'read.mp3' }] },
       speaking: { speakingExercises: [] },
       writing: { writingExercises: [] },
