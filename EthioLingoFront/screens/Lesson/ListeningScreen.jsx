@@ -4,8 +4,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
+import { API_URL } from '@env';
 
-const ListeningScreen = React.memo(({  data }) => {
+const ListeningScreen = React.memo(({ data }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,12 +50,16 @@ const ListeningScreen = React.memo(({  data }) => {
         throw new Error('Invalid or missing audio source URL');
       }
 
+      const fullAudioUrl = audioSource.startsWith('http')
+        ? audioSource
+        : `${API_URL}/${audioSource}`; // Prepend API_URL if relative path
+
       if (sound) {
         await sound.unloadAsync();
       }
 
       const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: audioSource }, 
+        { uri: fullAudioUrl },
         { shouldPlay: true, rate: playbackSpeed, shouldCorrectPitch: true }
       );
 
@@ -64,6 +69,7 @@ const ListeningScreen = React.memo(({  data }) => {
 
       newSound.setOnPlaybackStatusUpdate((status) => {
         if (status.isPlaying) {
+          // Handle playing status if needed
         }
         if (status.didJustFinish) {
           setIsPlaying(false);
@@ -263,9 +269,7 @@ const ListeningScreen = React.memo(({  data }) => {
         onPress={handleSpeedChange}
       >
         <Text className="text-primaryText text-base font-bold">
-          Speed:
-          {playbackSpeed}
-          x
+          Speed: {playbackSpeed}x
         </Text>
       </TouchableOpacity>
     </View>
