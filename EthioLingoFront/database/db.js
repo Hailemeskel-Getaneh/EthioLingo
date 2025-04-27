@@ -8,7 +8,7 @@ export const getDBConnection = async () => {
   if (!db) {
     const expoDb = SQLite.openDatabaseSync('ethiolingo.db');
     if (!expoDb) throw new Error('Failed to open the database.');
-    db = drizzle(expoDb, { schema: { lessons } }); // update this when new schemas are added
+    db = drizzle(expoDb, { schema: { lessons } });
     console.log('Database opened successfully');
   }
   return db;
@@ -16,7 +16,7 @@ export const getDBConnection = async () => {
 
 export const initializeDatabase = async () => {
   const drizzleDb = await getDBConnection();
-  
+
   const tableQueries = [
     {
       name: 'lessons',
@@ -29,11 +29,13 @@ export const initializeDatabase = async () => {
           content TEXT NOT NULL,
           created_at INTEGER NOT NULL,
           updated_at INTEGER NOT NULL,
-          sync_status TEXT DEFAULT 'synced'
-        )
+          sync_status TEXT DEFAULT 'synced',
+          last_synced INTEGER
+        );
+        CREATE INDEX IF NOT EXISTS idx_lesson_name ON lessons(lesson_name);
+        CREATE INDEX IF NOT EXISTS idx_language ON lessons(language);
       `,
     },
-    // hadd new tables here, e.g., progress
   ];
 
   for (const table of tableQueries) {

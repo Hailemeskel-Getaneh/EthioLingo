@@ -1,13 +1,31 @@
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { lessons } from './schema';
 import { getDBConnection } from './db';
 import NetInfo from '@react-native-community/netinfo';
 import { API_URL } from '@env';
 
-export const fetchAndCacheLessons = async (language = 'Amharic') => {
+// Utility function for retrying fetch requests
+const retryFetch = async (url, retries = 3, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } });
+      if (response.ok) return response;
+      throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`Retrying fetch (${i + 1}/${retries}) after ${delay}ms`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        throw error;
+      }
+    }
+  }
+};
+
+// Fetch and cache lessons for a specific language or all languages
+export const fetchAndCacheLessons = async (language = null) => {
   const drizzleDb = await getDBConnection();
   try {
-    console.log('Using API_URL:', API_URL);
     const state = await NetInfo.fetch();
     console.log('Network state:', state);
     if (!state.isConnected) {
@@ -15,20 +33,36 @@ export const fetchAndCacheLessons = async (language = 'Amharic') => {
       return false;
     }
 
-    const url = `${API_URL}/api/lessons?language=${language}`;
-    console.log('Fetching from:', url);
-    const response = await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } });
-    console.log('Response:', { status: response.status, statusText: response.statusText, ok: response.ok });
-    if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
+    // Check cache freshness (24-hour TTL)
+    const existingLessons = await drizzleDb
+      .select()
+      .from(lessons)
+      .where(language ? eq(lessons.language, language) : undefined)
+      .all();
+    const isStale = existingLessons.some(
+      (lesson) => !lesson.lastSynced || new Date() - new Date(lesson.lastSynced) > 24 * 60 * 60 * 1000 // 24 hours
+    );
+    if (!isStale && existingLessons.length > 0) {
+      console.log('Cache is fresh, skipping API fetch');
+      return true;
     }
+
+    const url = language
+      ? `${API_URL}/api/lessons?language=${encodeURIComponent(language)}`
+      : `${API_URL}/api/lessons`;
+    console.log('Using API_URL:', API_URL);
+    console.log('Fetching from:', url);
+
+    const response = await retryFetch(url);
+    console.log('Response:', { status: response.status, statusText: response.statusText, ok: response.ok });
+
     const json = await response.json();
     console.log('API response:', JSON.stringify(json, null, 2));
     if (!json.success) {
       throw new Error(json.message || 'Failed to fetch lessons');
     }
 
-    const lessonsData = json.data.map((lesson, index) => {
+    const lessonsData = json.data.map((lesson) => {
       const nameMap = {
         'Greetings': '1-Greetings',
         'Emergency': '2-Emergency',
@@ -44,19 +78,32 @@ export const fetchAndCacheLessons = async (language = 'Amharic') => {
         createdAt: new Date(),
         updatedAt: new Date(),
         syncStatus: 'synced',
+        lastSynced: new Date(),
       };
     });
 
-    for (const lesson of lessonsData) {
+    // Batch insert to handle large datasets efficiently
+    const batchSize = 100;
+    for (let i = 0; i < lessonsData.length; i += batchSize) {
+      const batch = lessonsData.slice(i, i + batchSize);
       await drizzleDb
         .insert(lessons)
-        .values(lesson)
+        .values(batch)
         .onConflictDoUpdate({
           target: lessons.lessonId,
-          set: lesson,
+          set: {
+            lessonName: lessons.lessonName,
+            language: lessons.language,
+            content: lessons.content,
+            premiumRequired: lessons.premiumRequired,
+            updatedAt: new Date(),
+            syncStatus: 'synced',
+            lastSynced: new Date(),
+          },
         })
         .run();
     }
+
     console.log('Lessons cached:', lessonsData.length);
     return true;
   } catch (error) {
@@ -65,36 +112,52 @@ export const fetchAndCacheLessons = async (language = 'Amharic') => {
   }
 };
 
-export const getLessonsFromSQLite = async (lessonName) => {
+// Get lessons from SQLite for a specific lesson name and optional language
+export const getLessonsFromSQLite = async (lessonName, language = null) => {
   const drizzleDb = await getDBConnection();
-  console.log('Querying SQLite for lessonName:', lessonName);
-  const result = await drizzleDb
-    .select()
-    .from(lessons)
-    .where(eq(lessons.lessonName, lessonName))
-    .all();
+  console.log('Querying SQLite for lessonName:', lessonName, 'language:', language);
+  let query = drizzleDb.select().from(lessons).where(eq(lessons.lessonName, lessonName));
+  if (language) {
+    query = query.where(and(eq(lessons.lessonName, lessonName), eq(lessons.language, language)));
+  }
+  const result = await query.all();
   console.log('SQLite query result:', JSON.stringify(result, null, 2));
   return result.map((lesson) => ({
     lesson_id: lesson.lessonId,
     lesson_name: lesson.lessonName,
     language: lesson.language,
-    content: JSON.parse(lesson.content),
+    content: JSON.parse(lesson.content || '{}'), // Handle null/empty content
   }));
 };
 
-export const getLessonTopics = async () => {
+// Get lesson topics, optionally filtered by language
+export const getLessonTopics = async (language = null) => {
   const drizzleDb = await getDBConnection();
-  const result = await drizzleDb
-    .select({ id: lessons.lessonId, title: lessons.lessonName })
-    .from(lessons)
-    .all();
+  let query = drizzleDb.select({ id: lessons.lessonId, title: lessons.lessonName, language: lessons.language }).from(lessons);
+  if (language) {
+    query = query.where(eq(lessons.language, language));
+  }
+  const result = await query.all();
   return result.map((lesson, index) => ({
     id: lesson.id,
     title: lesson.title,
-    progress: [20, 50, 70, 15, 60, 30, 80][index % 7] || 0,
+    language: lesson.language,
+    progress: [20, 50, 70, 15, 60, 30, 80][index % 7] || 0, // Mock progress
   }));
 };
 
+// Get available languages from SQLite
+export const getAvailableLanguages = async () => {
+  const drizzleDb = await getDBConnection();
+  const result = await drizzleDb
+    .selectDistinct({ language: lessons.language })
+    .from(lessons)
+    .all();
+  console.log('Available languages:', result);
+  return result.map((row) => row.language);
+};
+
+// Debug all lessons in SQLite
 export const debugLessons = async () => {
   const drizzleDb = await getDBConnection();
   const allLessons = await drizzleDb.select().from(lessons).all();
@@ -102,12 +165,12 @@ export const debugLessons = async () => {
   return allLessons;
 };
 
-export const testLessonInsert = async () => {
+// Insert test lessons only if SQLite is empty for the specified language
+export const testLessonInsert = async (language = 'Amharic') => {
   const drizzleDb = await getDBConnection();
-  // Check if lessons table is empty
-  const existingLessons = await drizzleDb.select().from(lessons).all();
+  const existingLessons = await drizzleDb.select().from(lessons).where(eq(lessons.language, language)).all();
   if (existingLessons.length > 0) {
-    console.log('Lessons table not empty, skipping test lesson insert');
+    console.log(`Lessons table not empty for ${language}, skipping test lesson insert`);
     return;
   }
 
@@ -115,7 +178,7 @@ export const testLessonInsert = async () => {
     {
       lessonId: '1',
       lessonName: '1-Greetings',
-      language: 'Amharic',
+      language,
       premiumRequired: false,
       content: JSON.stringify({
         listening: { audioFiles: [{ source: 'greetings.mp3', correctText: 'Selam', correctOption: 'A', options: ['A', 'B'] }] },
@@ -126,11 +189,12 @@ export const testLessonInsert = async () => {
       createdAt: new Date(),
       updatedAt: new Date(),
       syncStatus: 'synced',
+      lastSynced: new Date(),
     },
     {
       lessonId: '2',
       lessonName: '2-Emergency',
-      language: 'Amharic',
+      language,
       premiumRequired: false,
       content: JSON.stringify({
         listening: { audioFiles: [{ source: 'emergency.mp3', correctText: 'Help', correctOption: 'A', options: ['A', 'B'] }] },
@@ -141,6 +205,7 @@ export const testLessonInsert = async () => {
       createdAt: new Date(),
       updatedAt: new Date(),
       syncStatus: 'synced',
+      lastSynced: new Date(),
     },
   ];
 
@@ -148,6 +213,6 @@ export const testLessonInsert = async () => {
     await drizzleDb.delete(lessons).where(eq(lessons.lessonId, lesson.lessonId)).run();
     await drizzleDb.insert(lessons).values(lesson).run();
   }
-  const result = await drizzleDb.select().from(lessons).all();
-  console.log('Test lessons inserted:', result);
+  const result = await drizzleDb.select().from(lessons).where(eq(lessons.language, language)).all();
+  console.log(`Test lessons inserted for ${language}:`, result);
 };

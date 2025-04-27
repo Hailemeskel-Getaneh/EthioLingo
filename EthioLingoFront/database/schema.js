@@ -9,4 +9,5 @@ export const lessons = sqliteTable('lessons', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   syncStatus: text('sync_status').default('synced'),
+  lastSynced: integer('last_synced', { mode: 'timestamp' }),
 });
