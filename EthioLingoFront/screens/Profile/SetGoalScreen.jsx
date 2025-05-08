@@ -7,6 +7,8 @@ import { colors, globalStyles } from '../../styles/globalStyles';
 import Buttons from '../../components/Common/Buttons';
 import { setLanguageandTime } from '../../utils/requests/api';
 import {saveLanguageandTime}  from '../../utils/requests/storage'
+import { fetchAndCacheUserProfile } from '../../database/actions';
+import * as SecureStore from 'expo-secure-store';
 
 const timeOptions = [
   { id: '1', minutes: 15, label: '15 min' },
@@ -37,7 +39,9 @@ export default function SetGoalScreen({ navigation, route }) {
     }
   
     try {
+      const userId = await SecureStore.getItemAsync('userId'); 
       const success = await setLanguageandTime(selectedLanguage, selectedTime);
+      await fetchAndCacheUserProfile(userId);
       
   
       if (success) {

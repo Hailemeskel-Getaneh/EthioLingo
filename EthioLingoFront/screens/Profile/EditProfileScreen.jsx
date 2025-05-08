@@ -7,11 +7,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../../components/Common/Buttons';
 import { colors } from '../../styles/globalStyles';
-import { UserProfileContext } from '../../contexts/UserProfileContext'; 
+import { useUserProfile } from '../../contexts/UserProfileContext';
+import { updateProfileLocally } from '../../database/actions';
+import * as SecureStore from 'expo-secure-store';
 
 function EditProfileScreen() {
+  const [profileData, setProfileData] = useState(null);
   const navigation = useNavigation();
-  const { userProfile, updateUserProfileData } = useContext(UserProfileContext);
+ const { userProfile} = useUserProfile();
 
   const [fullName, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -90,26 +93,34 @@ function EditProfileScreen() {
       Alert.alert('Error', 'Email cannot be edited.');
       return;
     }
-
-    const updatedProfile = {
+  
+    if (!userProfile?.userId) {
+      Alert.alert('Error', 'User ID not found.');
+      return;
+    }
+  
+    const userData = {
       fullName,
+    };
+  
+    const profileData = {
       goalTime: Number(goal),
       profileImage,
+      // Keep any existing fields like nativeLanguage, learningLanguage, status if needed
     };
-
+  
     try {
-      const success = await updateUserProfileData(updatedProfile);
-
-      if (success) {
-        setShowSuccessMessage(true);
-        setTimeout(() => {
-          setShowSuccessMessage(false);
-          navigation.goBack(); 
-        }, 1000);
-      }
+         const userId = await SecureStore.getItemAsync('userId');
+        await updateProfileLocally(userId, profileData, setProfileData); 
+     
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        navigation.goBack();
+      }, 1000);
     } catch (error) {
-      console.error('Error saving profile:', error);
-      Alert.alert('Error', 'There was an issue saving your profile.');
+      console.error('Error saving profile locally:', error);
+      Alert.alert('Error', 'There was an issue saving your profile locally.');
     }
   };
 
