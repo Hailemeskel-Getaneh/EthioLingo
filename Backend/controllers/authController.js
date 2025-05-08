@@ -49,19 +49,19 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
       try {
         let { fullName, email, password } = req.body;
         const ip = req.ip;
-        const userId = uuidv4();
     
-        const accessToken = generateToken(userId, ACCESS_TOKEN_SECRET, "6h");
-        const refreshToken = generateToken(userId, REFRESH_TOKEN_SECRET, "30 days");
+        // ✅ Generate userId
+        const userId = uuidv4();
     
         const saltRounds = 10;
         bcrypt.hash(password, saltRounds, async (err, hash) => {
           if (err) {
-            console.error(err);
+            console.error("Error hashing password:", err);
             return res.status(500).json({ message: "Error hashing password", error: err });
           }
     
           try {
+            // ✅ Save userId in DB
             const newUser = await User.create({
               userId,
               fullName,
@@ -70,16 +70,21 @@ const saveRefreshToken = async (userId,refreshToken,ip) => {
               isFirstLogin: true,
             });
     
+            const accessToken = generateToken(userId, ACCESS_TOKEN_SECRET, "10h");
+            const refreshToken = generateToken(userId, REFRESH_TOKEN_SECRET, "30 days");
+    
             res.status(200).send({ userId, accessToken, refreshToken, newUser });
             saveRefreshToken(userId, refreshToken, ip);
           } catch (dbError) {
+            console.error("Database error:", dbError);
             if (dbError.code === 11000 && dbError.keyPattern?.email) {
               return res.status(409).json({ message: "Email address already in use." });
             }
-            throw dbError;
+            return res.status(500).json({ message: "Database error", error: dbError });
           }
         });
       } catch (error) {
+        console.error("Signup failed:", error);
         res.status(500).json({ message: "Signup failed", error });
       }
     };
@@ -245,3 +250,29 @@ export const checkOTP = async(req,res) => {
 
   return res.status(200).json({ message: "OTP vaild." });
 }
+
+export const getUser = async (req, res) => {
+  const { userId } = req.params;
+  console.log('API HIT - Fetching user with userId:', userId);
+
+  try {
+    const user = await User.findOne({ userId });
+
+    if (!user) {
+      console.log('❌ User not found for userId:', userId); 
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      userId: user.userId,
+      fullName: user.fullName,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+  } catch (err) {
+    console.error('💥 Error fetching user:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch user' });
+  }
+};
+
