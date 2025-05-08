@@ -6,7 +6,7 @@ import {
 import { ProgressBar } from '../../components/Progress/ProgressBar';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
 import { colors } from '../../styles/globalStyles';
-import { UserProfileContext  } from '../../contexts/UserProfileContext';
+import { useUserProfile  } from '../../contexts/UserProfileContext';
 
 
 function ProgressCard({ title, percentage, icon }) {
@@ -35,10 +35,27 @@ function HomeScreen() {
   const navigation = useNavigation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('Amharic');
-  const { userProfile } = useContext(UserProfileContext);
-  const {
-    fullName,profileImage,points
-  } = userProfile;
+  const { userProfile, loading } = useUserProfile(); 
+
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (!userProfile) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>No profile data found.</Text>
+      </View>
+    );
+  }
+  
+  const { fullName, profileImage } = userProfile;
+  
 
   const languages = [
     { name: 'Amharic', flag: '🇪🇹' },
@@ -57,11 +74,11 @@ function HomeScreen() {
             />
             <View className="ml-3">
               <Text className="text-white text-lg font-bold">Hello!</Text>
-              <Text className="text-white">fullName</Text>
+              <Text className="text-white">{fullName}</Text>
             </View>
           </View>
           <View className="flex-row items-center">
-            <Text className="text-white mr-2">{points}</Text>
+            <Text className="text-white mr-2">points</Text>
             <Image
               source={require('../../assets/icons/heart.png')}
               className="w-6 h-6 mr-2"
