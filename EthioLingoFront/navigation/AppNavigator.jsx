@@ -16,22 +16,22 @@ import TopicScreen from '../screens/Lesson/TopicScreen';
 import DrawerContent from '../components/Lesson/DrawerContent';
 import ListeningScreen from '../screens/Lesson/ListeningScreen';
 import ForgotPassword from '../screens/Auth/ForgotPassword';
-import Verfication from '../screens/Auth/Verfication';
+import Verfication from '../screens/Auth/Verification';
 import ResetPassword from '../screens/Auth/ResetPassword';
-import Complate from '../screens/Auth/Complate';
+import Complete from '../screens/Auth/Complete';
 import UserProfileScreen from '../screens/Profile/UserProfileScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
 import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx';
-import LevelCompletScreen from '../screens/Success/LevelCompletScreen.jsx';
+import LevelCompletScreen from '../screens/Success/LevelCompleteScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
-import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
-import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
+import privacyPolicyScreen from '../screens/Settings/PrivacyPolicyScreen.jsx';
+import feedbackScreen from '../screens/Settings/FeedbackScreen.jsx';
 import NotficationScreen from '../screens/Profile/NotificationScreen.jsx';
-import { ThemeProvider } from '../contexts/themeContext.jsx';
+import { ThemeProvider } from '../contexts/ThemeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
 import { NotificationProvider } from '../contexts/NotificationContext.jsx';
-import PaymentScreen from '../screens/PaymenetScreen/PaymentScreen.jsx';
+import PaymentScreen from '../screens/PaymentScreen/PaymentScreen.jsx';
 import { getDBConnection, initializeDatabase,  } from '../database/db.js';
 import { testLessonInsert } from '../database/lessonOperations.js';
 
@@ -114,7 +114,7 @@ function AppNavigator() {
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
             <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
             <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
-            <Stack.Screen name="Complate" component={Complate} options={{ headerShown: false }} />
+            <Stack.Screen name="Complete" component={Complete} options={{ headerShown: false }} />
             {/* <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} /> */}
             {/* <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} /> */}
             <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
