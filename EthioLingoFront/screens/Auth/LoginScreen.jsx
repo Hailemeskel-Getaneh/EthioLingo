@@ -6,12 +6,14 @@ import {
 import { login } from '../../utils/requests/api';
 import { colors } from '../../styles/globalStyles';
 import Button from '../../components/Common/Buttons';
-import { UserProfileContext } from '../../contexts/UserProfileContext';
+import { Ionicons } from '@expo/vector-icons';
+
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const GoogleLogin = async () => {
   //   await GoogleSignin.hasPlayServices();
@@ -75,11 +77,23 @@ export default function Login({ navigation }) {
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
-          />
-          <TouchableOpacity style={styles.eyeIcon}>
-            {/* Add eye icon here */}
-          </TouchableOpacity>
+            secureTextEntry={!isPasswordVisible}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                right: 10,
+                top: '50%',
+                transform: [{ translateY: -12 }],
+              }}
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              <Ionicons
+                name={isPasswordVisible ? 'eye-off' : 'eye'}
+                size={24}
+                color="#313574"
+              />
+            </TouchableOpacity>
         </View>
 
         <View style={styles.rememberContainer}>

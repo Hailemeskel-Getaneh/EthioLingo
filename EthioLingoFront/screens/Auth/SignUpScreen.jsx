@@ -3,13 +3,16 @@ import {
   TextInput, TouchableOpacity, View, Text, StyleSheet, Image,
 } from 'react-native';
 import { colors } from '../../styles/globalStyles';
+import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Common/Buttons';
 import { Signup } from '../../utils/requests/api';
+
 
 export default function SignUp({ navigation }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleSignUp = async () => {
@@ -53,11 +56,23 @@ export default function SignUp({ navigation }) {
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
-          />
-          <TouchableOpacity style={styles.eyeIcon}>
-            {/* Add eye icon here */}
-          </TouchableOpacity>
+           secureTextEntry={!isPasswordVisible}
+                      />
+                 <TouchableOpacity
+                              style={{
+                                position: 'absolute',
+                                right: 10,
+                                top: '50%',
+                                transform: [{ translateY: -12 }],
+                              }}
+                              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                            >
+                              <Ionicons
+                                name={isPasswordVisible ? 'eye-off' : 'eye'}
+                           size={24}
+                           color="#313574"
+                        />
+                     </TouchableOpacity>     
         </View>
 
         <View style={styles.termsContainer}>
