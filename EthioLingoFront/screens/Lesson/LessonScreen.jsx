@@ -43,7 +43,6 @@ export default function LessonScreen() {
         ) : (
           <LessonLearningTopics topics={filteredTopics} />
         )}
-        <LessonCountSentence />
       </View>
 
       <LessonNavigationBar navigation={navigation} />
