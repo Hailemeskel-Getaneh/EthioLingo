@@ -99,19 +99,15 @@ function EditProfileScreen() {
       return;
     }
   
-    const userData = {
-      fullName,
-    };
-  
-    const profileData = {
-      goalTime: Number(goal),
-      profileImage,
-      // Keep any existing fields like nativeLanguage, learningLanguage, status if needed
-    };
-  
+   const updatedData = {
+  fullName,
+  goalTime: Number(goal),
+  profileImage,
+};
+ 
     try {
          const userId = await SecureStore.getItemAsync('userId');
-        await updateProfileLocally(userId, profileData, setProfileData); 
+        await updateProfileLocally(userId, updatedData, setProfileData); 
      
       setShowSuccessMessage(true);
       setTimeout(() => {

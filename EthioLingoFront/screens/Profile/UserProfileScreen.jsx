@@ -115,7 +115,7 @@ function UserProfileScreen() {
         </View>
       </View>
 
-      <View className="pt-6 mt-40">
+      <View className="pt-1 mt-60">
         <LessonNavigationBar navigation={navigation} />
       </View>
     </View>
