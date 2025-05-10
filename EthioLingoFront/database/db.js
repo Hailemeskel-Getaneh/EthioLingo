@@ -4,7 +4,7 @@ import { lessons,usersTable,userProfilesTable} from './schema';
 
 let db;
 
-export const getDBConnection = async () => {
+export const getDBConnection = () => {
   if (!db) {
     const expoDb = SQLite.openDatabaseSync('ethiolingo.db');
     if (!expoDb) throw new Error('Failed to open the database.');

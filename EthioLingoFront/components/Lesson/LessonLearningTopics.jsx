@@ -34,7 +34,7 @@ const updatedTopics = (topics) => {
   return topics.map((topic) => ({
     ...topic,
     image: topicImages[topic.title] || NumberIcon,
-  }));
+  })); 
 };
 
 const accentColors = [

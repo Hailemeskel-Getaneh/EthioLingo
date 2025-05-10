@@ -4,29 +4,72 @@ import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
+import { fetchAndCacheLessons, getLessonsFromSQLite } from '../../database/lessonOperations';
+import { API_URL } from '@env';
 
 const ReadingScreen = React.memo(() => {
   const route = useRoute();
-  const data = route.params?.data || {};
-  console.log('ReadingScreen data:', data); // Debug
+  const { topic, language = 'Amharic' } = route.params || { topic: { title: 'Unknown Topic' } };
+  console.log('ReadingScreen params:', { topic: topic.title, language });
 
+  const [readingExercises, setReadingExercises] = useState([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [sound, setSound] = useState(null);
   const [recording, setRecording] = useState(null);
   const [recordingUri, setRecordingUri] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [feedback, setFeedback] = useState('');
   const [answerStatuses, setAnswerStatuses] = useState({});
   const [error, setError] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
+  const [isConnected, setIsConnected] = useState(true);
 
-  const readingExercises = data?.readingExercises || [];
   const currentExercise = readingExercises[currentExerciseIndex] || {
     motherTongueText: 'No exercise available',
     learningText: 'N/A',
+    audioSource: null,
+    localPath: null,
   };
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const state = await NetInfo.fetch();
+      setIsConnected(state.isConnected);
+      console.log('Network state: connected=', state.isConnected);
+
+      let lessons = await getLessonsFromSQLite(topic.title, language);
+      if (lessons.length === 0 && state.isConnected) {
+        console.log('No lessons in SQLite, fetching from API');
+        const fetchSuccess = await fetchAndCacheLessons(language, true);
+        if (fetchSuccess) {
+          lessons = await getLessonsFromSQLite(topic.title, language);
+        }
+      }
+
+      if (lessons.length > 0) {
+        const lesson = lessons.find((l) => l.lesson_name === topic.title);
+        const exercises = lesson?.content?.reading?.readingExercises || [];
+        console.log('Reading exercises count:', exercises.length);
+        setReadingExercises(exercises);
+      } else {
+        setError('No reading exercises found. Please check your internet connection and API availability.');
+      }
+    } catch (err) {
+      console.error('Error fetching reading exercises:', err.message);
+      setError('Failed to load exercises: ' + err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [topic.title, language]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     (async () => {
@@ -44,7 +87,7 @@ const ReadingScreen = React.memo(() => {
   }, [recording]);
 
   const loadAndPlayAudio = useCallback(async () => {
-    if (!currentExercise.audioSource) {
+    if (!currentExercise.audioSource && !currentExercise.localPath) {
       setError('No audio source available');
       return;
     }
@@ -52,8 +95,14 @@ const ReadingScreen = React.memo(() => {
       setIsLoading(true);
       setError(null);
       if (sound) await sound.unloadAsync();
+
+      const audioUri = isConnected && !currentExercise.localPath
+        ? currentExercise.audioSource
+        : currentExercise.localPath || currentExercise.audioSource;
+      console.log('Playing audio:', audioUri.split('/').pop());
+
       const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: currentExercise.audioSource },
+        { uri: audioUri },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -62,11 +111,12 @@ const ReadingScreen = React.memo(() => {
         if (status.didJustFinish) setIsPlaying(false);
       });
     } catch (error) {
+      console.error('Error playing audio:', error.message);
       setError('Failed to play audio: ' + error.message);
     } finally {
       setIsLoading(false);
     }
-  }, [sound, currentExercise]);
+  }, [sound, currentExercise, isConnected]);
 
   const startRecording = useCallback(async () => {
     if (!hasPermission) {
@@ -84,6 +134,7 @@ const ReadingScreen = React.memo(() => {
       setRecording(newRecording);
       setIsRecording(true);
     } catch (error) {
+      console.error('Error starting recording:', error.message);
       Alert.alert('Error', 'Failed to start recording.');
     }
   }, [hasPermission]);
@@ -93,15 +144,16 @@ const ReadingScreen = React.memo(() => {
       if (recording) {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
-        await AsyncStorage.setItem(`recording_${currentExerciseIndex}`, uri);
+        await AsyncStorage.setItem(`recording_${currentExerciseIndex}_${topic.title}_${language}`, uri);
         setRecordingUri(uri);
         setIsRecording(false);
         setRecording(null);
       }
     } catch (error) {
+      console.error('Error stopping recording:', error.message);
       Alert.alert('Error', 'Failed to stop recording.');
     }
-  }, [recording, currentExerciseIndex]);
+  }, [recording, currentExerciseIndex, topic.title, language]);
 
   const checkRecording = useCallback(async () => {
     if (!recordingUri) {
@@ -130,6 +182,7 @@ const ReadingScreen = React.memo(() => {
       );
       await recordedSound.unloadAsync();
     } catch (error) {
+      console.error('Error comparing recordings:', error.message);
       setFeedback('Error comparing recordings.');
     }
   }, [recordingUri, sound, currentExerciseIndex]);
@@ -170,25 +223,45 @@ const ReadingScreen = React.memo(() => {
     }
   }, [currentExerciseIndex, answerStatuses, sound, recording]);
 
-  if (readingExercises.length === 0) {
+  if (isLoading) {
     return (
       <View className="flex-1 p-6 justify-center">
-        <Text className="text-screenText text-xl font-bold text-center">No reading content available</Text>
+        <ActivityIndicator size="large" color="#313574" />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View className="flex-1 p-6 justify-center">
-        <Text className="text-error text-xl font-bold text-center">Error: {error}</Text>
+      <View className="flex-1 p-6 justify-center items-center">
+        <Text className="text-error text-xl font-bold text-center mb-4">{error}</Text>
+        <TouchableOpacity
+          className="bg-primaryBackground py-3 px-10 rounded-lg"
+          onPress={fetchData}
+        >
+          <Text className="text-primaryText text-base font-bold">Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (readingExercises.length === 0) {
+    return (
+      <View className="flex-1 p-6 justify-center items-center">
+        <Text className="text-screenText text-xl font-bold text-center mb-4">No reading content available</Text>
+        <TouchableOpacity
+          className="bg-primaryBackground py-3 px-10 rounded-lg"
+          onPress={fetchData}
+        >
+          <Text className="text-primaryText text-base font-bold">Retry</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
     <ScrollView className="flex-1 bg-screenBackground p-6">
-      <Text className="text-2xl font-bold text-screenText text-center mb-6">Reading Exercise</Text>
+      <Text className="text-2xl font-bold text-screenText text-center mb-6">Reading Exercise ({language})</Text>
       <View className="flex-row justify-center mb-6">
         {Array.from({ length: readingExercises.length }, (_, i) => (
           <View
@@ -223,11 +296,11 @@ const ReadingScreen = React.memo(() => {
           <TouchableOpacity
             className="items-center justify-center w-10 h-10 rounded-full bg-white border-2 border-accent1"
             onPress={loadAndPlayAudio}
-            disabled={isPlaying || isLoading || !currentExercise.audioSource}
+            disabled={isPlaying || isLoading || (!currentExercise.audioSource && !currentExercise.localPath)}
           >
             {isLoading ? (
               <ActivityIndicator size="small" color="#313574" />
-            ) : !currentExercise.audioSource ? (
+            ) : (!currentExercise.audioSource && !currentExercise.localPath) ? (
               <Text className="text-screenText text-xs">No Audio</Text>
             ) : (
               <Ionicons name={isPlaying ? 'pause' : 'volume-high'} size={20} color="#313574" />
