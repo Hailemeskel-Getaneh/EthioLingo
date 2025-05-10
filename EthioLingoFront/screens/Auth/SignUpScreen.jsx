@@ -7,22 +7,79 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Common/Buttons';
 import { Signup } from '../../utils/requests/api';
 
-
 export default function SignUp({ navigation }) {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [fullNameError, setFullNameError] = useState('');
 
   const handleSignUp = async () => {
+    let valid = true;
+  
+    // Validate inputs before submitting
+    if (!fullName) {
+      setFullNameError('Full name is required');
+      valid = false;
+    } else {
+      setFullNameError('');
+    }
+  
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Please enter a valid email');
+      valid = false;
+    } else {
+      setEmailError('');
+    }
+  
+    if (!password || password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      valid = false;
+    } else {
+      setPasswordError('');
+    }
+  
+    if (!valid) return; 
+  
     try {
       const response = await Signup(fullName, email, password);
-      await navigation.navigate('LoginScreen');
-    } catch {
-      console.log('login failed');
+      if (response && response.success) {
+        navigation.navigate('LoginScreen');
+      }
+    }catch (error) {
+      console.log("Error response:", error.response);  // Log the full error response
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+    
+        // Check if the error is 'Email address already in use'
+        if (errorMessage === 'Email address already in use.') {
+          setEmailError('This email is already in use. Please choose another one.');
+        } else {
+          setEmailError('This email is already in use. Please choose another one.');
+        }
+      } else {
+        setEmailError('This email is already in use. Please choose another one.');
+      }
     }
+  }
+
+  const handleChangeEmail = (text) => {
+    setEmail(text);
+    setEmailError(''); 
   };
+
+  const handleChangeFullName = (text) => {
+    setFullName(text);
+    setFullNameError(''); 
+  };
+
+  const handleChangePassword = (text) => {
+    setPassword(text);
+    setPasswordError(''); 
+    }
 
   return (
     <View style={styles.container}>
@@ -34,46 +91,49 @@ export default function SignUp({ navigation }) {
       <View style={styles.form}>
         <Text style={styles.inputLabel}>Full name</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, fullNameError ? styles.errorInput : null]}
           placeholder="Enter your name and surname"
           value={fullName}
-          onChangeText={setFullName}
+          onChangeText={handleChangeFullName}
         />
+        {fullNameError && <Text style={styles.errorText}>{fullNameError}</Text>}
 
         <Text style={styles.inputLabel}>Email address</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, emailError ? styles.errorInput : null]}
           placeholder="example345@gmail.com"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={handleChangeEmail}
           keyboardType="email-address"
         />
+        {emailError && <Text style={styles.errorText}>{emailError}</Text>}
 
         <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, passwordError ? styles.errorInput : null]}
             placeholder="Password"
             value={password}
-            onChangeText={setPassword}
-           secureTextEntry={!isPasswordVisible}
-                      />
-                 <TouchableOpacity
-                              style={{
-                                position: 'absolute',
-                                right: 10,
-                                top: '50%',
-                                transform: [{ translateY: -12 }],
-                              }}
-                              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                            >
-                              <Ionicons
-                                name={isPasswordVisible ? 'eye-off' : 'eye'}
-                           size={24}
-                           color="#313574"
-                        />
-                     </TouchableOpacity>     
+            onChangeText={handleChangePassword}
+            secureTextEntry={!isPasswordVisible}
+          />
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 10,
+              top: '50%',
+              transform: [{ translateY: -12 }],
+            }}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+          >
+            <Ionicons
+              name={isPasswordVisible ? 'eye-off' : 'eye'}
+              size={24}
+              color="#313574"
+            />
+          </TouchableOpacity>
         </View>
+        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
         <View style={styles.termsContainer}>
           <TouchableOpacity
@@ -89,10 +149,7 @@ export default function SignUp({ navigation }) {
             <Text style={styles.termsLink}>Terms and Policy</Text>
           </TouchableOpacity>
         </View>
-        <Button
-          title="SignUp"
-          onPress={handleSignUp}
-        />
+        <Button title="SignUp" onPress={handleSignUp} />
 
         <View style={styles.orContainer}>
           <View style={styles.line} />
@@ -128,13 +185,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-
   },
   header: {
     marginBottom: 0,
     alignItems: 'center',
     marginTop: 90,
-
   },
   title: {
     fontSize: 24,
@@ -149,7 +204,6 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
     marginTop: 40,
-
   },
   inputLabel: {
     fontSize: 16,
@@ -164,6 +218,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
+  },
+  errorInput: {
+    borderColor: 'red',
   },
   passwordContainer: {
     position: 'relative',
@@ -248,5 +305,10 @@ const styles = StyleSheet.create({
   loginText: {
     color: colors.primaryBackground,
     fontWeight: '600',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
   },
 });

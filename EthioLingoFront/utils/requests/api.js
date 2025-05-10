@@ -160,30 +160,38 @@ export const login = async (email, password, navigation) => {
 
 export const Signup = async (fullName, email, password) => {
   try {
+    // Make the API call
     const response = await fetchAPI('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ fullName, email, password }),
     });
 
+    // Check if the response body exists
     if (response.body) {
-      const { userId } = response.body;
-      const { access_token } = response.body;
-      const { refresh_token } = response.body;
+      const { userId, access_token, refresh_token } = response.body;
 
+      // Store tokens and userId securely
       await SecureStore.setItemAsync('userId', userId);
       await SecureStore.setItemAsync('access_token', access_token);
       await SecureStore.setItemAsync('refresh_token', refresh_token);
+
+      // Return the response body with userId and tokens
+      return response.body;
     }
 
-    return response;
+    // In case of no body in the response
+    throw new Error('No response body received');
+
   } catch (error) {
-    console.error('signup failed with error:', {
+    console.error('Signup failed with error:', {
       message: error.message,
+      stack: error.stack,
       type: error.constructor.name,
     });
-    throw error;
+    throw error; // Don’t overwrite the error message
   }
 };
+
 
 export const logout = async (navigation) => {
   await SecureStore.deleteItemAsync('userId');
