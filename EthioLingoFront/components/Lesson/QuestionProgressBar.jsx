@@ -4,12 +4,16 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Animated,
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = 50; // width of each number circle
+const SPACING = 12;    // space between items
+const SIDE_PADDING = 20;
+const ARROW_WIDTH = 28; // space taken by each arrow
+const BUFFER = 10; // extra buffer to prevent cutoff
 
 const QuestionProgressBar = ({
   total,
@@ -18,41 +22,38 @@ const QuestionProgressBar = ({
   onJumpTo = () => {},
 }) => {
   const scrollRef = useRef(null);
+  const [scrollWidth, setScrollWidth] = useState(0);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
 
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const ITEM_WIDTH = 50;
-  const CONTAINER_PADDING = 20;
-
   const updateArrows = (contentWidth, scrollXVal) => {
-    const visibleWidth = SCREEN_WIDTH - CONTAINER_PADDING * 2 - 80; // 80 = approx arrow buttons
+    const visibleWidth = SCREEN_WIDTH - 2 * SIDE_PADDING - 2 * ARROW_WIDTH;
     setShowLeftArrow(scrollXVal > 5);
     setShowRightArrow(scrollXVal < contentWidth - visibleWidth - 5);
   };
 
-  useEffect(() => {
-    const listener = scrollX.addListener(({ value }) => {
-      scrollRef.current?.getNode().getScrollResponder()?.scrollResponderScrollTo({
-        x: value,
-        animated: false,
-      });
-    });
-    return () => scrollX.removeListener(listener);
-  }, []);
+  const scrollToIndex = (index) => {
+    const itemTotalWidth = ITEM_WIDTH + SPACING;
+    const centerX = SCREEN_WIDTH / 2 - ARROW_WIDTH; // center between arrows
+    const offset = index * itemTotalWidth - centerX + ITEM_WIDTH / 2 + BUFFER;
 
-  const scrollBy = (offset) => {
-    scrollRef.current?.getNode().scrollTo({
-      x: scrollX._value + offset,
-      animated: true,
-    });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        x: Math.max(0, offset),
+        animated: true,
+      });
+    }
   };
+
+  useEffect(() => {
+    scrollToIndex(current);
+  }, [current]);
 
   return (
     <View className="flex-row items-center mb-4 px-4">
       {showLeftArrow && (
         <TouchableOpacity
-          onPress={() => scrollBy(-SCREEN_WIDTH / 2)}
+          onPress={() => scrollRef.current?.scrollTo({ x: 0, animated: true })}
           className="pr-2"
         >
           <Ionicons name="chevron-back-circle" size={24} color="#313574" />
@@ -63,28 +64,31 @@ const QuestionProgressBar = ({
         ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        onContentSizeChange={(contentWidth) => updateArrows(contentWidth, scrollX._value)}
+        onContentSizeChange={(contentWidth) => {
+          setScrollWidth(contentWidth);
+          updateArrows(contentWidth, 0);
+        }}
         onScroll={(e) => {
           const scrollXVal = e.nativeEvent.contentOffset.x;
-          updateArrows(e.nativeEvent.contentSize.width, scrollXVal);
+          updateArrows(scrollWidth, scrollXVal);
         }}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingHorizontal: CONTAINER_PADDING }}
+        contentContainerStyle={{ paddingHorizontal: SIDE_PADDING }}
       >
         {Array.from({ length: total }).map((_, i) => {
           const isActive = i === current;
           const status = statuses[i]; // 'correct', 'incorrect', 'skipped'
           let bgColor = '#e0e0e0';
-          if (status === 'correct') bgColor = '#4CAF50'; // green
-          else if (status === 'incorrect') bgColor = '#F44336'; // red
-          else if (status === 'skipped') bgColor = '#FFC107'; // amber
-          else if (isActive) bgColor = '#313574'; // primary active
+          if (status === 'correct') bgColor = '#4CAF50';
+          else if (status === 'incorrect') bgColor = '#F44336';
+          else if (status === 'skipped') bgColor = '#FFC107';
+          else if (isActive) bgColor = '#313574';
 
           return (
             <TouchableOpacity
               key={i}
               onPress={() => onJumpTo(i)}
-              className="mx-1"
+              style={{ marginHorizontal: SPACING / 2 }}
             >
               <View
                 style={{
@@ -112,7 +116,7 @@ const QuestionProgressBar = ({
 
       {showRightArrow && (
         <TouchableOpacity
-          onPress={() => scrollBy(SCREEN_WIDTH / 2)}
+          onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
           className="pl-2"
         >
           <Ionicons name="chevron-forward-circle" size={24} color="#313574" />
