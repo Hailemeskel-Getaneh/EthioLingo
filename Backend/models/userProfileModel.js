@@ -33,22 +33,6 @@ const userProfileSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    achievements: [
-      {
-        record: {
-          type: Number,
-          default: 0,
-        },
-        points: {
-          type: Number,
-          default: 0,
-        },
-        achievedAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );

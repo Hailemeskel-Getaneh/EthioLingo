@@ -25,15 +25,16 @@ import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
 import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx';
 import LevelCompletScreen from '../screens/Success/LevelCompleteScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
-import privacyPolicyScreen from '../screens/Settings/PrivacyPolicyScreen.jsx';
-import feedbackScreen from '../screens/Settings/FeedbackScreen.jsx';
+import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
+import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
 import NotficationScreen from '../screens/Profile/NotificationScreen.jsx';
-import { ThemeProvider } from '../contexts/ThemeContext.jsx';
+// import { ThemeProvider } from '../contexts/ThemeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
 import { NotificationProvider } from '../contexts/NotificationContext.jsx';
 import PaymentScreen from '../screens/PaymentScreen/PaymentScreen.jsx';
-import { getDBConnection, initializeDatabase,  } from '../database/db.js';
+import { dropUsersTable , initializeDatabase,  } from '../database/db.js';
 import { testLessonInsert } from '../database/lessonOperations.js';
+
 
 function ProgressScreen() {
   return <View><Text>Progress Screen</Text></View>;
@@ -90,18 +91,22 @@ function AppNavigator() {
       try {
         await initializeDatabase();
         await testLessonInsert(); 
+        //  await dropUsersTable()
       } catch (error) {
         console.error('Failed to initialize:', error);
       }
     };
     initialize();
   }, []);
+      
+  
+
 
   return (
     <NotificationProvider>
       <UserProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="LessonScreen">
+          <Stack.Navigator initialRouteName="Welcome">
             <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="GetStartedScreen" component={GetStartedScreen} options={{ headerShown: false }} />
             <Stack.Screen name="GreetingScreen" component={GreetingScreen} options={{ headerShown: false }} />
@@ -115,8 +120,8 @@ function AppNavigator() {
             <Stack.Screen name="Verfication" component={Verfication} options={{ headerShown: false }} />
             <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
             <Stack.Screen name="Complete" component={Complete} options={{ headerShown: false }} />
-            {/* <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} /> */}
-            {/* <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} /> */}
+            <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} /> 
+             <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} /> 
             <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
             <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />

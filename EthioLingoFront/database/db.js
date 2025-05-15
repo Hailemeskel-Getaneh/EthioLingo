@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
-import { lessons } from './schema';
+import { lessons,usersTable,userProfilesTable} from './schema';
 
 let db;
 
@@ -8,10 +8,20 @@ export const getDBConnection = () => {
   if (!db) {
     const expoDb = SQLite.openDatabaseSync('ethiolingo.db');
     if (!expoDb) throw new Error('Failed to open the database.');
-    db = drizzle(expoDb, { schema: { lessons } });
+    db = drizzle(expoDb, { schema: { lessons, usersTable , userProfilesTable  } });
     console.log('Database opened successfully');
   }
   return db;
+};
+export const dropUsersTable = async () => {
+  const db = await getDBConnection();
+
+  try {
+    await db.run(`DROP TABLE IF EXISTS userProfile`);
+    console.log(' Dropped userProfile table');
+  } catch (error) {
+    console.error(' Failed to drop users table:', error);
+  }
 };
 
 export const initializeDatabase = () => {
