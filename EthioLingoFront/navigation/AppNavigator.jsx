@@ -25,8 +25,8 @@ import ExcellentScreen from '../screens/Success/ExcellentScreen.jsx';
 import TryAgainScreen from '../screens/Success/TryAgainScreen.jsx';
 import LevelCompletScreen from '../screens/Success/LevelCompleteScreen.jsx';
 import SettingsScreen from '../screens/Profile/SettingsScreen.jsx';
-import privacyPolicyScreen from '../screens/Settings/privacyPolicyScreen.jsx';
-import feedbackScreen from '../screens/Settings/feedbackScreen.jsx';
+import privacyPolicyScreen from '../screens/Settings/PrivacyPolicyScreen.jsx';
+import feedbackScreen from '../screens/Settings/FeedbackScreen.jsx';
 import NotficationScreen from '../screens/Profile/NotificationScreen.jsx';
 import { ThemeProvider } from '../contexts/ThemeContext.jsx';
 import { UserProvider } from '../contexts/UserProfileContext.jsx';
@@ -122,7 +122,6 @@ function AppNavigator() {
             <Stack.Screen name="Complete" component={Complete} options={{ headerShown: false }} />
             <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} options={{ headerShown: false }} /> 
             <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: false }} /> 
->>>>>>>>> Temporary merge branch 2
             <Stack.Screen name="ListeningScreen" component={ListeningScreen} options={{ headerShown: false }} />
             <Stack.Screen name="TopicScreen" component={TopicScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ProgressScreen" component={ProgressScreen} options={{ headerShown: false }} />
