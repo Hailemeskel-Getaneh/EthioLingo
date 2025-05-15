@@ -54,11 +54,30 @@ router.post('/update', async (req, res) => {
       return result;
     };
 
-    const setUpdates = flattenObject(updates);
+    const flattened = flattenObject(updates);
+    
+    const setUpdates = {};
+    const incUpdates = {};
+
+    for (const [key, value] of Object.entries(flattened)) {
+      if (typeof value === 'string' && (value.startsWith('+') || value.startsWith('-'))) {
+        const num = Number(value);
+        if (isNaN(num)) {
+          return res.status(400).json({ message: `Invalid increment value for '${key}': '${value}'` });
+        }
+        incUpdates[key] = num;
+      } else {
+        setUpdates[key] = value;
+      }
+    }
+
+    const updateOperation = {};
+    if (Object.keys(setUpdates).length > 0) updateOperation.$set = setUpdates;
+    if (Object.keys(incUpdates).length > 0) updateOperation.$inc = incUpdates;
 
     const updatedProgress = await UserProgress.findOneAndUpdate(
       { progressId },
-      { $set: setUpdates },
+      updateOperation,
       { new: true, runValidators: true }
     );
 
