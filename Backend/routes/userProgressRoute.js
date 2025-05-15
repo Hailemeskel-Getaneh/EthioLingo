@@ -42,9 +42,23 @@ router.post('/update', async (req, res) => {
       return res.status(400).json({ message: 'progressId and updates are required' });
     }
 
+    const flattenObject = (obj, parentKey = '', result = {}) => {
+      for (const key in obj) {
+        const newKey = parentKey ? `${parentKey}.${key}` : key;
+        if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+          flattenObject(obj[key], newKey, result);
+        } else {
+          result[newKey] = obj[key];
+        }
+      }
+      return result;
+    };
+
+    const setUpdates = flattenObject(updates);
+
     const updatedProgress = await UserProgress.findOneAndUpdate(
       { progressId },
-      { $set: updates },
+      { $set: setUpdates },
       { new: true, runValidators: true }
     );
 
