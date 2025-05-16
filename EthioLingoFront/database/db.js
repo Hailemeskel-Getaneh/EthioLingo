@@ -65,18 +65,19 @@ export const initializeDatabase = async () => {
       name:'userProfile',
       query: `
     CREATE TABLE IF NOT EXISTS userProfile (
-      id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-      userId text NOT NULL UNIQUE,  -- ✅ Make this UNIQUE
-      profileImage text DEFAULT 'https://...',
-      status text DEFAULT 'free',
-      nativeLanguage text DEFAULT 'English',
-      learningLanguage text NOT NULL,
-      goalTime integer NOT NULL,
-      favoriteWords text DEFAULT '[]',
-      FOREIGN KEY (userId) REFERENCES Users(userId) ON UPDATE NO ACTION ON DELETE NO ACTION
+    	id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+    	userId text NOT NULL UNIQUE,
+    	profileImage text DEFAULT 'https://...',
+    	status text DEFAULT 'free',
+    	nativeLanguage text DEFAULT 'English',
+    	learningLanguage text NOT NULL,
+    	goalTime integer NOT NULL,
+    	favoriteWords text DEFAULT '[]',
+    	sync_status text DEFAULT 'synced',
+    	last_synced integer,
+    	FOREIGN KEY (userId) REFERENCES Users(userId) ON UPDATE no action ON DELETE no action
     );
-  `
-}
+    ` }
   ];
 
   for (const table of tableQueries) {

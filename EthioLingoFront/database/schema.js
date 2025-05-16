@@ -30,6 +30,8 @@ export const userProfilesTable = sqliteTable('userProfile', {
   learningLanguage: text('learningLanguage').notNull(),
   goalTime: integer('goalTime').notNull(),
   favoriteWords: text('favoriteWords').default('[]'),
+  syncStatus: text('sync_status').default('synced'),
+  lastSynced: integer('last_synced', { mode: 'timestamp' }),
 });
 
 

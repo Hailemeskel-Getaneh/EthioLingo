@@ -148,6 +148,7 @@ export const fetchAndCacheUserProfile = async (userId) => {
         goalTime: profile.goalTime,
         favoriteWords: JSON.stringify(profile.favoriteWords || []),
         lastSynced: now,
+        syncStatus: 'synced',
       })
       .onConflictDoUpdate({
         target: userProfilesTable.userId,
@@ -159,6 +160,7 @@ export const fetchAndCacheUserProfile = async (userId) => {
           goalTime: profile.goalTime,
           favoriteWords: JSON.stringify(profile.favoriteWords || []),
           lastSynced: now,
+          syncStatus: 'synced',
         },
       });
 
@@ -171,32 +173,45 @@ export const fetchAndCacheUserProfile = async (userId) => {
 };
 
 
-export const getUserDataFromSQLite = async () => {
+export const getUserDataFromSQLite = async (userId) => {
   try {
-    const userId = await SecureStore.getItemAsync('userId');
-    console.log("🔐 SecureStore userId:", userId);
-    if (!userId) {
-      throw new Error("User ID is not available in SecureStore");
+    const db = await getDBConnection();
+
+    // Fetch user data
+    const user = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.userId, userId))
+      .limit(1);
+
+    // Fetch profile data
+    const profile = await db
+      .select()
+      .from(userProfilesTable)
+      .where(eq(userProfilesTable.userId, userId))
+      .limit(1);
+
+    if (!user[0] || !profile[0]) {
+      throw new Error('User or profile not found');
     }
-    const db = await getDBConnection(); // Make sure this returns your Drizzle client
 
-    // Debug logging each step
-    const userData = await db.select().from(usersTable).where(eq(usersTable.userId, userId));
-    console.log("🧑 userData:", userData);
-
-    const userProfileData = await db.select().from(userProfilesTable).where(eq(userProfilesTable.userId, userId));
-    console.log("👤 userProfileData:", userProfileData);
-
-    if (userData.length > 0 && userProfileData.length > 0) {
-      return {
-        ...userData[0],
-        ...userProfileData[0],
-      };
-    } else {
-      throw new Error("No user or profile data found for the given user ID");
-    }
+    // Combine data
+    return {
+      userId,
+      fullName: user[0].fullName,
+      email: user[0].email,
+      goalTime: profile[0].goalTime,
+      profileImage: profile[0].profileImage,
+      createdAt: user[0].createdAt,
+      updatedAt: user[0].updatedAt,
+      syncStatus: user[0].syncStatus,
+      status: profile[0].status,
+      nativeLanguage: profile[0].nativeLanguage,
+      learningLanguage: profile[0].learningLanguage,
+      favoriteWords: profile[0].favoriteWords,
+    };
   } catch (error) {
-    console.error("❌ Error fetching data from SQLite:", error);
+    console.error('❌ Error fetching user data:', error);
     throw error;
   }
 };
@@ -215,40 +230,41 @@ export const updateProfileLocally = async (userId, updatedData, setProfileData) 
     const db = await getDBConnection();
     const now = new Date();
 
-    // ✅ 1. Ensure required fields are not undefined
-    const {  fullName, goalTime, profileImage, learningLanguage } = updatedData;
+    // Ensure required fields are not undefined
+    const { fullName, goalTime, profileImage } = updatedData;
 
-   
+    // Perform updates in a transaction
+    await db.transaction(async (tx) => {
+      // Update usersTable
+      await tx
+        .update(usersTable)
+        .set({
+          fullName: fullName || '',
+          updatedAt: now,
+          syncStatus: 'pending',
+        })
+        .where(eq(usersTable.userId, userId));
 
-    // ✅ 2. Update usersTable
-    await db
-      .update(usersTable)
-      .set({
-        fullName,
-        updatedAt: now,
-        syncStatus: 'pending',
-      })
-      .where(eq(usersTable.userId, userId));
-
-    // ✅ 3. Update userProfilesTable
-    await db
-      .update(userProfilesTable)
-      .set({
-        goalTime,
-        profileImage: profileImage || null,
-        learningLanguage,
-        lastSynced: now,
-      })
-      .where(eq(userProfilesTable.userId, userId));
+      // Update userProfilesTable
+      await tx
+        .update(userProfilesTable)
+        .set({
+          goalTime: goalTime !== undefined ? goalTime : 0,
+          profileImage: profileImage || null,
+          syncStatus: 'pending',
+        })
+        .where(eq(userProfilesTable.userId, userId));
+    });
 
     console.log("✅ Local profile update successful");
 
-    // ✅ 4. Fetch latest and update UI
+    // Fetch latest data and update UI
     if (setProfileData) {
-      const freshData = await getUserDataFromSQLite();
+      const freshData = await getUserDataFromSQLite(userId);
       setProfileData(freshData);
     }
 
+    return true;
   } catch (error) {
     console.error("❌ Error updating profile locally:", error);
     throw error;
