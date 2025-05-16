@@ -1,32 +1,35 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import {getUserDataFromSQLite} from '../database/actions'
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import { getUserDataFromSQLite } from '../database/actions';
 
 const UserProfileContext = createContext();
 
-export const UserProvider = ({ children }) => {
+export function UserProvider({ children }) {
   const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const loadUserProfile = async () => {
       try {
-        const data = await getUserDataFromSQLite(); 
-        setUserProfile(data); 
+        const userId = await SecureStore.getItemAsync('userId');
+        if (userId) {
+          const profileData = await getUserDataFromSQLite(userId);
+          setUserProfile(profileData);
+        }
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error('Error loading user profile:', error);
       }
-      setLoading(false); 
     };
 
-    fetchUserProfile(); 
+    loadUserProfile();
   }, []);
 
   return (
-    <UserProfileContext.Provider value={{ userProfile, loading }}>
-      {children} 
+    <UserProfileContext.Provider value={{ userProfile, setUserProfile }}>
+      {children}
     </UserProfileContext.Provider>
   );
-};
+}
 
-
-export const useUserProfile = () => useContext(UserProfileContext);
+export function useUserProfile() {
+  return useContext(UserProfileContext);
+}

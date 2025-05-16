@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text, View, TextInput, TouchableOpacity, Image, Alert,
 } from 'react-native';
@@ -12,20 +12,17 @@ import { updateProfileLocally } from '../../database/actions';
 import * as SecureStore from 'expo-secure-store';
 
 function EditProfileScreen() {
-  const [profileData, setProfileData] = useState(null);
   const navigation = useNavigation();
- const { userProfile} = useUserProfile();
-
-  const [fullName, setUsername] = useState('');
+  const { userProfile, setUserProfile } = useUserProfile(); // Assume setUserProfile is provided by context
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [goal, setGoal] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [isEmailEditable, setIsEmailEditable] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
-      setUsername(userProfile.fullName || '');
+      setFullName(userProfile.fullName || '');
       setEmail(userProfile.email || '');
       setGoal(userProfile.goalTime ? String(userProfile.goalTime) : '');
       setProfileImage(userProfile.profileImage || null);
@@ -36,7 +33,7 @@ function EditProfileScreen() {
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        alert('We need permission to access your camera and gallery.');
+        Alert.alert('Permission Denied', 'We need permission to access your camera and gallery.');
       }
     })();
   }, []);
@@ -71,15 +68,11 @@ function EditProfileScreen() {
       'Delete Profile Image',
       'Are you sure you want to delete your profile image?',
       [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Image delete canceled'),
-          style: 'cancel',
-        },
+        { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           onPress: () => {
-            setProfileImage(null); 
+            setProfileImage(null);
             Alert.alert('Success', 'Profile image deleted successfully');
           },
         },
@@ -89,34 +82,32 @@ function EditProfileScreen() {
   };
 
   const saveProfile = async () => {
-    if (isEmailEditable) {
-      Alert.alert('Error', 'Email cannot be edited.');
-      return;
-    }
-  
     if (!userProfile?.userId) {
       Alert.alert('Error', 'User ID not found.');
       return;
     }
-  
-   const updatedData = {
-  fullName,
-  goalTime: Number(goal),
-  profileImage,
-};
- 
+
+    const updatedData = {
+      fullName,
+      goalTime: Number(goal) || 0,
+      profileImage,
+    };
+
     try {
-         const userId = await SecureStore.getItemAsync('userId');
-        await updateProfileLocally(userId, updatedData, setProfileData); 
-     
+      const userId = await SecureStore.getItemAsync('userId');
+      await updateProfileLocally(userId, updatedData, (freshData) => {
+        // Update context with fresh data
+        setUserProfile(freshData);
+      });
+
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);
         navigation.goBack();
       }, 1000);
     } catch (error) {
-      console.error('Error saving profile locally:', error);
-      Alert.alert('Error', 'There was an issue saving your profile locally.');
+      console.error('Error saving profile:', error);
+      Alert.alert('Error', 'There was an issue saving your profile.');
     }
   };
 
@@ -157,12 +148,12 @@ function EditProfileScreen() {
       </View>
 
       <View className="mt-6">
-        <Text className="text-screenText1">Fullname</Text>
+        <Text className="text-screenText1">Full Name</Text>
         <TextInput
           value={fullName}
-          onChangeText={setUsername}
+          onChangeText={setFullName}
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
-          placeholder="Enter new username"
+          placeholder="Enter full name"
         />
       </View>
 
@@ -170,7 +161,7 @@ function EditProfileScreen() {
         <Text className="text-screenText1">Email</Text>
         <TextInput
           value={email}
-          editable={false} 
+          editable={false}
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2 bg-gray-300"
           placeholder="Email (Cannot be edited)"
         />
@@ -178,13 +169,13 @@ function EditProfileScreen() {
       </View>
 
       <View className="mt-4">
-        <Text className="text-screenText1">Daily Goal</Text>
+        <Text className="text-screenText1">Daily Goal (minutes)</Text>
         <TextInput
           value={goal}
           onChangeText={setGoal}
           keyboardType="numeric"
           className="border-b-2 border-primaryBackground rounded-lg p-3 mt-2"
-          placeholder="Enter new goal"
+          placeholder="Enter daily goal"
         />
       </View>
 
