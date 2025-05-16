@@ -15,6 +15,7 @@ import { fetchAndCacheLessons, getLessonsFromSQLite } from '../../database/lesso
 import { colors } from '../../styles/globalStyles';
 import QuestionProgressBar from '../../components/Lesson/QuestionProgressBar';
 
+
 const WritingScreen = React.memo(() => {
   const route = useRoute();
   const { topic, language = 'Amharic' } = route.params || { topic: { title: 'Unknown Topic' } };
