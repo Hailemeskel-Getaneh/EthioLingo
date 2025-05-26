@@ -6,6 +6,7 @@ import { colors } from '../../styles/globalStyles';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Common/Buttons';
 import { Signup } from '../../utils/requests/api';
+import {validateSignUp} from '../../utils/validators'
 
 
 export default function SignUp({ navigation }) {
@@ -14,15 +15,37 @@ export default function SignUp({ navigation }) {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [backendError, setBackendError] = useState('');
 
-  const handleSignUp = async () => {
-    try {
-      const response = await Signup(fullName, email, password);
-      await navigation.navigate('LoginScreen');
-    } catch {
-      console.log('login failed');
+
+const handleSignUp = async () => {
+  const validationErrors = validateSignUp({ fullName, email, password,agreeToTerms });
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setErrors({});
+  setBackendError('');
+
+  try {
+    const response = await Signup(fullName, email, password );
+
+    if (response.status === 409) {
+      // email already exists
+      setBackendError('Email address already in use.');
+      setErrors({ email: 'Email address already in use.' });
+      return;
     }
-  };
+
+    await navigation.navigate('LoginScreen');
+  } catch (error) {
+    setBackendError(error.message || 'Signup failed');
+  }
+};
+
 
   return (
     <View style={styles.container}>
@@ -34,61 +57,84 @@ export default function SignUp({ navigation }) {
       <View style={styles.form}>
         <Text style={styles.inputLabel}>Full name</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            errors.fullName && { borderColor: 'red' },
+          ]}
           placeholder="Enter your name and surname"
           value={fullName}
-          onChangeText={setFullName}
+           onChangeText={(text) => {
+            setFullName(text);
+            if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: null }));
+          }}
         />
+        {errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
 
         <Text style={styles.inputLabel}>Email address</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            errors.email && { borderColor: 'red' },
+          ]}
           placeholder="example345@gmail.com"
           value={email}
-          onChangeText={setEmail}
+           onChangeText={(text) => {
+            setEmail(text);
+            if (errors.email) setErrors((prev) => ({ ...prev, email: null }));
+          }}
           keyboardType="email-address"
         />
+        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
         <Text style={styles.inputLabel}>Password</Text>
         <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-           secureTextEntry={!isPasswordVisible}
-                      />
-                 <TouchableOpacity
-                              style={{
-                                position: 'absolute',
-                                right: 10,
-                                top: '50%',
-                                transform: [{ translateY: -12 }],
-                              }}
-                              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                            >
-                              <Ionicons
-                                name={isPasswordVisible ? 'eye-off' : 'eye'}
-                           size={24}
-                           color="#313574"
-                        />
-                     </TouchableOpacity>     
-        </View>
+  <TextInput
+    style={[
+      styles.input,
+      errors.password && { borderColor: 'red' },
+    ]}
+    placeholder="Password"
+    value={password}
+     onChangeText={(text) => {
+            setPassword(text);
+            if (errors.password) setErrors((prev) => ({ ...prev, password: null }));
+          }}
+    secureTextEntry={!isPasswordVisible}
+  />
+  <TouchableOpacity
+    style={styles.eyeIcon}
+    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+  >
+    <Ionicons name={isPasswordVisible ? 'eye-off' : 'eye'} size={24} color="#313574" />
+  </TouchableOpacity>
+</View>
+{errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+{backendError ? <Text style={styles.errorText}>{backendError}</Text> : null}
 
-        <View style={styles.termsContainer}>
-          <TouchableOpacity
-            style={styles.checkbox}
-            onPress={() => setAgreeToTerms(!agreeToTerms)}
-          >
-            {agreeToTerms && <Text style={styles.checkmark}>✓</Text>}
-          </TouchableOpacity>
-          <Text style={styles.termsText}>Agree with </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('privacyPolicyScreen')}
-          >
-            <Text style={styles.termsLink}>Terms and Policy</Text>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.termsWrapper}>
+  <View style={styles.termsContainer}>
+    <TouchableOpacity
+      style={[
+        styles.checkbox,
+        errors.agreeToTerms && styles.inputError,
+      ]}
+      onPress={() => {
+        setAgreeToTerms(!agreeToTerms);
+        if (errors.agreeToTerms) {
+          setErrors((prev) => ({ ...prev, agreeToTerms: null }));
+        }
+      }}
+    >
+      {agreeToTerms && <Text style={styles.checkmark}>✓</Text>}
+    </TouchableOpacity>
+    <Text style={styles.termsText}>Agree with </Text>
+    <TouchableOpacity onPress={() => navigation.navigate('privacyPolicyScreen')}>
+      <Text style={styles.termsLink}>Terms and Policy</Text>
+    </TouchableOpacity>
+  </View>
+  {errors.agreeToTerms && <Text style={styles.errorText}>{errors.agreeToTerms}</Text>}
+</View>
+
         <Button
           title="SignUp"
           onPress={handleSignUp}
@@ -127,13 +173,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingLeft:20,
+    paddingRight:20
 
   },
   header: {
     marginBottom: 0,
     alignItems: 'center',
-    marginTop: 90,
+    marginTop: 70,
 
   },
   title: {
@@ -230,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 12,
+    padding: 10,
   },
   socialIcon: {
     width: '100%',
@@ -249,4 +296,18 @@ const styles = StyleSheet.create({
     color: colors.primaryBackground,
     fontWeight: '600',
   },
+  errorText: {
+  color: colors.error,
+  marginBottom: 10,
+  fontSize: 14,
+},
+termsWrapper: {
+  marginBottom: 20,
+},
+
+inputError: {
+  borderColor: 'red',
+},
+
+
 });
