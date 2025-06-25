@@ -118,18 +118,17 @@ async function fetchAPI(endpoint, options = {}) {
 
 
 export const login = async (email, password, navigation) => {
-  const response = await fetchAPI('/api/auth/login', {
+  const data = await fetchAPI('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   });
 
-  if (!response) return null;
+  if (!data) return null; 
 
-  const { userId, accessToken, refreshToken, redirectTo } = response;
+  const { userId, accessToken, refreshToken, redirectTo } = data;
 
   const previousUserId = await SecureStore.getItemAsync('userId');
 
-  // ✅ If user is different → clear SQLite
   if (previousUserId && previousUserId !== userId) {
     console.log('👥 Different user detected. Clearing old SQLite data...');
     await clearSQLiteData();
@@ -139,9 +138,7 @@ export const login = async (email, password, navigation) => {
   await SecureStore.setItemAsync('access_token', accessToken);
   await SecureStore.setItemAsync('refresh_token', refreshToken);
 
-  // ✅ Fetch and cache fresh data for this user
   await fetchAndCacheUser(userId);
- 
 
   if (redirectTo === 'home') {
     await fetchAndCacheUserProfile(userId);
@@ -150,8 +147,9 @@ export const login = async (email, password, navigation) => {
     navigation.navigate('LanguageSelectionScreen');
   }
 
-  return response;
+  return data;
 };
+
 
 
 
