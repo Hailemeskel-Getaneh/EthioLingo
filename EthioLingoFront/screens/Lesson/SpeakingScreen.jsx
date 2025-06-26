@@ -7,11 +7,11 @@ import { useRoute } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
 import { fetchAndCacheLessons, getLessonsFromSQLite } from '../../database/lessonOperations';
 import { API_URL } from '@env';
+import QuestionProgressBar from '../../components/Lesson/QuestionProgressBar';
 
 const SpeakingScreen = React.memo(() => {
   const route = useRoute();
   const { topic, language = 'Amharic' } = route.params || { topic: { title: 'Unknown Topic' } };
-  console.log('SpeakingScreen params:', { topic: topic.title, language });
 
   const [speakingExercises, setSpeakingExercises] = useState([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -39,11 +39,9 @@ const SpeakingScreen = React.memo(() => {
     try {
       const state = await NetInfo.fetch();
       setIsConnected(state.isConnected);
-      console.log('Network state: connected=', state.isConnected);
 
       let lessons = await getLessonsFromSQLite(topic.title, language);
       if (lessons.length === 0 && state.isConnected) {
-        console.log('No lessons in SQLite, fetching from API');
         const fetchSuccess = await fetchAndCacheLessons(language, true);
         if (fetchSuccess) {
           lessons = await getLessonsFromSQLite(topic.title, language);
@@ -53,7 +51,6 @@ const SpeakingScreen = React.memo(() => {
       if (lessons.length > 0) {
         const lesson = lessons.find((l) => l.lesson_name === topic.title);
         const exercises = lesson?.content?.speaking?.speakingExercises || [];
-        console.log('Speaking exercises count:', exercises.length);
         setSpeakingExercises(exercises);
       } else {
         setError('No speaking exercises found. Please check your internet connection and API availability.');
@@ -98,7 +95,6 @@ const SpeakingScreen = React.memo(() => {
       const audioUri = isConnected && !currentExercise.localPath
         ? currentExercise.audioSource
         : currentExercise.localPath || currentExercise.audioSource;
-      console.log('Playing audio:', audioUri.split('/').pop());
 
       const { sound: newSound } = await Audio.Sound.createAsync(
         { uri: audioUri },
@@ -178,7 +174,7 @@ const SpeakingScreen = React.memo(() => {
       Alert.alert(
         isMatch ? 'Correct!' : 'Wrong!',
         isMatch ? 'Great job!' : `The duration differs by ${Math.round(durationDiff / 1000)} seconds.`,
-        [{ text: 'OK', onPress: () => {} }]
+        [{ text: 'OK' }]
       );
       await recordedSound.unloadAsync();
       const key = `speaking_recording_${currentExercise.id || currentExerciseIndex}_${topic.title}_${language}`;
@@ -244,6 +240,16 @@ const SpeakingScreen = React.memo(() => {
     }
   }, [currentExerciseIndex, answerStatuses, sound, recording, currentExercise.id, topic.title, language]);
 
+  const jumpToExercise = useCallback((index) => {
+    setCurrentExerciseIndex(index);
+    setSound(null);
+    setRecording(null);
+    setIsPlaying(false);
+    setIsRecording(false);
+    setRecordingUri(null);
+    setError(null);
+  }, []);
+
   if (isLoading) {
     return (
       <View className="flex-1 p-6 justify-center">
@@ -256,10 +262,7 @@ const SpeakingScreen = React.memo(() => {
     return (
       <View className="flex-1 p-6 justify-center items-center">
         <Text className="text-error text-xl font-bold text-center mb-4">{error}</Text>
-        <TouchableOpacity
-          className="bg-primaryBackground py-3 px-10 rounded-lg"
-          onPress={fetchData}
-        >
+        <TouchableOpacity className="bg-primaryBackground py-3 px-10 rounded-lg" onPress={fetchData}>
           <Text className="text-primaryText text-base font-bold">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -270,10 +273,7 @@ const SpeakingScreen = React.memo(() => {
     return (
       <View className="flex-1 p-6 justify-center items-center">
         <Text className="text-screenText text-xl font-bold text-center mb-4">No speaking content available</Text>
-        <TouchableOpacity
-          className="bg-primaryBackground py-3 px-10 rounded-lg"
-          onPress={fetchData}
-        >
+        <TouchableOpacity className="bg-primaryBackground py-3 px-10 rounded-lg" onPress={fetchData}>
           <Text className="text-primaryText text-base font-bold">Retry</Text>
         </TouchableOpacity>
       </View>
@@ -283,41 +283,22 @@ const SpeakingScreen = React.memo(() => {
   return (
     <ScrollView className="flex-1 bg-screenBackground p-6">
       <Text className="text-2xl font-bold text-screenText text-center mb-6">Speaking Exercise ({language})</Text>
-      <View className="flex-row justify-center mb-6">
-        {Array.from({ length: speakingExercises.length }, (_, i) => {
-          const status = answerStatuses[i];
-          let bgColor = 'bg-listBarBackground';
-          if (i === currentExerciseIndex) {
-            bgColor = 'bg-accent2';
-          } else if (status === 'correct') {
-            bgColor = 'bg-primaryBackground';
-          } else if (status === 'incorrect') {
-            bgColor = 'bg-accent4';
-          }
-          return (
-            <View
-              key={i}
-              className={`w-8 h-8 rounded-full mx-1 flex items-center justify-center ${bgColor}`}
-            >
-              <Text
-                className={`text-base ${
-                  i === currentExerciseIndex || status === 'correct' || status === 'incorrect'
-                    ? 'text-primaryText'
-                    : 'text-screenText'
-                }`}
-              >
-                {i + 1}
-              </Text>
-            </View>
-          );
-        })}
-      </View>
+
+      <QuestionProgressBar
+        currentIndex={currentExerciseIndex}
+        total={speakingExercises.length}
+        answerStatuses={answerStatuses}
+        onPressIndicator={jumpToExercise}
+      />
+
       <Text className="text-screenText text-base text-center mb-4">
         Speak the phrase in the learning language.
       </Text>
+
       <View className="bg-accent3 p-6 rounded-xl shadow-lg mb-6">
         <Text className="text-screenText text-lg">{currentExercise.motherTongueText}</Text>
       </View>
+
       <View className="bg-accent5 p-6 rounded-xl shadow-lg mb-6">
         <View className="flex-row items-center">
           <Text className="text-screenText text-lg mr-2">{currentExercise.learningText}</Text>
@@ -336,6 +317,7 @@ const SpeakingScreen = React.memo(() => {
           </TouchableOpacity>
         </View>
       </View>
+
       <TouchableOpacity
         className={`items-center justify-center w-16 h-16 rounded-full ${
           isRecording ? 'bg-red-300' : 'bg-white'
@@ -346,22 +328,18 @@ const SpeakingScreen = React.memo(() => {
         <Ionicons name={isRecording ? 'stop' : 'mic'} size={30} color="#313574" />
         <Text className="text-screenText text-center text-xs mt-1">Hold to speak</Text>
       </TouchableOpacity>
+
       <View className="flex-row justify-center mb-6">
         {recordingUri && (
-          <TouchableOpacity
-            className="bg-accent2 py-3 px-6 rounded-lg mr-4"
-            onPress={retryRecording}
-          >
+          <TouchableOpacity className="bg-accent2 py-3 px-6 rounded-lg mr-4" onPress={retryRecording}>
             <Text className="text-primaryText text-base font-bold">Retry</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity
-          className="bg-primaryBackground py-3 px-10 rounded-lg"
-          onPress={checkRecording}
-        >
+        <TouchableOpacity className="bg-primaryBackground py-3 px-10 rounded-lg" onPress={checkRecording}>
           <Text className="text-primaryText text-base font-bold">Check</Text>
         </TouchableOpacity>
       </View>
+
       <View className="flex-row justify-between mb-6">
         <TouchableOpacity
           className={`p-3 rounded-full ${currentExerciseIndex === 0 ? 'bg-gray-300' : 'bg-accent2'}`}
@@ -370,6 +348,7 @@ const SpeakingScreen = React.memo(() => {
         >
           <Ionicons name="arrow-back" size={24} color={currentExerciseIndex === 0 ? '#9ca3af' : '#f0f2f5'} />
         </TouchableOpacity>
+
         <TouchableOpacity
           className={`p-3 rounded-full ${
             currentExerciseIndex === speakingExercises.length - 1 ? 'bg-gray-300' : 'bg-accent2'
