@@ -142,6 +142,7 @@ export const login = async (email, password, navigation) => {
 
   if (redirectTo === 'home') {
     await fetchAndCacheUserProfile(userId);
+    await new Promise(resolve => setTimeout(resolve, 300));
     navigation.navigate('HomeScreen');
   } else {
     navigation.navigate('LanguageSelectionScreen');
