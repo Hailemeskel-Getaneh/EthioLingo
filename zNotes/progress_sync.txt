@@ -1,2 +1,2 @@
-Commit Hash Tracker v2: style: harmonize typography sizing inside settings lists - resolved lint alerts and checked validation assertions (#2903)
-Timestamp: 2025-11-20T13:06:17.000Z
+Commit Hash Tracker v2: feat: enable fuzzy search matching inside local dictionary - injected helpful context keys into debugging sessions (#2904)
+Timestamp: 2025-11-20T14:28:42.000Z
