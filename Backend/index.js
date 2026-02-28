@@ -15,7 +15,7 @@ app.use(requestLogger);
 app.use('/api', healthRoutes);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to EthioLingo API Server', status: 'running' });
+  res.json({ message: 'Welcome to EthioLingo API Server v1.0', status: 'healthy' });
 });
 
 app.use(errorHandler);
@@ -23,7 +23,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`[EthioLingo] Backend Server running on port ${PORT}`);
+    console.log(`[EthioLingo] Backend Server successfully started on port ${PORT}`);
   });
 }
 
