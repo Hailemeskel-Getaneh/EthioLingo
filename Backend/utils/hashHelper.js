@@ -11,3 +11,4 @@ module.exports = bcrypt;
 // Helper method variant 2
 // Helper method variant 3
 // Helper method variant 4
+// Helper method variant 5
