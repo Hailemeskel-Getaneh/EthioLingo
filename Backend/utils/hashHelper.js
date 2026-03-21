@@ -7,3 +7,4 @@ const bcrypt = {
 };
 
 module.exports = bcrypt;
+// Helper method variant 1
