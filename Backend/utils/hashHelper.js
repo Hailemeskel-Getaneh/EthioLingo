@@ -8,3 +8,4 @@ const bcrypt = {
 
 module.exports = bcrypt;
 // Helper method variant 1
+// Helper method variant 2
