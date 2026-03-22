@@ -14,3 +14,4 @@ module.exports = authMiddleware;
 // Middleware variation validation rule 4
 // Middleware variation validation rule 5
 // Middleware variation validation rule 6
+// Middleware variation validation rule 7
