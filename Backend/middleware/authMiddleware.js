@@ -8,3 +8,4 @@ const authMiddleware = (req, res, next) => {
 };
 
 module.exports = authMiddleware;
+// Middleware variation validation rule 1
