@@ -14,3 +14,4 @@ module.exports = db;
 // Database connection pool option 5
 // Database connection pool option 6
 // Database connection pool option 7
+// Database connection pool option 8
