@@ -7,3 +7,4 @@ const db = {
 };
 
 module.exports = db;
+// Database connection pool option 1
