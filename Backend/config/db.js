@@ -9,3 +9,4 @@ const db = {
 module.exports = db;
 // Database connection pool option 1
 // Database connection pool option 2
+// Database connection pool option 3
