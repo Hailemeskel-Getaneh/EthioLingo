@@ -6,3 +6,4 @@ const login = (req, res) => res.json({ success: true, token: 'token' });
 
 module.exports = { register, login };
 // Controller update pass 1
+// Controller update pass 2
