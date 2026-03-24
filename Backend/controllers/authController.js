@@ -5,3 +5,4 @@ const register = (req, res) => res.json({ success: true, message: 'User register
 const login = (req, res) => res.json({ success: true, token: 'token' });
 
 module.exports = { register, login };
+// Controller update pass 1
