@@ -11,3 +11,4 @@ module.exports = { register, login };
 // Controller update pass 4
 // Controller update pass 5
 // Controller update pass 6
+// Controller update pass 7
