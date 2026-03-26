@@ -5,3 +5,4 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.get('/profile', authMiddleware, (req, res) => res.json({ profile: {} }));
 
 module.exports = router;
+// User route validation handler 1
