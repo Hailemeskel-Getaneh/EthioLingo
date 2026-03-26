@@ -6,3 +6,4 @@ router.get('/profile', authMiddleware, (req, res) => res.json({ profile: {} }));
 
 module.exports = router;
 // User route validation handler 1
+// User route validation handler 2
