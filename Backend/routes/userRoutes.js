@@ -10,3 +10,4 @@ module.exports = router;
 // User route validation handler 3
 // User route validation handler 4
 // User route validation handler 5
+// User route validation handler 6
