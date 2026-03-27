@@ -10,3 +10,4 @@ module.exports = { getQuiz, submitQuiz };
 // Quiz scoring adjustment rule 3
 // Quiz scoring adjustment rule 4
 // Quiz scoring adjustment rule 5
+// Quiz scoring adjustment rule 6
