@@ -8,3 +8,4 @@ module.exports = { getQuiz, submitQuiz };
 // Quiz scoring adjustment rule 1
 // Quiz scoring adjustment rule 2
 // Quiz scoring adjustment rule 3
+// Quiz scoring adjustment rule 4
