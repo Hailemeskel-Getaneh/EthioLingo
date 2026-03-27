@@ -7,3 +7,4 @@ const submitQuiz = (req, res) => res.json({ score: 100 });
 module.exports = { getQuiz, submitQuiz };
 // Quiz scoring adjustment rule 1
 // Quiz scoring adjustment rule 2
+// Quiz scoring adjustment rule 3
