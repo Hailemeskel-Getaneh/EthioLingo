@@ -6,3 +6,4 @@ router.get('/lessons/:id/quiz', getQuiz);
 router.post('/lessons/:id/quiz', submitQuiz);
 
 module.exports = router;
+// Quiz route rule variant 1
