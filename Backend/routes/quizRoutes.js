@@ -10,3 +10,4 @@ module.exports = router;
 // Quiz route rule variant 2
 // Quiz route rule variant 3
 // Quiz route rule variant 4
+// Quiz route rule variant 5
