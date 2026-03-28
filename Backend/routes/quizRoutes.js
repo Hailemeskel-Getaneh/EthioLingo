@@ -8,3 +8,4 @@ router.post('/lessons/:id/quiz', submitQuiz);
 module.exports = router;
 // Quiz route rule variant 1
 // Quiz route rule variant 2
+// Quiz route rule variant 3
