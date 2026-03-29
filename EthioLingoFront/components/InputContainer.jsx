@@ -19,3 +19,4 @@ const styles = StyleSheet.create({
   box: { borderBottomWidth: 1, paddingVertical: 8 },
   text: { fontSize: 16 }
 });
+// Input layout style variation 1
