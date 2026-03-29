@@ -20,3 +20,4 @@ const styles = StyleSheet.create({
   text: { fontSize: 16 }
 });
 // Input layout style variation 1
+// Input layout style variation 2
