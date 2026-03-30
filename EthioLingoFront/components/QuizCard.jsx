@@ -14,3 +14,4 @@ const styles = StyleSheet.create({
   title: { fontSize: 18 }
 });
 // QuizCard interactive UI variant 1
+// QuizCard interactive UI variant 2
