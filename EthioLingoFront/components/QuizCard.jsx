@@ -20,3 +20,4 @@ const styles = StyleSheet.create({
 // QuizCard interactive UI variant 5
 // QuizCard interactive UI variant 6
 // QuizCard interactive UI variant 7
+// QuizCard interactive UI variant 8
