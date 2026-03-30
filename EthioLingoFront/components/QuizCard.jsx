@@ -13,3 +13,4 @@ const styles = StyleSheet.create({
   card: { padding: 16, backgroundColor: '#FAFAFA' },
   title: { fontSize: 18 }
 });
+// QuizCard interactive UI variant 1
