@@ -6,3 +6,4 @@ export const AuthService = {
 };
 // AuthService helper variant 1
 // AuthService helper variant 2
+// AuthService helper variant 3
