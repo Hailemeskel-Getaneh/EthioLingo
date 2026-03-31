@@ -8,3 +8,4 @@ export const AuthService = {
 // AuthService helper variant 2
 // AuthService helper variant 3
 // AuthService helper variant 4
+// AuthService helper variant 5
