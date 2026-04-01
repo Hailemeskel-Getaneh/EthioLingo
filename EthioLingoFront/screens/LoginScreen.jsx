@@ -24,3 +24,4 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({ box: { flex: 1, padding: 20 } });
 // Login screen enhancement update 1
 // Login screen enhancement update 2
+// Login screen enhancement update 3
