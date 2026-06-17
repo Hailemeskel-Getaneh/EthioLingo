@@ -1,2 +1,2 @@
-Commit Hash Tracker: feat: add localized strings for EthioLingo frontend - updated styling variables to respect system font scale (#1184)
-Timestamp: 2026-06-17T09:21:59.000Z
+Commit Hash Tracker: fix: correct type casting error in progress calculator - wrapped rendering in React.memo to reduce re-renders (#1185)
+Timestamp: 2026-06-17T10:59:14.000Z
