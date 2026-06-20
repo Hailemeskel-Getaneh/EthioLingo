@@ -1,2 +1,2 @@
-Commit Hash Tracker: refactor: optimize database query performance for lessons - cleaned up legacy code paths and obsolete variables (#1213)
-Timestamp: 2026-06-20T06:26:28.000Z
+Commit Hash Tracker: feat: add localized strings for EthioLingo frontend - updated styling variables to respect system font scale (#1214)
+Timestamp: 2026-06-20T06:20:07.000Z
