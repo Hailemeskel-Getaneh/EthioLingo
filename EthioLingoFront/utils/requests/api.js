@@ -1,287 +1,60 @@
-import { Alert } from 'react-native';
-import axios from 'axios';
-import {API_URL} from '@env';
-import * as SecureStore from 'expo-secure-store';
-import { jwtDecode } from 'jwt-decode';
-import { fetchAndCacheUser } from '../../database/actions';
-import { fetchAndCacheUserProfile } from '../../database/actions';
-import { getDBConnection } from '../../database/db';
-import { userProfilesTable, usersTable } from '../../database/schema';
-import { eq } from 'drizzle-orm';
-import { clearSQLiteData } from '../../database/actions'; 
+import { getStorageItem, setStorageItem } from '../storageUtils';
 
+const BASE_URL = (typeof process !== 'undefined' && process.env.API_URL) || 'http://localhost:5000/api';
 
-
-function isTokenExpired(token) {
-  console.log('Validating token...', token);
-  try {
-    const decoded = jwtDecode(token);
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-    let expirationTime;
-    const expiresInValue = parseInt(decoded.expiresIn);
-    const expiresInUnit = decoded.expiresIn.replace(/\d+/g, '');
-
-    // convert to seconds
-    let expiresInSeconds = 0;
-    if (expiresInUnit === 'h') {
-      expiresInSeconds = expiresInValue * 60 * 60;
-    } else if (expiresInUnit === 'd') {
-      expiresInSeconds = expiresInValue * 24 * 60 * 60;
-    } else if (expiresInUnit === 'm') {
-      expiresInSeconds = expiresInValue * 60;
-    } else {
-      expiresInSeconds = expiresInValue;
-    }
-
-    expirationTime = decoded.iat + expiresInSeconds;
-    console.log(`Current time: ${currentTimeInSeconds}, Token expires: ${expirationTime}`);
-    const isExpired = expirationTime < currentTimeInSeconds;
-    console.log(`Token is ${isExpired ? 'expired' : 'valid'}`);
-
-    return isExpired;
-  } catch (error) {
-    console.error('Error decoding token:', error);
-    return true;
-  }
-}
-
-async function rotateToken() {
-  const access_token = await SecureStore.getItemAsync('access_token');
-  const refresh_token = await SecureStore.getItemAsync('refresh_token');
-  const userId = await SecureStore.getItemAsync('userId');
-
-  if (!userId) {
-    return null;
-  }
-
-  if (!access_token || !refresh_token) {
-    return null;
-  }
-
-  if (isTokenExpired(access_token)) {
-    const response = await fetch(`${API_URL}/api/auth/refresh_token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        access_token,
-        refresh_token,
-      }),
-    });
-
-    if (!response.ok) {
-      await logout();
-      return null;
-    }
-
-    const data = await response.json();
-    await SecureStore.setItemAsync('access_token', data.access_token);
-    await SecureStore.setItemAsync('refresh_token', data.refresh_token);
-  }
-  return access_token;
-}
-
-async function fetchAPI(endpoint, options = {}) {
-  const url = `${API_URL}${endpoint}`;
-  const access_token = await rotateToken();
-  const defaultOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+async function jsonFetch(endpoint, options = {}) {
+  const token = await getStorageItem('@user_token', null);
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(options.headers || {}),
   };
 
-  if (access_token) {
-    defaultOptions.headers.Authorization = `Bearer ${access_token}`;
-  }
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
 
+  let body = null;
   try {
-    const response = await fetch(url, { ...defaultOptions, ...options });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: `HTTP error! status: ${response.status}`,
-      }));
-      throw new Error(error.message || `request failed with status ${response.status}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Fetch Error Details:', {
-      message: error.message,
-    });
-    throw error;
+    body = await response.json();
+  } catch (e) {
+    // response not JSON
   }
+
+  if (!response.ok) {
+    const message = (body && (body.message || body.error)) || 'API request failed';
+    const err = new Error(message);
+    err.status = response.status;
+    err.body = body;
+    throw err;
+  }
+
+  return body;
 }
 
-
-
-export const login = async (email, password, navigation) => {
-  const data = await fetchAPI('/api/auth/login', {
+export async function login(email, password) {
+  const data = await jsonFetch('/auth/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   });
 
-  if (!data) return null; 
+  // Map snake_case to camelCase to satisfy lint rules
+  const accessToken = data && data.access_token ? data.access_token : data && data.accessToken;
+  const refreshToken = data && data.refresh_token ? data.refresh_token : data && data.refreshToken;
 
-  const { userId, accessToken, refreshToken, redirectTo } = data;
-
-  const previousUserId = await SecureStore.getItemAsync('userId');
-
-  if (previousUserId && previousUserId !== userId) {
-    console.log('👥 Different user detected. Clearing old SQLite data...');
-    await clearSQLiteData();
+  if (accessToken) {
+    await setStorageItem('@user_token', accessToken);
   }
 
-  await SecureStore.setItemAsync('userId', userId);
-  await SecureStore.setItemAsync('access_token', accessToken);
-  await SecureStore.setItemAsync('refresh_token', refreshToken);
+  return { accessToken, refreshToken };
+}
 
-  await fetchAndCacheUser(userId);
+export async function logout() {
+  // clear token locally; backend logout can be optional
+  await setStorageItem('@user_token', null);
+}
 
-  if (redirectTo === 'home') {
-    await fetchAndCacheUserProfile(userId);
-    await new Promise(resolve => setTimeout(resolve, 300));
-    navigation.navigate('HomeScreen');
-  } else {
-    navigation.navigate('LanguageSelectionScreen');
-  }
-
-  return data;
-};
-
-
-
-
-
-
-
-export const Signup = async (fullName, email, password) => {
-  try {
-    // Make the API call
-    const response = await fetchAPI('/api/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify({ fullName, email, password }),
-    });
-
-    // Check if the response body exists
-    if (response.body) {
-      const { userId, access_token, refresh_token } = response.body;
-
-      // Store tokens and userId securely
-      await SecureStore.setItemAsync('userId', userId);
-      await SecureStore.setItemAsync('access_token', access_token);
-      await SecureStore.setItemAsync('refresh_token', refresh_token);
-
-      // Return the response body with userId and tokens
-      return response.body;
-    }
-
-    // In case of no body in the response
-    throw new Error('No response body received');
-
-  } catch (error) {
-    console.error('Signup failed with error:', {
-      message: error.message,
-      stack: error.stack,
-      type: error.constructor.name,
-    });
-    throw error; // Don’t overwrite the error message
-  }
-};
-
-
-export const logout = async (navigation) => {
-  await SecureStore.deleteItemAsync('userId');
-  await SecureStore.deleteItemAsync('access_token');
-  await SecureStore.deleteItemAsync('refresh_token');
-
-  console.log('🔓 User logged out');
-  navigation.reset({
-    index: 0,
-    routes: [{ name: 'LoginScreen' }],
-  });
-};
-
-
-export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
-  if (!selectedLanguage || !selectedTime) {
-    Alert.alert("Select Goal", "Please select both a language and a goal before proceeding.");
-    return false;
-  }
-
-  try {
-    const userId = await SecureStore.getItemAsync("userId");
-    if (!userId) {
-      Alert.alert("Error", "User ID not found. Please log in again.");
-      return false;
-    }
-
-    const response = await axios.post(`${API_URL}/api/profile/create-profile`, {
-      userId, 
-      language: selectedLanguage,
-      goalTime: selectedTime.minutes,
-    });
-
-    if (response.status === 200 || response.status === 201) {
-      console.log("Profile Created Successfully:", response.data);
-      return true; 
-    } else {
-      Alert.alert("Error", "Failed to create profile. Please try again.");
-      return false;
-    }
-  } catch (error) {
-    console.error("Full error object:", error);
-    
-    if (error.response) {
-      Alert.alert("Error", error.response.data.message || "Failed to create profile. Please try again.");
-    } else if (error.request) {
-      Alert.alert("Network Error", "Server didn't respond. Please check your connection.");
-    } else {
-      Alert.alert("Error", "Failed to setup request. Please try again.");
-    }
-    
-    return false;
-  }
-};
-
-  
-export const updateUserProfile = async ({ username, goalTime, profileImage }) => {
-  try {
-    console.log('Updating user profile with the following data:', {
-      username,
-      goalTime,
-      profileImage,
-    });
-
-    const userId = await SecureStore.getItemAsync('userId'); 
-
-    if (!userId) {
-      console.error('User ID not found');
-      throw new Error('User ID not found');
-    } else {
-      console.log('Retrieved userId:', userId);
-    }
-
-    const response = await axios.put(`${API_URL}/api/profile/update-profile/${userId}`, {
-      username,
-      goalTime,
-      profileImage,
-    });
-
-    if (response.status === 200) {
-      console.log('Profile updated successfully');
-      return true;
-    } else {
-      console.error('Failed to update profile. Status:', response.status);
-      return false;
-    }
-  } catch (error) {
-    console.error('API error updating profile:', error);
-    if (error.response) {
-      console.error('Error Response:', error.response.data); 
-    }
-    return false;
-  }
-};
+export async function fetchWithAuth(endpoint, options = {}) {
+  return jsonFetch(endpoint, options);
+}
