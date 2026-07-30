@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EthioLingo Front Theme Colors
  */
 export const Colors = {

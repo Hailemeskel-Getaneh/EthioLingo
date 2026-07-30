@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EthioLingo Front Typography Scale
  */
 export const Typography = {

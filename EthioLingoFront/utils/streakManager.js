@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Streak Manager Utility
  */
 export const updateStreak = (lastActiveDateStr, currentStreak = 0) => {

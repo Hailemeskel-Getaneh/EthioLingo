@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Form Validation Utility for EthioLingoFront
  */
 export const validateLoginForm = (email, password) => {

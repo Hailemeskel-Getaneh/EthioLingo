@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Date and Time Formatting Helpers
  */
 export const formatRelativeTime = (timestamp) => {

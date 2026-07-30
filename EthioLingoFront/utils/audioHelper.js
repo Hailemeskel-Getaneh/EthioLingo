@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Audio Feedback Helper Utility
  */
 export const playSoundFeedback = async (type = 'success') => {

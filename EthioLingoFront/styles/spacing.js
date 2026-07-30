@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Spacing and Layout Constants
  */
 export const Spacing = {

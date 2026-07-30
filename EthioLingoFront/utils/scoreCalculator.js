@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Quiz Score & Accuracy Calculator Helper
  */
 export const calculateQuizScore = (correctCount, totalQuestions, timeTakenSeconds = 0) => {

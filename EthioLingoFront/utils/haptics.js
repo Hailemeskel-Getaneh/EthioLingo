@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Haptic Feedback Helper
  */
 export const triggerHaptic = (type = 'light') => {
