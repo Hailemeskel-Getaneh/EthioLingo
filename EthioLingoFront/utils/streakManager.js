@@ -11,9 +11,11 @@ export const updateStreak = (lastActiveDateStr, currentStreak = 0) => {
 
   if (diffDays === 1) {
     return { streak: currentStreak + 1, lastActive: today };
-  } else if (diffDays === 0) {
-    return { streak: currentStreak, lastActive: today };
-  } else {
-    return { streak: 1, lastActive: today };
   }
+
+  if (diffDays === 0) {
+    return { streak: currentStreak, lastActive: today };
+  }
+
+  return { streak: 1, lastActive: today };
 };

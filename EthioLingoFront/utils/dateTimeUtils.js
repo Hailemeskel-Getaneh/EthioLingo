@@ -12,6 +12,4 @@ export const formatRelativeTime = (timestamp) => {
   return date.toLocaleDateString();
 };
 
-export const getTodayDateString = () => {
-  return new Date().toISOString().split('T')[0];
-};
+export const getTodayDateString = () => new Date().toISOString().split('T')[0];

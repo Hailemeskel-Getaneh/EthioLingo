@@ -1,4 +1,4 @@
-﻿import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { users } from './users';
 import { lessons } from './lessons';
 

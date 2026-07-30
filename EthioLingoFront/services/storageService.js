@@ -1,4 +1,4 @@
-﻿import { getStorageItem, setStorageItem, removeStorageItem } from '../utils/storageUtils';
+import { getStorageItem, setStorageItem, removeStorageItem } from '../utils/storageUtils';
 
 const KEYS = {
   USER_TOKEN: '@user_token',
