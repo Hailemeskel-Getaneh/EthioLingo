@@ -6,24 +6,34 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { colors, globalStyles } from '../../styles/globalStyles';
+import { useUserProfile } from '../../contexts/UserProfileContext';
 import SampleProfileImage from '../../assets/images/SampleProfileImage.png';
 import LessonSearchBar from './LessonSearchBar';
 
-export default function LessonHeader({ navigation }) {
+export default function LessonHeader({ navigation, onSearch }) {
+    const { userProfile, loading } = useUserProfile();  
+    if (loading) {
+      return <Text>Loading...</Text>; 
+    }
+    if (!userProfile) {
+      return <Text>No user profile data found</Text>; 
+    }
+  
+  
+    const {  profileImage} = userProfile;
   return (
-    <View className="bg-primaryBackground  rounded-b-3xl">
+    <View className="bg-primaryBackground rounded-b-3xl">
       <View className="flex-row items-center px-4 pt-8 pb-2">
         <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
-          <Image
-            source={SampleProfileImage}
-            className="w-10 h-10 rounded-full mr-3"
-          />
+           <Image
+                   source={profileImage ? { uri: profileImage } : require('../../assets/images/SampleProfileImage.png')}
+                   className="w-12 h-12 rounded-full bg-white border-2 border-white"
+            />
         </TouchableOpacity>
         <Text className="text-primaryText text-xl font-bold ml-40">Lessons</Text>
       </View>
 
       <View className="flex-row items-center px-4 pb-4">
-
         <TouchableOpacity
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
           className="mr-4"
@@ -31,10 +41,8 @@ export default function LessonHeader({ navigation }) {
           <Ionicons name="menu" size={28} color={colors.primaryText} />
         </TouchableOpacity>
 
-        <LessonSearchBar />
-
+        <LessonSearchBar onSearch={onSearch} />
       </View>
-
     </View>
   );
 }

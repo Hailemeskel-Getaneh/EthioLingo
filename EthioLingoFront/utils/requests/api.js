@@ -3,6 +3,12 @@ import axios from 'axios';
 import {API_URL} from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
+import { fetchAndCacheUser } from '../../database/actions';
+import { fetchAndCacheUserProfile } from '../../database/actions';
+import { getDBConnection } from '../../database/db';
+import { userProfilesTable, usersTable } from '../../database/schema';
+import { eq } from 'drizzle-orm';
+import { clearSQLiteData } from '../../database/actions'; 
 
 
 
@@ -66,7 +72,7 @@ async function rotateToken() {
     });
 
     if (!response.ok) {
-      await Logout();
+      await logout();
       return null;
     }
 
@@ -111,84 +117,91 @@ async function fetchAPI(endpoint, options = {}) {
 
 
 
+export const login = async (email, password, navigation) => {
+  const data = await fetchAPI('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
 
-export const login = async (email, password, navigation, setUserProfile) => {
-    try {
-      const response = await fetchAPI('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      });
-  
-      if (response) {
-        const { userId, accessToken, refreshToken, redirectTo } = response;
-  
-        if (userId && accessToken && refreshToken) {
-          await SecureStore.setItemAsync('userId', userId);
-          await SecureStore.setItemAsync('access_token', accessToken);
-          await SecureStore.setItemAsync('refresh_token', refreshToken);
-  
-          if (redirectTo === 'language-selection') {
-            navigation.navigate('LanguageSelectionScreen');
-          } else if (redirectTo === 'home') {
-            navigation.navigate('HomeScreen');
-          } else {
-            console.error('Unknown redirect target');
-          }
-        } else {
-          console.error('Missing login credentials in response');
-        }
-      }
-  
-      return response;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  };
+  if (!data) return null; 
+
+  const { userId, accessToken, refreshToken, redirectTo } = data;
+
+  const previousUserId = await SecureStore.getItemAsync('userId');
+
+  if (previousUserId && previousUserId !== userId) {
+    console.log('👥 Different user detected. Clearing old SQLite data...');
+    await clearSQLiteData();
+  }
+
+  await SecureStore.setItemAsync('userId', userId);
+  await SecureStore.setItemAsync('access_token', accessToken);
+  await SecureStore.setItemAsync('refresh_token', refreshToken);
+
+  await fetchAndCacheUser(userId);
+
+  if (redirectTo === 'home') {
+    await fetchAndCacheUserProfile(userId);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    navigation.navigate('HomeScreen');
+  } else {
+    navigation.navigate('LanguageSelectionScreen');
+  }
+
+  return data;
+};
+
+
+
 
 
 
 
 export const Signup = async (fullName, email, password) => {
   try {
+    // Make the API call
     const response = await fetchAPI('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ fullName, email, password }),
     });
 
+    // Check if the response body exists
     if (response.body) {
-      const { userId } = response.body;
-      const { access_token } = response.body;
-      const { refresh_token } = response.body;
+      const { userId, access_token, refresh_token } = response.body;
 
+      // Store tokens and userId securely
       await SecureStore.setItemAsync('userId', userId);
       await SecureStore.setItemAsync('access_token', access_token);
       await SecureStore.setItemAsync('refresh_token', refresh_token);
+
+      // Return the response body with userId and tokens
+      return response.body;
     }
 
-    return response;
+    // In case of no body in the response
+    throw new Error('No response body received');
+
   } catch (error) {
-    console.error('signup failed with error:', {
+    console.error('Signup failed with error:', {
       message: error.message,
+      stack: error.stack,
       type: error.constructor.name,
     });
-    throw error;
+    throw error; // Don’t overwrite the error message
   }
 };
 
-export const Logout = async () => {
-  try {
-    await SecureStore.deleteItemAsync('userId');
-    await SecureStore.deleteItemAsync('access_token');
-    await SecureStore.deleteItemAsync('refresh_token');
-    return true;
-  } catch (error) {
-    console.error('logout failed with error:', {
-      message: error.message,
-      type: error.constructor.name,
-    });
-    throw error;
-  }
+
+export const logout = async (navigation) => {
+  await SecureStore.deleteItemAsync('userId');
+  await SecureStore.deleteItemAsync('access_token');
+  await SecureStore.deleteItemAsync('refresh_token');
+
+  console.log('🔓 User logged out');
+  navigation.reset({
+    index: 0,
+    routes: [{ name: 'LoginScreen' }],
+  });
 };
 
 
@@ -233,42 +246,7 @@ export const setLanguageandTime = async (selectedLanguage, selectedTime) => {
   }
 };
 
-
-export const getUserProfile = async (userIdParam) => {
-    try {
-      const access_token = await rotateToken();
-      if (!access_token) {
-        Alert.alert('Error', 'No valid access token found');
-        throw new Error('No valid token found');
-      }
   
-      const userId = userIdParam || await SecureStore.getItemAsync('userId');
-      if (!userId) {
-        throw new Error('User ID not found');
-      }
-  
-      const response = await axios.get(`${API_URL}/api/profile/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      });
-  
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-  
-      if (error.response && error.response.status === 404) {
-        Alert.alert('Profile not found', 'The user profile does not exist.');
-      } else if (error.message === 'No valid token found') {
-        Alert.alert('Error', 'Please login again');
-      } else {
-        Alert.alert('Error', 'There was an issue fetching your profile.');
-      }
-      throw error;
-    }
-  };
-  
-
 export const updateUserProfile = async ({ username, goalTime, profileImage }) => {
   try {
     console.log('Updating user profile with the following data:', {

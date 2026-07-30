@@ -1,32 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { colors, globalStyles } from '../../styles/globalStyles';
-import { UserProfileContext } from '../../contexts/UserProfileContext'; 
-import { Logout } from '../../utils/requests/api';  
+import { logout } from '../../utils/requests/api';  
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
 
 export default function DrawerContent(props) {
-  const { setUserProfile } = useContext(UserProfileContext); 
+  const [profileData, setProfileData] = useState(null);
+  const [authStatus, setAuthStatus] = useState(true);
+  const navigation = useNavigation();
 
   const handleLogout = async () => {
-    const success = await Logout();  
-    if (success) {
-      setUserProfile(null); 
-      console.log('Logout successful');
-      props.navigation.navigate('LoginScreen');  
+    try {
+      const currentUserId = await SecureStore.getItemAsync('userId'); 
+      await logout(currentUserId, {
+        setProfileData,
+        setAuthStatus,
+      });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (err) {
+      console.log("Logout failed", err);
     }
   };
 
   return (
     <View className="flex-1" style={{ backgroundColor: colors.screenBackground }}>
       <DrawerContentScrollView>
-        {/* Header Section */}
         <View className="p-4 border-b" style={{ borderBottomColor: '#e0e0e0' }}>
           <Text className="font-bold" style={{ color: colors.screenText, fontSize: 18 }}>Menu</Text>
         </View>
 
-        {/* Menu Items */}
         <TouchableOpacity
           className="flex-row items-center p-4"
           onPress={() => {
@@ -97,10 +105,9 @@ export default function DrawerContent(props) {
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Send Feedback</Text>
         </TouchableOpacity>
 
-        {/* Logout Button */}
         <TouchableOpacity
           className="flex-row items-center p-4"
-          onPress={handleLogout}  // Correctly call handleLogout here
+          // onPress={handleLogout}  
         >
           <Ionicons name="log-out" size={24} color={colors.homeBackground} />
           <Text className="ml-3" style={{ color: colors.screenText, fontSize: 16 }}>Logout</Text>

@@ -5,23 +5,31 @@ import * as Progress from 'react-native-progress';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../styles/globalStyles';
 import LessonNavigationBar from '../../components/Lesson/LessonNavigationBar';
-import { UserProfileContext } from '../../contexts/UserProfileContext';
+import { useUserProfile } from '../../contexts/UserProfileContext';
 import { NotificationContext } from '../../contexts/NotificationContext';
 
 function UserProfileScreen() {
   const navigation = useNavigation();
-  const { userProfile } = useContext(UserProfileContext);
+  const { userProfile, loading } = useUserProfile(); 
   const { unreadNotifications } = useContext(NotificationContext);
   const hasUnread = unreadNotifications.length > 0;
  
+  if (loading) {
+    return <Text>Loading...</Text>; // Display loading message while data is fetched
+  }
 
+  if (!userProfile) {
+    return <Text>No user profile data found</Text>; // Handle no data case
+  }
   const user = {
     progress: 60,
+    records:0,
+    points:0
   };
 
 
 
-  const {   fullName, learningLanguage, profileImage, records, points, notifications = [] } = userProfile;
+  const {   fullName, learningLanguage, profileImage, notifications = [] } = userProfile;
 
 
   return (
@@ -51,10 +59,11 @@ function UserProfileScreen() {
 
         <View className="justify-center items-center w-full p-4 bg-homeBackground rounded-lg mt-5 relative">
           <View className="relative">
-            <Image
-              source={{ uri: profileImage }}
-              className="w-24 h-24 rounded-full border-2 border-primaryBackground"
-            />
+          <Image
+          source={profileImage ? { uri: profileImage } : require('../../assets/images/SampleProfileImage.png')}
+          className="w-24 h-24 rounded-full border-2 border-primaryBackground"
+        />
+
             <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen')} className="absolute bottom-0 right-0 bg-primaryBackground p-1 rounded-full border border-gray-300">
               <Ionicons name="pencil" size={16} color="white" />
             </TouchableOpacity>
@@ -82,7 +91,7 @@ function UserProfileScreen() {
             />
           </View>
           <Text className="text-screenText1 mt-2">
-            You completed {records} Lessons.
+            You completed {user.records} Lessons.
           </Text>
         </View>
 
@@ -92,7 +101,7 @@ function UserProfileScreen() {
             <Text className="text-primaryText font-bold">Records</Text>
             <View className="flex flex-row items-center space-x-2">
               <Ionicons name="trophy" size={16} color="gold" />
-              <Text className="text-primaryText">{records}</Text>
+              <Text className="text-primaryText">{user.records}</Text>
             </View>
           </View>
           <View className="w-full h-[1px] bg-primaryText my-2" />
@@ -100,13 +109,13 @@ function UserProfileScreen() {
             <Text className="text-primaryText font-bold">Points</Text>
             <View className="flex flex-row items-center space-x-2">
               <Ionicons name="heart" size={16} color="red" />
-              <Text className="text-primaryText">{points}</Text>
+              <Text className="text-primaryText">{user.points}</Text>
             </View>
           </View>
         </View>
       </View>
 
-      <View className="pt-6 mt-40">
+      <View className="pt-1 mt-60">
         <LessonNavigationBar navigation={navigation} />
       </View>
     </View>

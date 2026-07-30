@@ -1,6 +1,6 @@
 // /EthioLingoFront/screens/Lesson/LessonScreen.jsx
-import React from 'react';
-import { View, StatusBar } from 'react-native';
+import React,{useState} from 'react';
+import { View, StatusBar,Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 // import { colors, globalStyles } from '../../styles/globalStyles';
 import LessonHeader from '../../components/Lesson/LessonHeader';
@@ -20,15 +20,29 @@ const learningTopics = [
 
 export default function LessonScreen() {
   const navigation = useNavigation();
-  console.log('Navigation in LessonScreen:', navigation);
+  const [filteredTopics, setFilteredTopics] = useState(learningTopics);
+
+  const handleSearch = (query) => {
+    const filtered = learningTopics.filter((topic) =>
+      topic.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredTopics(filtered);
+    
+  };
+  
 
   return (
     <View className="flex-1 bg-screenBackground">
       <StatusBar backgroundColor="#313574" />
       <View className="flex-1">
-        <LessonHeader navigation={navigation} />
-        <LessonLearningTopics topics={learningTopics} />
-        <LessonCountSentence />
+        <LessonHeader navigation={navigation} onSearch={handleSearch} />
+        {filteredTopics.length === 0 ? (
+          <Text className="text-center text-gray-500 mt-8 text-lg">
+            No data available
+          </Text>
+        ) : (
+          <LessonLearningTopics topics={filteredTopics} />
+        )}
       </View>
 
       <LessonNavigationBar navigation={navigation} />

@@ -1,14 +1,20 @@
-// /EthioLingoFront/components/Lesson/LessonSearchBar.jsx
-
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput } from 'react-native';
-import { colors, globalStyles } from '../../styles/globalStyles';
 
-export default function LessonSearchBar() {
+export default function LessonSearchBar({ onSearch }) {
+  const [searchText, setSearchText] = useState('');
+
+  const handleChange = (text) => {
+    setSearchText(text);
+    onSearch?.(text);
+  };
+
   return (
-    <View className="px-4 py-2">
+    <View className="flex-1">
       <TextInput
-        className="bg-listBarBackground text-listBarText w-full text-base p-3 rounded-lg border border-gray-300"
+        value={searchText}
+        onChangeText={handleChange}
+        className="bg-listBarBackground text-listBarText text-base px-4 py-3 rounded-lg border border-gray-300 w-full"
         placeholder="Search here for learning topic easily ..."
         placeholderTextColor="#666"
       />

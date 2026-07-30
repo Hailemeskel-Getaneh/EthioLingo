@@ -1,20 +1,20 @@
-import React, { createContext, useState, useContext } from 'react';
+﻿import React, { createContext, useState, useContext } from 'react';
+import { Colors } from '../styles/colors';
 
-// Create a context to manage the theme
 const ThemeContext = createContext();
 
-export const useTheme = () => useContext(ThemeContext);
-
-// ThemeProvider component to wrap your app
-export function ThemeProvider({ children }) {
+export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Toggle dark mode
-  const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
+  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
-  return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-}
+  const theme = {
+    isDarkMode,
+    colors: isDarkMode ? Colors.dark : Colors,
+    toggleTheme,
+  };
+
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
+};
+
+export const useTheme = () => useContext(ThemeContext);
