@@ -1,25 +1,15 @@
-// /EthioLingoFront/store/settingsSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+const initialState = {
+  theme: 'light',
+  notificationsEnabled: true,
+};
 
-const settingsSlice = createSlice({
-  name: 'settings',
-  initialState: {
-    offlineMode: false, // Toggle offline mode
-    notificationsEnabled: true, // Toggle notifications
-    selectedLanguage: null, // Language to learn (e.g., { name: 'Oromo', flag: '🇪🇹', id: '2' })
-  },
-  reducers: {
-    toggleOfflineMode: (state) => {
-      state.offlineMode = !state.offlineMode;
-    },
-    toggleNotifications: (state) => {
-      state.notificationsEnabled = !state.notificationsEnabled;
-    },
-    setSelectedLanguage: (state, action) => {
-      state.selectedLanguage = action.payload; // Set target language (e.g., { name: 'Oromo', flag: '🇪🇹', id: '2' })
-    },
-  },
-});
-
-export const { toggleOfflineMode, toggleNotifications, setSelectedLanguage } = settingsSlice.actions;
-export default settingsSlice.reducer;
+export default function settingsReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'settings/setTheme':
+      return { ...state, theme: action.payload };
+    case 'settings/setNotifications':
+      return { ...state, notificationsEnabled: !!action.payload };
+    default:
+      return state;
+  }
+}
